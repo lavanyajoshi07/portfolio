@@ -1,0 +1,216 @@
+Perfect timing — let me give you the **whole updated MASTER ROADMAP** file, corrected so it matches the fixed project context (with `src/lib` inside `src`, `public` at root, and no contradictions). This way you can drop it straight into Antigravity.
+
+---
+
+# MASTER ROADMAP (Updated)
+
+## 📂 Folder & File Registry
+
+### Root
+- `package.json` ✅
+- `tsconfig.json` ✅
+- `next.config.ts` ✅
+- `tailwind.config.ts` ✅
+- `postcss.config.js` ✅
+- `.env.local` ✅
+- `.env.local.example` ⚠️ incomplete
+- `.eslintrc.json` ✅
+- `.gitignore` ✅
+
+---
+
+### `src/app/`
+- `layout.tsx` ✅
+
+#### `(portfolio)/`
+- `layout.tsx` ✅
+- `page.tsx` ✅
+- `_components/hero/`  
+  - HeroSection.tsx ✅  
+  - AudioPlayer.tsx ✅  
+  - FloatingCards.tsx ✅  
+  - SocialLinks.tsx ✅  
+- `_components/about/`  
+  - AboutSection.tsx 🔲 missing  
+- `_components/skills/`  
+  - SkillsSection.tsx ✅  
+- `_components/projects/`  
+  - ProjectsSection.tsx ✅  
+- `_components/coding/`  
+  - CodingDashboard.tsx ⚠️ incomplete  
+  - ContributionHeatmap.tsx 🔲 missing  
+  - StatsCard.tsx 🔲 missing  
+  - LanguageBar.tsx 🔲 missing  
+- `_components/timeline/`  
+  - TimelineSection.tsx 🔲 missing  
+  - TimelineItem.tsx 🔲 missing  
+- `_components/certifications/`  
+  - CertificationsSection.tsx 🔲 missing  
+- `_components/achievements/`  
+  - AchievementsSection.tsx 🔲 missing  
+- `_components/contact/`  
+  - ContactSection.tsx 🔲 missing  
+- `_components/chat/`  
+  - ChatWidget.tsx 🔲 missing  
+  - ChatMessage.tsx 🔲 missing  
+- `_components/shared/`  
+  - Navbar.tsx ✅  
+  - ParticleCanvas.tsx ✅  
+  - SectionWrapper.tsx ✅  
+  - SectionLoader.tsx ✅  
+
+---
+
+#### `(admin)/`
+- `(auth)/login/page.tsx` 🔲 missing  
+- `(auth)/layout.tsx` 🔲 missing  
+- `(dashboard)/layout.tsx` 🔲 missing  
+- `(dashboard)/_components/`  
+  - Sidebar.tsx 🔲 missing  
+  - Topbar.tsx 🔲 missing  
+  - StatCard.tsx 🔲 missing  
+  - DataTable.tsx 🔲 missing  
+  - ConfirmDialog.tsx 🔲 missing  
+  - MediaUploader.tsx 🔲 missing  
+  - RichTextEditor.tsx 🔲 missing  
+- `(dashboard)/dashboard/page.tsx` 🔲 missing  
+- `(dashboard)/profile/page.tsx` 🔲 missing  
+- `(dashboard)/skills/page.tsx` 🔲 missing  
+- `(dashboard)/projects/page.tsx` 🔲 missing  
+- `(dashboard)/certifications/page.tsx` 🔲 missing  
+- `(dashboard)/achievements/page.tsx` 🔲 missing  
+- `(dashboard)/timeline/page.tsx` 🔲 missing  
+- `(dashboard)/coding-profiles/page.tsx` 🔲 missing  
+- `(dashboard)/messages/page.tsx` 🔲 missing  
+- `(dashboard)/media/page.tsx` 🔲 missing  
+- `(dashboard)/settings/page.tsx` 🔲 missing  
+
+---
+
+#### `api/`
+- `auth/[...nextauth]/route.ts` ⚠️ incomplete  
+- `profile/route.ts` 🔲 missing  
+- `skills/route.ts` 🔲 missing  
+- `projects/route.ts` 🔲 missing  
+- `certifications/route.ts` 🔲 missing  
+- `achievements/route.ts` 🔲 missing  
+- `timeline/route.ts` 🔲 missing  
+- `coding-profiles/route.ts` 🔲 missing  
+- `messages/route.ts` 🔲 missing  
+- `chat/route.ts` 🔲 missing  
+- `analytics/route.ts` 🔲 missing  
+- `media/route.ts` 🔲 missing  
+- `settings/route.ts` 🔲 missing  
+- `admin/users/route.ts` 🔲 missing  
+
+---
+
+### `src/components/ui/`
+- button.tsx 🔲 missing  
+- input.tsx 🔲 missing  
+- textarea.tsx 🔲 missing  
+- label.tsx 🔲 missing  
+- card.tsx 🔲 missing  
+- badge.tsx 🔲 missing  
+- dialog.tsx 🔲 missing  
+- select.tsx 🔲 missing  
+- switch.tsx 🔲 missing  
+- tabs.tsx 🔲 missing  
+- toast.tsx 🔲 missing  
+- toaster.tsx 🔲 missing  
+- progress.tsx 🔲 missing  
+- separator.tsx 🔲 missing  
+- dropdown-menu.tsx 🔲 missing  
+- tooltip.tsx 🔲 missing  
+- avatar.tsx 🔲 missing  
+- skeleton.tsx 🔲 missing  
+- accordion.tsx 🔲 missing  
+
+---
+
+### `src/hooks/`
+- useAnalytics.ts 🔲 missing  
+- useToast.ts 🔲 missing  
+
+---
+
+### `src/lib/`
+- db.ts ✅  
+- auth.ts ✅  
+- cloudinary.ts ✅  
+- api.ts ✅  
+- seed.ts 🔲 missing  
+- validations.ts 🔲 missing  
+- coding-fetchers.ts 🔲 missing  
+- utils.ts 🔲 missing  
+
+---
+
+### `src/models/`
+- index.ts ✅  
+
+---
+
+### `src/store/` (Optional — not in roadmap, but useful)
+- useAppStore.ts (optional)  
+- usePortfolioStore.ts (optional)  
+- useAdminStore.ts (optional)  
+- useMediaStore.ts (optional)  
+- useChatStore.ts (optional)  
+
+---
+
+### `src/styles/`
+- globals.css ✅  
+
+---
+
+### `src/types/`
+- index.ts ✅  
+
+---
+
+### `public/`
+- fonts/ ✅ (Orbitron, JetBrains Mono, Inter)  
+- placeholders/ ✅ (project.png, cert.png, favicon.ico, etc.)  
+
+---
+
+## ✅ Development Phases (Corrected)
+
+**Phase 1 — Make it build**  
+- postcss.config.js  
+- .env.local.example  
+- src/lib/utils.ts  
+- src/components/ui/*  
+- src/lib/seed.ts  
+- src/lib/validations.ts  
+- src/app/api/auth/[...nextauth]/route.ts  
+
+**Phase 2 — Public Portfolio**  
+- AboutSection.tsx  
+- CodingDashboard.tsx + sub‑components  
+- TimelineSection.tsx + TimelineItem.tsx  
+- CertificationsSection.tsx  
+- AchievementsSection.tsx  
+- ContactSection.tsx  
+- ChatWidget.tsx + ChatMessage.tsx  
+- src/lib/coding-fetchers.ts  
+
+**Phase 3 — API Layer**  
+- All `/api/` route files (25 total)  
+
+**Phase 4 — Admin Dashboard**  
+- Admin layout + auth  
+- All admin page files (11 total)  
+- All admin component files (8 total)  
+
+**Phase 5 — Polish**  
+- src/app/not-found.tsx  
+- src/hooks/useAnalytics.ts  
+- src/hooks/useToast.ts  
+- Public assets (favicon, placeholders)  
+- .gitignore, .eslintrc.json  
+
+---
+

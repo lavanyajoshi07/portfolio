@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
   experimental: {
     serverActions: { bodySizeLimit: '10mb' },
   },
+  allowedDevOrigins: ['10.217.110.109'], // ✅ Fix for blocked dev resource requests
   async headers() {
     return [
       {
@@ -20,16 +21,15 @@ const nextConfig: NextConfig = {
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           {
             key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://widget.cloudinary.com",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://res.cloudinary.com https://avatars.githubusercontent.com",
-              "media-src 'self' blob: https://res.cloudinary.com",
-              "connect-src 'self' https://api.anthropic.com https://api.github.com",
+            value:
+              "default-src 'self'; " +
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://widget.cloudinary.com; " +
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+              "font-src 'self' https://fonts.gstatic.com; " +
+              "img-src 'self' data: blob: https://res.cloudinary.com https://avatars.githubusercontent.com; " +
+              "media-src 'self' blob: https://res.cloudinary.com; " +
+              "connect-src 'self' https://api.anthropic.com https://api.github.com; " +
               "frame-src 'none'",
-            ].join('; '),
           },
         ],
       },

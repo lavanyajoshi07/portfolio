@@ -1,42 +1,56 @@
 import { Suspense } from 'react'
-import HeroSection from './_components/hero/HeroSection'
-import AboutSection from './_components/about/AboutSection'
-import SkillsSection from './_components/skills/SkillsSection'
-import ProjectsSection from './_components/projects/ProjectsSection'
-import CodingDashboard from './_components/coding/CodingDashboard'
-import TimelineSection from './_components/timeline/TimelineSection'
-import CertificationsSection from './_components/certifications/CertificationsSection'
-import AchievementsSection from './_components/achievements/AchievementsSection'
-import ContactSection from './_components/contact/ContactSection'
-import SectionLoader from './_components/shared/SectionLoader'
+import HeroSection from './components/hero/HeroSection'
+import AboutSection from './components/about/AboutSection'
+import SkillsSection from './components/skills/SkillsSection'
+import ProjectsSection from './components/projects/ProjectsSection'
+import CodingDashboard from './components/coding/CodingDashboard'
+import TimelineSection from './components/timeline/TimeLineSection'
+import CertificationsSection from './components/certifications/CertificationSection'
+import AchievementsSection from './components/achievements/AchievementsSection'
+import ContactSection from './components/contact/ContactSection'
+import SectionLoader from './components/shared/SectionLoader'
 import connectDB from '@/lib/db'
 import { Profile, Skill, Project, CodingProfile, Timeline, Certification, Achievement, SiteSettings } from '@/models'
 
 export const revalidate = 60 // ISR: revalidate every 60s
 
 async function getData() {
-  await connectDB()
-  const [profile, skills, projects, codingProfiles, timeline, certifications, achievements, settings] =
-    await Promise.all([
-      Profile.findOne().lean(),
-      Skill.find().sort({ order: 1 }).lean(),
-      Project.find({ status: { $ne: 'archived' } }).sort({ featured: -1, order: 1 }).lean(),
-      CodingProfile.find({ enabled: true }).lean(),
-      Timeline.find().sort({ order: 1 }).lean(),
-      Certification.find().sort({ order: 1 }).lean(),
-      Achievement.find().sort({ order: 1 }).lean(),
-      SiteSettings.findOne().lean(),
-    ])
+  try {
+    await connectDB()
+    const [profile, skills, projects, codingProfiles, timeline, certifications, achievements, settings] =
+      await Promise.all([
+        Profile.findOne().lean(),
+        Skill.find().sort({ order: 1 }).lean(),
+        Project.find({ status: { $ne: 'archived' } }).sort({ featured: -1, order: 1 }).lean(),
+        CodingProfile.find({ enabled: true }).lean(),
+        Timeline.find().sort({ order: 1 }).lean(),
+        Certification.find().sort({ order: 1 }).lean(),
+        Achievement.find().sort({ order: 1 }).lean(),
+        SiteSettings.findOne().lean(),
+      ])
 
-  return {
-    profile: JSON.parse(JSON.stringify(profile)),
-    skills: JSON.parse(JSON.stringify(skills)),
-    projects: JSON.parse(JSON.stringify(projects)),
-    codingProfiles: JSON.parse(JSON.stringify(codingProfiles)),
-    timeline: JSON.parse(JSON.stringify(timeline)),
-    certifications: JSON.parse(JSON.stringify(certifications)),
-    achievements: JSON.parse(JSON.stringify(achievements)),
-    settings: JSON.parse(JSON.stringify(settings)),
+    return {
+      profile: JSON.parse(JSON.stringify(profile)),
+      skills: JSON.parse(JSON.stringify(skills)),
+      projects: JSON.parse(JSON.stringify(projects)),
+      codingProfiles: JSON.parse(JSON.stringify(codingProfiles)),
+      timeline: JSON.parse(JSON.stringify(timeline)),
+      certifications: JSON.parse(JSON.stringify(certifications)),
+      achievements: JSON.parse(JSON.stringify(achievements)),
+      settings: JSON.parse(JSON.stringify(settings)),
+    }
+  } catch (error) {
+    console.error('Error fetching portfolio data:', error)
+    return {
+      profile: null,
+      skills: [],
+      projects: [],
+      codingProfiles: [],
+      timeline: [],
+      certifications: [],
+      achievements: [],
+      settings: null,
+    }
   }
 }
 
