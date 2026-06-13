@@ -1,0 +1,81 @@
+'use client'
+
+import { useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
+
+interface Props {
+  id: string
+  title: string
+  subtitle?: string
+  children: React.ReactNode
+  className?: string
+  accentColor?: 'cyan' | 'pink' | 'violet'
+}
+
+export default function SectionWrapper({
+  id,
+  title,
+  subtitle,
+  children,
+  className = '',
+  accentColor = 'cyan',
+}: Props) {
+  const ref = useRef<HTMLElement>(null)
+  const inView = useInView(ref, { once: true, margin: '-100px' })
+
+  const colors = {
+    cyan: { text: 'text-cyan-DEFAULT', line: 'bg-cyan-DEFAULT', glow: 'from-cyan-DEFAULT/20' },
+    pink: { text: 'text-pink-DEFAULT', line: 'bg-pink-DEFAULT', glow: 'from-pink-DEFAULT/20' },
+    violet: { text: 'text-violet-DEFAULT', line: 'bg-violet-DEFAULT', glow: 'from-violet-DEFAULT/20' },
+  }
+
+  const c = colors[accentColor]
+
+  return (
+    <section
+      id={id}
+      ref={ref}
+      className={`relative py-24 px-6 overflow-hidden ${className}`}
+    >
+      {/* Ambient glow at section top */}
+      <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-px h-20 bg-gradient-to-b ${c.glow} to-transparent`} />
+
+      <div className="max-w-7xl mx-auto">
+        {/* Section heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7 }}
+          className="mb-16 flex flex-col items-center text-center"
+        >
+          <div className="flex items-center gap-4 mb-4">
+            <div className={`h-px w-12 ${c.line} opacity-50`} />
+            <span className={`font-mono text-xs tracking-widest uppercase ${c.text}`}>
+              {id.replace('-', '_')}.section
+            </span>
+            <div className={`h-px w-12 ${c.line} opacity-50`} />
+          </div>
+
+          <h2 className={`section-heading text-slate-100`}>
+            {title}
+          </h2>
+
+          {subtitle && (
+            <p className="mt-4 text-slate-400 max-w-2xl text-lg">
+              {subtitle}
+            </p>
+          )}
+        </motion.div>
+
+        {/* Section content */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          {children}
+        </motion.div>
+      </div>
+    </section>
+  )
+}
