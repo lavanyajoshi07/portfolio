@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import connectDB from '@/lib/db'
 import { ContactMessage } from '@/models'
 import { successResponse, errorResponse, getClientIp } from '@/lib/api'
+import nodemailer from 'nodemailer'
 
 export async function POST(req: NextRequest) {
   try {
@@ -37,8 +38,35 @@ export async function POST(req: NextRequest) {
       const { trackEvent } = await import('@/lib/api')
       await trackEvent('contact_submit', { email, source }, req)
     } catch (e) {
-      // Silent fail on analytics
       console.error('Analytics error:', e)
+    }
+
+    // Send email notification to admin
+    try {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.NODEMAILER_EMAIL,
+          pass: process.env.NODEMAILER_PASS,
+        },
+      })
+
+      await transporter.sendMail({
+        from: `"Lavanya Joshi Portfolio" <${process.env.NODEMAILER_EMAIL}>`,
+        to: process.env.NODEMAILER_EMAIL, // admin email
+        subject: `New Contact Message from ${name}`,
+        html: `
+          <div style="font-family:sans-serif;max-width:600px;margin:auto;padding:16px;background:#0A1020;color:#E2E8F0;border-radius:8px">
+            <h2 style="color:#00E5FF;margin-bottom:12px">New Contact Message</h2>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Message:</strong></p>
+            <div style="background:#101827;padding:12px;border-radius:6px;color:#CBD5E1;white-space:pre-wrap">${message}</div>
+          </div>
+        `,
+      })
+    } catch (mailError) {
+      console.error('Email notification error:', mailError)
     }
 
     return successResponse(

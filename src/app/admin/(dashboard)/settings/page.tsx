@@ -22,6 +22,11 @@ const settingsSchema = z.object({
   allowChatbot: z.boolean().default(true),
   accentColor: z.string().min(4, 'Color code required').default('#00E5FF'),
   secondaryColor: z.string().min(4, 'Color code required').default('#FF4FD8'),
+  splashEnabled: z.boolean().default(true),
+videoAvatarEnabled: z.boolean().default(true),
+animatedBgEnabled: z.boolean().default(true),
+audioPlayerEnabled: z.boolean().default(true),
+
 })
 
 type SettingsFormData = z.infer<typeof settingsSchema>
@@ -51,6 +56,11 @@ export default function SettingsPage() {
       allowChatbot: true,
       accentColor: '#00E5FF',
       secondaryColor: '#FF4FD8',
+      splashEnabled: true,
+videoAvatarEnabled: true,
+animatedBgEnabled: true,
+audioPlayerEnabled: true,
+
     },
   })
 
@@ -74,6 +84,11 @@ export default function SettingsPage() {
           allowChatbot: d.allowChatbot || false,
           accentColor: d.accentColor || '#00E5FF',
           secondaryColor: d.secondaryColor || '#FF4FD8',
+          splashEnabled: d.splashEnabled ?? true,
+videoAvatarEnabled: d.videoAvatarEnabled ?? true,
+animatedBgEnabled: d.animatedBgEnabled ?? true,
+audioPlayerEnabled: d.audioPlayerEnabled ?? true,
+
         })
         if (d.siteKeywords && Array.isArray(d.siteKeywords)) {
           setKeywords(d.siteKeywords.join(', '))
@@ -261,38 +276,94 @@ export default function SettingsPage() {
         </div>
 
         {/* Feature Flags Card */}
-        <div className="glass-card bg-[#0A1020]/40 border border-[#00E5FF]/10 rounded-xl p-6 space-y-6">
-          <div className="flex items-center gap-2 border-b border-slate-900/60 pb-3">
-            <Settings2 className="w-4.5 h-4.5 text-[#7C3AED]" />
-            <h2 className="font-mono text-xs font-semibold text-white uppercase tracking-wider">
-              Feature Control Flags
-            </h2>
-          </div>
+        {/* Feature Flags Card */}
+<div className="glass-card bg-[#0A1020]/40 border border-[#00E5FF]/10 rounded-xl p-6 space-y-6">
+  <div className="flex items-center gap-2 border-b border-slate-900/60 pb-3">
+    <Settings2 className="w-4.5 h-4.5 text-[#7C3AED]" />
+    <h2 className="font-mono text-xs font-semibold text-white uppercase tracking-wider">
+      Feature Control Flags
+    </h2>
+  </div>
 
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-[#101827]/30 rounded-lg border border-slate-900">
-              <div className="space-y-0.5">
-                <Label className="font-mono text-xs text-slate-200 uppercase">Interactive AI Chatbot</Label>
-                <p className="text-[10px] font-mono text-slate-500 uppercase">Allow users to interact with Claude chatbot in public interface</p>
-              </div>
-              <Switch
-                checked={allowChatbotValue}
-                onCheckedChange={(checked) => setValue('allowChatbot', checked)}
-              />
-            </div>
+  <div className="space-y-4">
+    {/* Chatbot toggle */}
+    <div className="flex items-center justify-between p-4 bg-[#101827]/30 rounded-lg border border-slate-900">
+      <div className="space-y-0.5">
+        <Label className="font-mono text-xs text-slate-200 uppercase">Interactive AI Chatbot</Label>
+        <p className="text-[10px] font-mono text-slate-500 uppercase">
+          Allow users to interact with Claude chatbot in public interface
+        </p>
+      </div>
+      <Switch
+        checked={allowChatbotValue}
+        onCheckedChange={(checked) => setValue('allowChatbot', checked)}
+      />
+    </div>
 
-            <div className="flex items-center justify-between p-4 bg-[#101827]/30 rounded-lg border border-slate-900">
-              <div className="space-y-0.5">
-                <Label className="font-mono text-xs text-slate-200 uppercase">Maintenance Mode</Label>
-                <p className="text-[10px] font-mono text-slate-500 uppercase">Restrict public portfolio access and show temporary landing page</p>
-              </div>
-              <Switch
-                checked={maintenanceModeValue}
-                onCheckedChange={(checked) => setValue('maintenanceMode', checked)}
-              />
-            </div>
-          </div>
-        </div>
+    {/* Maintenance toggle */}
+    <div className="flex items-center justify-between p-4 bg-[#101827]/30 rounded-lg border border-slate-900">
+      <div className="space-y-0.5">
+        <Label className="font-mono text-xs text-slate-200 uppercase">Maintenance Mode</Label>
+        <p className="text-[10px] font-mono text-slate-500 uppercase">
+          Restrict public portfolio access and show temporary landing page
+        </p>
+      </div>
+      <Switch
+        checked={maintenanceModeValue}
+        onCheckedChange={(checked) => setValue('maintenanceMode', checked)}
+      />
+    </div>
+
+    {/* Splash Screen toggle */}
+    <div className="flex items-center justify-between p-4 bg-[#101827]/30 rounded-lg border border-slate-900">
+      <div className="space-y-0.5">
+        <Label className="font-mono text-xs text-slate-200 uppercase">Splash Screen</Label>
+        <p className="text-[10px] font-mono text-slate-500 uppercase">Show intro splash once per session</p>
+      </div>
+      <Switch
+        checked={watch('splashEnabled')}
+        onCheckedChange={(checked) => setValue('splashEnabled', checked)}
+      />
+    </div>
+
+    {/* Video Avatar toggle */}
+    <div className="flex items-center justify-between p-4 bg-[#101827]/30 rounded-lg border border-slate-900">
+      <div className="space-y-0.5">
+        <Label className="font-mono text-xs text-slate-200 uppercase">Video Avatar</Label>
+        <p className="text-[10px] font-mono text-slate-500 uppercase">Enable animated video avatar</p>
+      </div>
+      <Switch
+        checked={watch('videoAvatarEnabled')}
+        onCheckedChange={(checked) => setValue('videoAvatarEnabled', checked)}
+      />
+    </div>
+
+    {/* Animated Background toggle */}
+    <div className="flex items-center justify-between p-4 bg-[#101827]/30 rounded-lg border border-slate-900">
+      <div className="space-y-0.5">
+        <Label className="font-mono text-xs text-slate-200 uppercase">Animated Background</Label>
+        <p className="text-[10px] font-mono text-slate-500 uppercase">Toggle particle background effect</p>
+      </div>
+      <Switch
+        checked={watch('animatedBgEnabled')}
+        onCheckedChange={(checked) => setValue('animatedBgEnabled', checked)}
+      />
+    </div>
+
+    {/* Audio Player toggle */}
+    <div className="flex items-center justify-between p-4 bg-[#101827]/30 rounded-lg border border-slate-900">
+      <div className="space-y-0.5">
+        <Label className="font-mono text-xs text-slate-200 uppercase">Audio Player</Label>
+        <p className="text-[10px] font-mono text-slate-500 uppercase">Enable intro audio player</p>
+      </div>
+      <Switch
+        checked={watch('audioPlayerEnabled')}
+        onCheckedChange={(checked) => setValue('audioPlayerEnabled', checked)}
+      />
+    </div>
+  </div>
+</div>
+
 
         {/* Submit Controls */}
         <div className="flex justify-end font-mono text-xs uppercase tracking-wider">

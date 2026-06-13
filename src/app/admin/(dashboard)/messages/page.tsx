@@ -25,7 +25,7 @@ export default function MessagesPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [actionLoading, setActionLoading] = useState(false)
   const { toast } = useToast()
-
+const [replyText, setReplyText] = useState('')
   const fetchMessages = async () => {
     setLoading(true)
     try {
@@ -116,7 +116,45 @@ export default function MessagesPage() {
       setActionLoading(false)
     }
   }
+const handleReply = async () => {
+  if (!viewMessage || !replyText.trim()) return
 
+  try {
+    const res = await fetch(`/api/messages/${viewMessage._id}/reply`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        replyText,
+      }),
+    })
+
+    const result = await res.json()
+
+    if (result.success) {
+      toast({
+        title: 'Success',
+        description: 'Reply sent successfully.',
+      })
+
+      setReplyText('')
+    } else {
+      toast({
+        title: 'Error',
+        description: result.error || 'Failed to send reply.',
+        variant: 'destructive',
+      })
+    }
+  } catch (err) {
+    console.error(err)
+    toast({
+      title: 'Error',
+      description: 'Something went wrong.',
+      variant: 'destructive',
+    })
+  }
+}
   const columns = [
     {
       header: 'Sender Node',
@@ -257,35 +295,80 @@ export default function MessagesPage() {
               </div>
 
               <div className="pt-2">
-                <span className="text-[10px] text-slate-500 block mb-2">Payload Data</span>
-                <div className="bg-[#050816] border border-slate-900 rounded-lg p-4 font-sans text-sm text-slate-300 normal-case leading-relaxed whitespace-pre-wrap min-h-[120px] max-h-[240px] overflow-y-auto">
-                  {viewMessage.message}
-                </div>
-              </div>
-            </div>
+  <span className="text-[10px] text-slate-500 block mb-2">
+    Payload Data
+  </span>
+  <div className="bg-[#050816] border border-slate-900 rounded-lg p-4 font-sans text-sm text-slate-300 normal-case leading-relaxed whitespace-pre-wrap min-h-[120px] max-h-[240px] overflow-y-auto">
+    {viewMessage.message}
+  </div>
+</div>
 
-            <DialogFooter className="pt-4 border-t border-slate-900 font-mono text-xs uppercase tracking-wider">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setDeleteId(viewMessage._id)}
-                className="border-slate-800 hover:border-red-500/30 hover:bg-red-950/20 text-slate-400 hover:text-red-400 mr-auto"
-              >
-                Delete
-              </Button>
-              <Button
-                onClick={() => handleMarkAsRead(viewMessage)}
-                className="border-slate-800 bg-[#101827]/40 hover:bg-slate-900/60 text-slate-300"
-              >
-                {viewMessage.read ? 'Mark Unread' : 'Mark Read'}
-              </Button>
-              <Button
-                onClick={() => setViewMessage(null)}
-                className="bg-gradient-to-r from-[#00E5FF] to-[#7C3AED] text-white"
-              >
-                Close Connection
-              </Button>
-            </DialogFooter>
+<div className="pt-4">
+  <span className="text-[10px] text-slate-500 block mb-2">
+    Reply Message
+  </span>
+
+  <textarea
+    value={replyText}
+    onChange={(e) => setReplyText(e.target.value)}
+    placeholder="Type your reply..."
+    className="w-full min-h-[120px] rounded-lg border border-slate-800 bg-[#050816] p-4 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-[#00E5FF]"
+  />
+</div>
+</div>
+
+<DialogFooter className="pt-4 border-t border-slate-900 font-mono text-xs uppercase tracking-wider">
+  <Button
+    type="button"
+    variant="outline"
+    onClick={() => setDeleteId(viewMessage._id)}
+    className="border-slate-800 hover:border-red-500/30 hover:bg-red-950/20 text-slate-400 hover:text-red-400 mr-auto"
+  >
+    Delete
+  </Button>
+
+  <Button
+    onClick={() => handleMarkAsRead(viewMessage)}
+    className="border-slate-800 bg-[#101827]/40 hover:bg-slate-900/60 text-slate-300"
+  >
+    {viewMessage.read ? 'Mark Unread' : 'Mark Read'}
+  </Button>
+
+  {/* Reply box + send button */}
+  <div className="flex flex-col gap-2">
+    <textarea
+      value={replyText}
+      onChange={(e) => setReplyText(e.target.value)}
+      placeholder="Type your reply..."
+      className="w-64 p-3 rounded-lg border border-slate-800 bg-slate-900 text-slate-200"
+    />
+
+    <Button
+      onClick={async () => {
+        await fetch(`/api/messages/${viewMessage._id}/reply`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ replyText }),
+        })
+
+        setReplyText('')
+      }}
+      className="bg-gradient-to-r from-[#00E5FF] to-[#7C3AED] text-white"
+    >
+      <MessageSquare className="w-4 h-4 mr-2" />
+      Send Reply
+    </Button>
+  </div>
+
+  <Button
+    onClick={() => setViewMessage(null)}
+    className="bg-gradient-to-r from-[#00E5FF] to-[#7C3AED] text-white"
+  >
+    Close Connection
+  </Button>
+</DialogFooter>
           </DialogContent>
         )}
       </Dialog>
