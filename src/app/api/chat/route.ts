@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     await connectDB()
 
     // Get portfolio context
-    const profile = await Profile.findOne().lean()
+    const profile = await Profile.findOne().lean() as any
 
     // Build system prompt with portfolio context
     const systemPrompt = `You are a helpful AI assistant for ${profile?.name || 'a portfolio owner'}'s portfolio website.

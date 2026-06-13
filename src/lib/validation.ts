@@ -32,10 +32,11 @@ export const projectSchema = z.object({
   longDescription: z.string().optional(),
   technologies: z.array(z.string()),
   category: z.string().optional(),
-  githubUrl: z.string().url().optional(),
-  liveUrl: z.string().url().optional(),
+  githubUrl: z.string().url().or(z.literal('')).optional(),
+  liveUrl: z.string().url().or(z.literal('')).optional(),
   featured: z.boolean().default(false),
   status: z.enum(['completed', 'in_progress', 'archived']).default('completed'),
+  coverImage: z.string().optional(),
 })
 
 // Certification

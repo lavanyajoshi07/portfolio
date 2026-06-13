@@ -6,16 +6,17 @@ import { Types } from 'mongoose'
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     await connectDB()
 
-    if (!Types.ObjectId.isValid(params.id)) {
+    if (!Types.ObjectId.isValid(id)) {
       return errorResponse('Invalid skill ID', 400)
     }
 
-    const skill = await Skill.findById(params.id).lean()
+    const skill = await Skill.findById(id).lean()
 
     if (!skill) {
       return errorResponse('Skill not found', 404)
@@ -30,20 +31,21 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const authResult = await requireAdmin()
     if (authResult.error) return authResult.error
 
-    if (!Types.ObjectId.isValid(params.id)) {
+    if (!Types.ObjectId.isValid(id)) {
       return errorResponse('Invalid skill ID', 400)
     }
 
     const data = await req.json()
     await connectDB()
 
-    const skill = await Skill.findByIdAndUpdate(params.id, data, { new: true })
+    const skill = await Skill.findByIdAndUpdate(id, data, { new: true })
 
     if (!skill) {
       return errorResponse('Skill not found', 404)
@@ -58,24 +60,25 @@ export async function PUT(
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const authResult = await requireAdmin()
     if (authResult.error) return authResult.error
 
-    if (!Types.ObjectId.isValid(params.id)) {
+    if (!Types.ObjectId.isValid(id)) {
       return errorResponse('Invalid skill ID', 400)
     }
 
     await connectDB()
-    const skill = await Skill.findByIdAndDelete(params.id)
+    const skill = await Skill.findByIdAndDelete(id)
 
     if (!skill) {
       return errorResponse('Skill not found', 404)
     }
 
-    return successResponse({ id: params.id }, 'Skill deleted successfully')
+    return successResponse({ id }, 'Skill deleted successfully')
   } catch (error) {
     console.error('Error deleting skill:', error)
     return errorResponse('Failed to delete skill', 500)

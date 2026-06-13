@@ -6,16 +6,17 @@ import { Types } from 'mongoose'
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     await connectDB()
 
-    if (!Types.ObjectId.isValid(params.id)) {
+    if (!Types.ObjectId.isValid(id)) {
       return errorResponse('Invalid timeline item ID', 400)
     }
 
-    const item = await Timeline.findById(params.id).lean()
+    const item = await Timeline.findById(id).lean()
 
     if (!item) {
       return errorResponse('Timeline item not found', 404)
@@ -30,20 +31,21 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const authResult = await requireAdmin()
     if (authResult.error) return authResult.error
 
-    if (!Types.ObjectId.isValid(params.id)) {
+    if (!Types.ObjectId.isValid(id)) {
       return errorResponse('Invalid timeline item ID', 400)
     }
 
     const data = await req.json()
     await connectDB()
 
-    const item = await Timeline.findByIdAndUpdate(params.id, data, { new: true })
+    const item = await Timeline.findByIdAndUpdate(id, data, { new: true })
 
     if (!item) {
       return errorResponse('Timeline item not found', 404)
@@ -58,24 +60,25 @@ export async function PUT(
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const authResult = await requireAdmin()
     if (authResult.error) return authResult.error
 
-    if (!Types.ObjectId.isValid(params.id)) {
+    if (!Types.ObjectId.isValid(id)) {
       return errorResponse('Invalid timeline item ID', 400)
     }
 
     await connectDB()
-    const item = await Timeline.findByIdAndDelete(params.id)
+    const item = await Timeline.findByIdAndDelete(id)
 
     if (!item) {
       return errorResponse('Timeline item not found', 404)
     }
 
-    return successResponse({ id: params.id }, 'Timeline item deleted successfully')
+    return successResponse({ id }, 'Timeline item deleted successfully')
   } catch (error) {
     console.error('Error deleting timeline item:', error)
     return errorResponse('Failed to delete timeline item', 500)
