@@ -3,7 +3,7 @@ import HeroSection from './components/hero/HeroSection'
 import AboutSection from './components/about/AboutSection'
 import SkillsSection from './components/skills/SkillsSection'
 import ProjectsSection from './components/projects/ProjectsSection'
-import CodingDashboard from './components/coding/CodingDashboard'
+import CodingDashboard from './components/coding/CodingDashboard' // <-- Standard static import restored
 import TimelineSection from './components/timeline/TimeLineSection'
 import CertificationsSection from './components/certifications/CertificationSection'
 import AchievementsSection from './components/achievements/AchievementsSection'

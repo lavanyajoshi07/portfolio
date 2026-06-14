@@ -23,7 +23,6 @@ export default function AudioPlayer({ src, transcript, onClose }: Props) {
 
     const onTimeUpdate = () => {
       setCurrentTime(audio.currentTime)
-      // Find current transcript
       const entry = transcript.find(
         t => audio.currentTime >= t.startTime && audio.currentTime < t.endTime
       )
@@ -37,7 +36,6 @@ export default function AudioPlayer({ src, transcript, onClose }: Props) {
     audio.addEventListener('loadedmetadata', onLoaded)
     audio.addEventListener('ended', onEnded)
 
-    // Auto-play
     audio.play().then(() => setIsPlaying(true)).catch(() => {})
 
     return () => {
@@ -47,150 +45,44 @@ export default function AudioPlayer({ src, transcript, onClose }: Props) {
     }
   }, [transcript])
 
-  const togglePlay = () => {
-    const audio = audioRef.current
-    if (!audio) return
-    if (isPlaying) {
-      audio.pause()
-      setIsPlaying(false)
-    } else {
-      audio.play()
-      setIsPlaying(true)
-    }
-  }
-
-  const restart = () => {
-    const audio = audioRef.current
-    if (!audio) return
-    audio.currentTime = 0
-    audio.play()
-    setIsPlaying(true)
-  }
-
-  const seek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const audio = audioRef.current
-    if (!audio) return
-    audio.currentTime = Number(e.target.value)
-  }
-
-  const formatTime = (s: number) => {
-    const m = Math.floor(s / 60)
-    const sec = Math.floor(s % 60)
-    return `${m}:${sec.toString().padStart(2, '0')}`
-  }
-
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 40 }}
-        className="audio-player glass-card rounded-2xl p-4"
-      >
-        <audio ref={audioRef} src={src} preload="metadata" />
+    <motion.div
+      initial={{ y: 100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: 100, opacity: 0 }}
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[999] w-[90%] max-w-md bg-slate-900/90 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-4 shadow-[0_0_30px_-5px_rgba(6,182,212,0.3)]"
+    >
+      <audio ref={audioRef} src={src} className="hidden" />
+      
+      {/* Header & Close */}
+      <div className="flex justify-between items-center mb-3">
+        <span className="text-[10px] font-mono text-cyan-400 tracking-widest uppercase">Now Playing</span>
+        <button onClick={onClose} className="text-slate-400 hover:text-white">✕</button>
+      </div>
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <div className="flex gap-1">
-              {[0, 1, 2, 3, 4].map(i => (
-                <motion.div
-                  key={i}
-                  className="w-0.5 bg-cyan-DEFAULT rounded-full"
-                  animate={{
-                    height: isPlaying ? [8, 16, 8] : 4,
-                  }}
-                  transition={{
-                    duration: 0.6,
-                    delay: i * 0.1,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                />
-              ))}
-            </div>
-            <span className="text-xs font-mono text-cyan-DEFAULT">MY STORY</span>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-slate-500 hover:text-slate-200 transition-colors text-lg leading-none"
-            aria-label="Close audio player"
-          >
-            ×
-          </button>
-        </div>
+      {/* Text */}
+      <p className="text-xs text-slate-300 h-8 mb-3 overflow-hidden">{currentText}</p>
 
-        {/* Transcript */}
-        {transcript.length > 0 && (
-          <div className="mb-3 h-12 flex items-center">
-            <AnimatePresence mode="wait">
-              {currentText && (
-                <motion.p
-                  key={currentText}
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  className="text-sm text-slate-300 leading-relaxed"
-                >
-                  {currentText}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-        )}
-
-        {/* Progress bar */}
-        <div className="mb-3">
-          <input
-            type="range"
-            min={0}
-            max={duration || 100}
-            value={currentTime}
-            onChange={seek}
-            className="w-full h-1 appearance-none rounded-full cursor-pointer"
-            style={{
-              background: `linear-gradient(to right, #00E5FF ${(currentTime / (duration || 1)) * 100}%, rgba(0,229,255,0.1) 0%)`,
-            }}
-          />
-          <div className="flex justify-between mt-1 text-xs font-mono text-slate-500">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
-          </div>
-        </div>
-
-        {/* Controls */}
-        <div className="flex items-center justify-center gap-4">
-          <button
-            onClick={restart}
-            className="text-slate-400 hover:text-cyan-DEFAULT transition-colors"
-            aria-label="Restart"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-          </button>
-
-          <button
-            onClick={togglePlay}
-            className="w-10 h-10 rounded-full btn-gradient flex items-center justify-center"
-            aria-label={isPlaying ? 'Pause' : 'Play'}
-          >
-            {isPlaying ? (
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
-              </svg>
-            ) : (
-              <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            )}
-          </button>
-
-          <div className="text-xs font-mono text-slate-500 w-16 text-center">
-            {isPlaying ? 'playing...' : 'paused'}
-          </div>
-        </div>
-      </motion.div>
-    </AnimatePresence>
+      {/* Progress & Controls */}
+      <div className="flex items-center gap-4">
+        <button 
+          onClick={() => {
+            const audio = audioRef.current;
+            if(isPlaying) { audio?.pause(); setIsPlaying(false); }
+            else { audio?.play(); setIsPlaying(true); }
+          }}
+          className="w-10 h-10 rounded-full bg-cyan-600 flex items-center justify-center text-white"
+        >
+          {isPlaying ? "⏸" : "▶"}
+        </button>
+        <input 
+          type="range" 
+          value={currentTime} 
+          max={duration || 100} 
+          onChange={(e) => { if(audioRef.current) audioRef.current.currentTime = Number(e.target.value) }}
+          className="flex-1 h-1 bg-slate-700 rounded-full appearance-none accent-cyan-500"
+        />
+      </div>
+    </motion.div>
   )
 }

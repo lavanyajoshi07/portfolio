@@ -72,7 +72,8 @@ yarn-integrity
 
 # dotenv environment variables file
 .env
-
+.env.local
+.env.local.example
 # Mac files
 .DS_Store
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import SectionWrapper from '../shared/SectionWrapper'
 import StatsCard from './StatsCard'
@@ -13,6 +13,13 @@ interface Props {
 }
 
 export default function CodingDashboard({ profiles }: Props) {
+  const [isMounted, setIsMounted] = useState(false)
+
+  // Wait for the client browser layout engine to stabilize before rendering charts
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   const stats = useMemo(() => {
     return profiles.reduce(
       (acc, profile) => {
@@ -69,16 +76,22 @@ export default function CodingDashboard({ profiles }: Props) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-        {/* Contribution Heatmap */}
+        {/* Contribution Heatmap - Safely guarded by client mount and dimension containment */}
         {heatmapData.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="lg:col-span-2"
+            className="lg:col-span-2 min-w-0 w-full relative"
           >
-            <ContributionHeatmap data={heatmapData} />
+            {isMounted ? (
+              <ContributionHeatmap data={heatmapData} />
+            ) : (
+              <div className="w-full h-[300px] bg-bg-card/40 border border-violet-DEFAULT/5 animate-pulse rounded-2xl flex items-center justify-center">
+                <span className="text-violet-DEFAULT/30 font-mono text-xs tracking-widest">LOADING HEATMAP...</span>
+              </div>
+            )}
           </motion.div>
         )}
 
@@ -127,17 +140,17 @@ export default function CodingDashboard({ profiles }: Props) {
             </div>
 
             <p className="text-sm text-slate-400 mb-4">
-  <a
-    href={`https://${platform.name === 'github' ? 'github.com' :
-      platform.name === 'leetcode' ? 'leetcode.com' :
-      'example.com'}/${platform.username}`}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="text-violet-DEFAULT hover:text-violet-DEFAULT/80 transition-colors"
-  >
-    @{platform.username}
-  </a>
-</p>
+              <a
+                href={`https://${platform.name === 'github' ? 'github.com' :
+                  platform.name === 'leetcode' ? 'leetcode.com' :
+                  'example.com'}/${platform.username}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-violet-DEFAULT hover:text-violet-DEFAULT/80 transition-colors"
+              >
+                @{platform.username}
+              </a>
+            </p>
 
             {platform.data && (
               <div className="grid grid-cols-2 gap-3">

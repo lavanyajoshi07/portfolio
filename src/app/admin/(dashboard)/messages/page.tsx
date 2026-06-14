@@ -24,8 +24,10 @@ export default function MessagesPage() {
   const [viewMessage, setViewMessage] = useState<ContactMessage | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [actionLoading, setActionLoading] = useState(false)
+  const [replyText, setReplyText] = useState('')
+  const [replySending, setReplySending] = useState(false)
   const { toast } = useToast()
-const [replyText, setReplyText] = useState('')
+
   const fetchMessages = async () => {
     setLoading(true)
     try {
@@ -75,6 +77,7 @@ const [replyText, setReplyText] = useState('')
 
   const handleOpenMessage = (msg: ContactMessage) => {
     setViewMessage(msg)
+    setReplyText('')
     if (!msg.read) {
       handleMarkAsRead(msg)
     }
@@ -83,78 +86,49 @@ const [replyText, setReplyText] = useState('')
   const handleDelete = async () => {
     if (!deleteId) return
     setActionLoading(true)
-
     try {
-      const res = await fetch(`/api/messages/${deleteId}`, {
-        method: 'DELETE',
-      })
+      const res = await fetch(`/api/messages/${deleteId}`, { method: 'DELETE' })
       const result = await res.json()
-
       if (result.success) {
-        toast({
-          title: 'Success',
-          description: 'Message deleted successfully.',
-        })
+        toast({ title: 'Success', description: 'Message deleted successfully.' })
         setDeleteId(null)
         setViewMessage(null)
         fetchMessages()
       } else {
-        toast({
-          title: 'Error',
-          description: result.error || 'Failed to delete message',
-          variant: 'destructive',
-        })
+        toast({ title: 'Error', description: result.error || 'Failed to delete message', variant: 'destructive' })
       }
     } catch (err) {
       console.error(err)
-      toast({
-        title: 'Error',
-        description: 'Failed to process purge command.',
-        variant: 'destructive',
-      })
+      toast({ title: 'Error', description: 'Failed to process purge command.', variant: 'destructive' })
     } finally {
       setActionLoading(false)
     }
   }
-const handleReply = async () => {
-  if (!viewMessage || !replyText.trim()) return
 
-  try {
-    const res = await fetch(`/api/messages/${viewMessage._id}/reply`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        replyText,
-      }),
-    })
-
-    const result = await res.json()
-
-    if (result.success) {
-      toast({
-        title: 'Success',
-        description: 'Reply sent successfully.',
+  const handleReply = async () => {
+    if (!viewMessage || !replyText.trim()) return
+    setReplySending(true)
+    try {
+      const res = await fetch(`/api/messages/${viewMessage._id}/reply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ replyText }),
       })
-
-      setReplyText('')
-    } else {
-      toast({
-        title: 'Error',
-        description: result.error || 'Failed to send reply.',
-        variant: 'destructive',
-      })
+      const result = await res.json()
+      if (result.success) {
+        toast({ title: 'Success', description: 'Reply sent successfully.' })
+        setReplyText('')
+      } else {
+        toast({ title: 'Error', description: result.error || 'Failed to send reply.', variant: 'destructive' })
+      }
+    } catch (err) {
+      console.error(err)
+      toast({ title: 'Error', description: 'Something went wrong.', variant: 'destructive' })
+    } finally {
+      setReplySending(false)
     }
-  } catch (err) {
-    console.error(err)
-    toast({
-      title: 'Error',
-      description: 'Something went wrong.',
-      variant: 'destructive',
-    })
   }
-}
+
   const columns = [
     {
       header: 'Sender Node',
@@ -182,8 +156,8 @@ const handleReply = async () => {
       header: 'Source Channel',
       accessor: (item: ContactMessage) => (
         <span className={`font-mono text-[9px] uppercase px-2 py-0.5 rounded border ${
-          item.source === 'chat' 
-            ? 'bg-[#FF4FD8]/10 text-[#FF4FD8] border-[#FF4FD8]/25' 
+          item.source === 'chat'
+            ? 'bg-[#FF4FD8]/10 text-[#FF4FD8] border-[#FF4FD8]/25'
             : 'bg-[#7C3AED]/10 text-[#7C3AED] border-[#7C3AED]/25'
         }`}>
           {item.source}
@@ -202,26 +176,22 @@ const handleReply = async () => {
 
   return (
     <div className="space-y-6">
-      {/* Header controls */}
+      {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-900 pb-4">
         <div>
-          <h1 className="text-xl font-display font-bold text-white uppercase tracking-wider">
-            Contact Inbox
-          </h1>
+          <h1 className="text-xl font-display font-bold text-white uppercase tracking-wider">Contact Inbox</h1>
           <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mt-1">
             Review user transmissions and chatbot conversations
           </p>
         </div>
-        <div>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={fetchMessages}
-            className="border-slate-800 bg-[#101827]/40 hover:bg-slate-900/60"
-          >
-            <RefreshCw className="w-4 h-4 text-slate-400" />
-          </Button>
-        </div>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={fetchMessages}
+          className="border-slate-800 bg-[#101827]/40 hover:bg-slate-900/60"
+        >
+          <RefreshCw className="w-4 h-4 text-slate-400" />
+        </Button>
       </div>
 
       {/* Messages DataTable */}
@@ -278,6 +248,7 @@ const handleReply = async () => {
             </DialogHeader>
 
             <div className="space-y-4 py-3 font-mono text-xs uppercase tracking-wider text-slate-400">
+              {/* Sender info */}
               <div className="grid grid-cols-2 gap-4 bg-[#101827]/40 p-3 rounded-lg border border-slate-900">
                 <div>
                   <span className="text-[10px] text-slate-500 block">Sender Name</span>
@@ -289,91 +260,77 @@ const handleReply = async () => {
                 </div>
               </div>
 
+              {/* Timestamp */}
               <div>
                 <span className="text-[10px] text-slate-500 block mb-2">Timestamp</span>
                 <span className="text-slate-300 block">{new Date(viewMessage.createdAt).toLocaleString()}</span>
               </div>
 
+              {/* Message payload */}
               <div className="pt-2">
-  <span className="text-[10px] text-slate-500 block mb-2">
-    Payload Data
-  </span>
-  <div className="bg-[#050816] border border-slate-900 rounded-lg p-4 font-sans text-sm text-slate-300 normal-case leading-relaxed whitespace-pre-wrap min-h-[120px] max-h-[240px] overflow-y-auto">
-    {viewMessage.message}
-  </div>
-</div>
+                <span className="text-[10px] text-slate-500 block mb-2">Payload Data</span>
+                <div className="bg-[#050816] border border-slate-900 rounded-lg p-4 font-sans text-sm text-slate-300 normal-case leading-relaxed whitespace-pre-wrap min-h-[120px] max-h-[240px] overflow-y-auto">
+                  {viewMessage.message}
+                </div>
+              </div>
 
-<div className="pt-4">
-  <span className="text-[10px] text-slate-500 block mb-2">
-    Reply Message
-  </span>
+              {/* Reply section */}
+              <div className="pt-2">
+                <span className="text-[10px] text-slate-500 block mb-2">Reply Message</span>
+                <textarea
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value)}
+                  placeholder="Type your reply here..."
+                  rows={4}
+                  className="w-full rounded-lg border border-slate-800 bg-[#050816] p-4 text-sm text-slate-200 normal-case placeholder:text-slate-600 focus:outline-none focus:border-[#00E5FF]/50 resize-none font-sans"
+                />
+              </div>
+            </div>
 
-  <textarea
-    value={replyText}
-    onChange={(e) => setReplyText(e.target.value)}
-    placeholder="Type your reply..."
-    className="w-full min-h-[120px] rounded-lg border border-slate-800 bg-[#050816] p-4 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-[#00E5FF]"
-  />
-</div>
-</div>
+            <DialogFooter className="pt-4 border-t border-slate-900 font-mono text-xs uppercase tracking-wider flex items-center gap-2">
+              {/* Delete — left side */}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setDeleteId(viewMessage._id)}
+                className="border-slate-800 hover:border-red-500/30 hover:bg-red-950/20 text-slate-400 hover:text-red-400 mr-auto"
+              >
+                Delete
+              </Button>
 
-<DialogFooter className="pt-4 border-t border-slate-900 font-mono text-xs uppercase tracking-wider">
-  <Button
-    type="button"
-    variant="outline"
-    onClick={() => setDeleteId(viewMessage._id)}
-    className="border-slate-800 hover:border-red-500/30 hover:bg-red-950/20 text-slate-400 hover:text-red-400 mr-auto"
-  >
-    Delete
-  </Button>
+              {/* Mark read toggle */}
+              <Button
+                onClick={() => handleMarkAsRead(viewMessage)}
+                variant="outline"
+                className="border-slate-800 bg-[#101827]/40 hover:bg-slate-900/60 text-slate-300"
+              >
+                {viewMessage.read ? 'Mark Unread' : 'Mark Read'}
+              </Button>
 
-  <Button
-    onClick={() => handleMarkAsRead(viewMessage)}
-    className="border-slate-800 bg-[#101827]/40 hover:bg-slate-900/60 text-slate-300"
-  >
-    {viewMessage.read ? 'Mark Unread' : 'Mark Read'}
-  </Button>
+              {/* Send reply */}
+              <Button
+                onClick={handleReply}
+                disabled={replySending || !replyText.trim()}
+                className="bg-gradient-to-r from-[#00E5FF] to-[#7C3AED] text-white disabled:opacity-50"
+              >
+                <MessageSquare className="w-4 h-4 mr-2" />
+                {replySending ? 'Sending...' : 'Send Reply'}
+              </Button>
 
-  {/* Reply box + send button */}
-  <div className="flex flex-col gap-2">
-    <textarea
-      value={replyText}
-      onChange={(e) => setReplyText(e.target.value)}
-      placeholder="Type your reply..."
-      className="w-64 p-3 rounded-lg border border-slate-800 bg-slate-900 text-slate-200"
-    />
-
-    <Button
-      onClick={async () => {
-        await fetch(`/api/messages/${viewMessage._id}/reply`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ replyText }),
-        })
-
-        setReplyText('')
-      }}
-      className="bg-gradient-to-r from-[#00E5FF] to-[#7C3AED] text-white"
-    >
-      <MessageSquare className="w-4 h-4 mr-2" />
-      Send Reply
-    </Button>
-  </div>
-
-  <Button
-    onClick={() => setViewMessage(null)}
-    className="bg-gradient-to-r from-[#00E5FF] to-[#7C3AED] text-white"
-  >
-    Close Connection
-  </Button>
-</DialogFooter>
+              {/* Close */}
+              <Button
+                onClick={() => setViewMessage(null)}
+                variant="outline"
+                className="border-slate-800 bg-[#101827]/40 text-slate-300"
+              >
+                Close
+              </Button>
+            </DialogFooter>
           </DialogContent>
         )}
       </Dialog>
 
-      {/* Delete confirmation alert */}
+      {/* Delete confirmation */}
       <ConfirmDialog
         isOpen={deleteId !== null}
         onClose={() => setDeleteId(null)}

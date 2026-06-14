@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 
 interface Props {
@@ -22,6 +22,12 @@ export default function SectionWrapper({
 }: Props) {
   const ref = useRef<HTMLElement>(null)
   const inView = useInView(ref, { once: true, margin: '-100px' })
+  const [hasMounted, setHasMounted] = useState(false)
+
+  // Avoid layout recalculation mismatches between server pass and initial client hydration
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
 
   const colors = {
     cyan: { text: 'text-cyan-DEFAULT', line: 'bg-cyan-DEFAULT', glow: 'from-cyan-DEFAULT/20' },
@@ -67,13 +73,15 @@ export default function SectionWrapper({
           )}
         </motion.div>
 
-        {/* Section content */}
+        {/* Section content container 
+            CRITICAL FIX: Adding 'min-w-0' prevents flex/grid calculations from breaking child Recharts math paths */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
+          className="w-full min-w-0 relative"
         >
-          {children}
+          {hasMounted && children}
         </motion.div>
       </div>
     </section>
