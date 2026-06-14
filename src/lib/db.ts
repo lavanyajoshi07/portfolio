@@ -27,6 +27,7 @@ async function connectDB(): Promise<typeof mongoose> {
 
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGODB_URI, {
+      dbName: 'Portfolio', // <--- YEH FIX HAI: Yeh force karega ki connection 'Portfolio' DB se ho
       bufferCommands: false,
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 5000,

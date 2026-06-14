@@ -1,6 +1,7 @@
 import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
+import mongoose from 'mongoose'
 import connectDB from '@/lib/db'
 import { AdminUser } from '@/models'
 
@@ -17,82 +18,55 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Email and password are required')
         }
 
-        await connectDB()
+        await connectDB();
 
-        const user = await AdminUser.findOne({ email: credentials.email.toLowerCase() })
+        const user = await AdminUser.findOne({ email: credentials.email.toLowerCase().trim() });
 
-        if (!user) {
-          throw new Error('Invalid email or password')
-        }
+        if (!user) return null;
 
-        const isValid = await bcrypt.compare(credentials.password, user.password)
+        // Password Comparison
+        const isValid = await bcrypt.compare(credentials.password, user.password);
 
         if (!isValid) {
-          throw new Error('Invalid email or password')
+          console.log("DEBUG: Password mismatch for user:", user.email);
+          return null;
         }
 
-        // Update last login
-        await AdminUser.findByIdAndUpdate(user._id, { lastLogin: new Date() })
-
-        return {
-          id: user._id.toString(),
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        }
+        return { 
+          id: user._id.toString(), 
+          email: user.email, 
+          name: user.name, 
+          role: user.role 
+        };
       },
     }),
   ],
-  session: {
-    strategy: 'jwt',
-    maxAge: 24 * 60 * 60, // 24 hours
-  },
-  jwt: {
-    maxAge: 24 * 60 * 60,
-  },
-  pages: {
-    signIn: '/admin/login',
-    error: '/admin/login',
-  },
+  session: { strategy: 'jwt', maxAge: 24 * 60 * 60 },
+  pages: { signIn: '/admin/login', error: '/admin/login' },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as { id: string; role: string }).role
-        token.id = user.id
+        token.role = (user as any).role;
+        token.id = user.id;
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
       if (token) {
-        session.user.role = token.role as string
-        session.user.id = token.id as string
+        session.user.role = token.role as string;
+        session.user.id = token.id as string;
       }
-      return session
+      return session;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === 'development',
+  debug: false, // Debugging band kar di hai kyunki ab sab working hai
 }
 
-// Extend next-auth types
 declare module 'next-auth' {
-  interface User {
-    role: string
-  }
-  interface Session {
-    user: {
-      id: string
-      name?: string | null
-      email?: string | null
-      image?: string | null
-      role: string
-    }
-  }
+  interface User { id: string; role: string; name?: string | null; email?: string | null; }
+  interface Session { user: { id: string; name?: string | null; email?: string | null; role: string; } }
 }
-
 declare module 'next-auth/jwt' {
-  interface JWT {
-    role: string
-    id: string
-  }
+  interface JWT { id: string; role: string; }
 }
