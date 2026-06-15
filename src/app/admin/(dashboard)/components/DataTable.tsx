@@ -145,7 +145,7 @@ export default function DataTable<T>({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setCurrentPage(prev => Math.max(prev + 1, totalPages))}
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
                 className="h-8 border-slate-800 bg-[#101827]/40 hover:bg-slate-900/60"
               >

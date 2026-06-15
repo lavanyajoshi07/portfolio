@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import connectDB from '@/lib/db'
 import { ContactMessage } from '@/models'
-import { successResponse, errorResponse, getClientIp } from '@/lib/api'
+import { successResponse, errorResponse, getClientIp, requireAdmin } from '@/lib/api'
 import nodemailer from 'nodemailer'
 
 export async function POST(req: NextRequest) {
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
 
       await transporter.sendMail({
         from: `"Lavanya Joshi Portfolio" <${process.env.NODEMAILER_EMAIL}>`,
-        to: process.env.NODEMAILER_EMAIL, // admin email
+        to: process.env.NODEMAILER_EMAIL,
         subject: `New Contact Message from ${name}`,
         html: `
           <div style="font-family:sans-serif;max-width:600px;margin:auto;padding:16px;background:#0A1020;color:#E2E8F0;border-radius:8px">
@@ -81,13 +81,15 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET() {
-  // Only for admin - would require auth in production
   try {
+    // SECURITY: Ensure only administrators can access this endpoint
+    await requireAdmin()
+    
     await connectDB()
     const messages = await ContactMessage.find().sort({ createdAt: -1 }).limit(10).lean()
     return successResponse(messages)
   } catch (error) {
     console.error('Error fetching messages:', error)
-    return errorResponse('Failed to fetch messages', 500)
+    return errorResponse('Unauthorized or Failed to fetch messages', 401)
   }
 }

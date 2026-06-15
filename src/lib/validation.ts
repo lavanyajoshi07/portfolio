@@ -102,7 +102,7 @@ export const codingProfileSchema = z.object({
   enabled: z.boolean().default(true),
 })
 
-// Type exports for convenience
+// Type exports
 export type Profile = z.infer<typeof profileSchema>
 export type Skill = z.infer<typeof skillSchema>
 export type Project = z.infer<typeof projectSchema>
@@ -116,7 +116,7 @@ export type Login = z.infer<typeof loginSchema>
 export type CodingProfile = z.infer<typeof codingProfileSchema>
 
 /**
- * Safe parse with error handling
+ * Safe parse with error handling for API routes
  */
 export const safeParse = <T>(schema: z.Schema<T>, data: unknown) => {
   const result = schema.safeParse(data)

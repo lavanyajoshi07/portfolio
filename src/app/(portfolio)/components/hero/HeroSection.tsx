@@ -14,7 +14,6 @@ export default function HeroSection({ profile }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   
-  // State management for integrated audio player
   const [isPlaying, setIsPlaying] = useState(false)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   
@@ -34,7 +33,6 @@ export default function HeroSection({ profile }: Props) {
     return () => window.removeEventListener('mousemove', onMove)
   }, [])
 
-  // Audio Play/Pause Trigger Control
   const toggleAudio = () => {
     if (!audioRef.current) return
     
@@ -48,7 +46,6 @@ export default function HeroSection({ profile }: Props) {
     }
   }
 
-  // Handle auto-reset icon status when audio naturally reaches its end
   const handleAudioEnded = () => {
     setIsPlaying(false)
   }
@@ -65,17 +62,15 @@ export default function HeroSection({ profile }: Props) {
       className="relative min-h-screen flex items-center overflow-hidden bg-[#020617]"
     >
       
-      {/* ================= INVISIBLE NATIVE AUDIO INSTANCE ================= */}
-      {/* HeroSection.tsx ke andar */}
-{hasAudio && (
-  <audio 
-    ref={audioRef}
-    src={profile.introAudio}
-    onEnded={handleAudioEnded}
-    preload="auto"
-    style={{ display: 'none' }} // Inline style sabse strong hota hai
-  />
-)}
+      {hasAudio && (
+        <audio 
+          ref={audioRef}
+          src={profile.introAudio}
+          onEnded={handleAudioEnded}
+          preload="auto"
+          style={{ display: 'none' }}
+        />
+      )}
 
       {/* ================= PREMIUM CINEMATIC BACKGROUND LAYER ================= */}
       <div className="absolute inset-0 w-full h-full pointer-events-none select-none z-0">
@@ -85,19 +80,19 @@ export default function HeroSection({ profile }: Props) {
           loop
           playsInline
           src="/videos/avatar.mp4"
-          className="w-full h-full object-cover opacity-50 brightness-95"
+          className="w-full h-full object-cover opacity-60 brightness-110 contrast-105 saturate-110"
         />
 
-        <div className="absolute inset-y-0 left-0 w-[50%] bg-gradient-to-r from-cyan-500/10 via-transparent to-transparent mix-blend-screen" />
-        <div className="absolute inset-y-0 right-0 w-[50%] bg-gradient-to-l from-purple-500/10 via-transparent to-transparent mix-blend-screen" />
+        <div className="absolute inset-y-0 left-0 w-[50%] bg-gradient-to-r from-cyan-500/20 via-transparent to-transparent mix-blend-screen" />
+        <div className="absolute inset-y-0 right-0 w-[50%] bg-gradient-to-l from-purple-500/20 via-transparent to-transparent mix-blend-screen" />
 
         <div 
           className="absolute inset-0"
           style={{
-            background: 'radial-gradient(circle at 45% 50%, transparent 20%, rgba(2, 6, 23, 0.45) 60%, #020617 95%), linear-gradient(to bottom, transparent 80%, #020617 100%)'
+            background: 'radial-gradient(circle at 45% 50%, transparent 20%, rgba(2, 6, 23, 0.3) 60%, #020617 90%)'
           }}
         />
-        <div className="absolute inset-0 grid-bg opacity-[0.07]" />
+        <div className="absolute inset-0 grid-bg opacity-[0.05]" />
       </div>
 
       {/* FOREGROUND CONTENT VIEWPORT */}
@@ -108,7 +103,6 @@ export default function HeroSection({ profile }: Props) {
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center min-h-[80vh]">
 
-          {/* LEFT SIDEBAR PANEL: Identity & Core Buttons */}
           <div className="flex flex-col gap-6 lg:col-span-7 relative z-20">
             {profile?.isAvailableForWork && (
               <div className="glass-card px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-emerald-500/20 bg-emerald-950/20 backdrop-blur-md">
@@ -138,8 +132,6 @@ export default function HeroSection({ profile }: Props) {
             </p>
 
             <div className="flex flex-wrap gap-4 mt-2">
-              
-              {/* ================= INTEGRATED AUDIO CONTROLLER ACTION BOX ================= */}
               {hasAudio && (
                 <button
                   onClick={toggleAudio}
@@ -150,7 +142,6 @@ export default function HeroSection({ profile }: Props) {
                   }`}
                 >
                   {isPlaying ? (
-                    /* Elegant Pause Icon with a minor visual pulsing circle indicator */
                     <div className="flex items-center gap-2">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 animate-pulse">
                         <path fillRule="evenodd" d="M6.75 5.25a.75.75 0 0 1 .75-.75H9a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H7.5a.75.75 0 0 1-.75-.75V5.25Zm7.5 0A.75.75 0 0 1 15 4.5h1.5a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H15a.75.75 0 0 1-.75-.75V5.25Z" clipRule="evenodd" />
@@ -158,7 +149,6 @@ export default function HeroSection({ profile }: Props) {
                       <span>Playing Story...</span>
                     </div>
                   ) : (
-                    /* Minimalist sharp polygon Play Icon */
                     <div className="flex items-center gap-2">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                         <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
@@ -168,7 +158,6 @@ export default function HeroSection({ profile }: Props) {
                   )}
                 </button>
               )}
-              {/* ========================================================================= */}
 
               {hasResume && (
                 <a
@@ -184,7 +173,6 @@ export default function HeroSection({ profile }: Props) {
             {profile?.socialLinks && <div className="mt-4"><SocialLinks links={profile.socialLinks} /></div>}
           </div>
 
-          {/* RIGHT SIDEBAR PANEL: Dashboard Metrics */}
           <div className="relative flex items-center justify-center h-full min-h-[400px] lg:col-span-5 z-20">
             <FloatingCards profile={profile} />
           </div>
