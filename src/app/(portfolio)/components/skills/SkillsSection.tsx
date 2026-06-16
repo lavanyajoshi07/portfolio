@@ -96,7 +96,7 @@ export default function SkillsSection({ skills }: Props) {
             
             <div style={{ width: '100%', height: 280, minWidth: 280 }} className="relative flex items-center justify-center">
               {isMounted ? (
-                <ResponsiveContainer width={containerWidth} height={280}>
+                <ResponsiveContainer width={containerWidth as any} height={280}>
                   <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
                     <PolarGrid
                       stroke="rgba(0,229,255,0.1)"

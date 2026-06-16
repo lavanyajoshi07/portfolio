@@ -12,9 +12,7 @@ import SectionLoader from './components/shared/SectionLoader'
 import connectDB from '@/lib/db'
 import { Profile, Skill, Project, CodingProfile, Timeline, Certification, Achievement, SiteSettings } from '@/models'
 
-// ✅ Always fetch fresh data after admin updates
-// If you want ISR with time-based caching, set a number (e.g. 60).
-// If you want instant updates after revalidatePortfolio(), set to 0.
+export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 async function getData() {
@@ -104,7 +102,7 @@ export default async function PortfolioPage() {
       )}
 
       <Suspense fallback={<SectionLoader />}>
-        <ContactSection />
+        <ContactSection profile={profile} />
       </Suspense>
     </div>
   )

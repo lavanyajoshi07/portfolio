@@ -3,8 +3,13 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import SectionWrapper from '../shared/SectionWrapper'
+import { Profile } from '@/types'
 
-export default function ContactSection() {
+interface Props {
+  profile: Profile | null
+}
+
+export default function ContactSection({ profile }: Props) {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' })
   const [isLoading, setIsLoading] = useState(false)
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
@@ -76,30 +81,54 @@ export default function ContactSection() {
 
           {/* Contact methods */}
           <div className="space-y-4 pt-4">
-            <ContactMethod
-              icon="✉️"
-              label="Email"
-              value="your.email@example.com"
-              href="mailto:your.email@example.com"
-            />
-            <ContactMethod
-              icon="💼"
-              label="LinkedIn"
-              value="linkedin.com/in/yourprofile"
-              href="https://linkedin.com/in/yourprofile"
-            />
-            <ContactMethod
-              icon="🐙"
-              label="GitHub"
-              value="github.com/yourprofile"
-              href="https://github.com/yourprofile"
-            />
-            <ContactMethod
-              icon="🐦"
-              label="Twitter"
-              value="@yourhandle"
-              href="https://twitter.com/yourhandle"
-            />
+            {profile?.email && (
+              <ContactMethod
+                icon="✉️"
+                label="Email"
+                value={profile.email}
+                href={`mailto:${profile.email}`}
+              />
+            )}
+            {profile?.location && (
+              <ContactMethod
+                icon="📍"
+                label="Location"
+                value={profile.location}
+                href="#"
+              />
+            )}
+            {profile?.socialLinks?.linkedin && (
+              <ContactMethod
+                icon="💼"
+                label="LinkedIn"
+                value={profile.socialLinks.linkedin.replace(/^https?:\/\/(www\.)?/, '')}
+                href={profile.socialLinks.linkedin}
+              />
+            )}
+            {profile?.socialLinks?.github && (
+              <ContactMethod
+                icon="🐙"
+                label="GitHub"
+                value={profile.socialLinks.github.replace(/^https?:\/\/(www\.)?/, '')}
+                href={profile.socialLinks.github}
+              />
+            )}
+            {profile?.socialLinks?.twitter && (
+              <ContactMethod
+                icon="🐦"
+                label="Twitter"
+                value={profile.socialLinks.twitter.replace(/^https?:\/\/(www\.)?/, '')}
+                href={profile.socialLinks.twitter}
+              />
+            )}
+            {profile?.socialLinks?.website && (
+              <ContactMethod
+                icon="🌐"
+                label="Website"
+                value={profile.socialLinks.website.replace(/^https?:\/\/(www\.)?/, '')}
+                href={profile.socialLinks.website}
+              />
+            )}
           </div>
 
           {/* Response time */}

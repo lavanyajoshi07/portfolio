@@ -79,7 +79,7 @@ export default function HeroSection({ profile }: Props) {
           muted
           loop
           playsInline
-          src="/videos/avatar.mp4"
+          src={profile?.heroVideo || "/videos/avatar.mp4"}
           className="w-full h-full object-cover opacity-60 brightness-110 contrast-105 saturate-110"
         />
 

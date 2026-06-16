@@ -59,7 +59,10 @@ export default function AboutSection({ profile }: Props) {
               <h3 className="text-sm font-mono text-cyan-DEFAULT mb-3 uppercase tracking-wider">
                 Who I Am
               </h3>
-              <p className="text-slate-300 leading-relaxed text-lg">{profile.bio}</p>
+              <div 
+                className="text-slate-300 leading-relaxed text-lg prose prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: profile.bio }}
+              />
             </motion.div>
           )}
 
@@ -68,7 +71,10 @@ export default function AboutSection({ profile }: Props) {
               <h3 className="text-sm font-mono text-violet-DEFAULT mb-3 uppercase tracking-wider">
                 Career Goals
               </h3>
-              <p className="text-slate-300 leading-relaxed">{profile.careerGoals}</p>
+              <div 
+                className="text-slate-300 leading-relaxed prose prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: profile.careerGoals }}
+              />
             </motion.div>
           )}
 
@@ -77,7 +83,10 @@ export default function AboutSection({ profile }: Props) {
               <h3 className="text-sm font-mono text-pink-DEFAULT mb-3 uppercase tracking-wider">
                 Learning Journey
               </h3>
-              <p className="text-slate-300 leading-relaxed">{profile.learningJourney}</p>
+              <div 
+                className="text-slate-300 leading-relaxed prose prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: profile.learningJourney }}
+              />
             </motion.div>
           )}
         </motion.div>

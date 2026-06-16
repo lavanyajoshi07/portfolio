@@ -40,7 +40,7 @@ export default function Topbar() {
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#101827] border border-[#00E5FF]/10">
           <Shield className="w-3.5 h-3.5 text-[#00E5FF]" />
           <span className="font-mono text-[10px] text-[#00E5FF] uppercase tracking-wider">
-            Role: {session?.user?.role || 'operator'}
+            Role: {(session?.user as any)?.role || 'operator'}
           </span>
         </div>
 
@@ -56,9 +56,9 @@ export default function Topbar() {
           </div>
 
           <div className="w-9 h-9 rounded-full bg-slate-800 border border-[#00E5FF]/20 flex items-center justify-center overflow-hidden">
-            {session?.user?.image ? (
+            {(session?.user as any)?.image ? (
               <img 
-                src={session.user.image} 
+                src={(session?.user as any)?.image} 
                 alt="Avatar" 
                 className="w-full h-full object-cover"
               />
