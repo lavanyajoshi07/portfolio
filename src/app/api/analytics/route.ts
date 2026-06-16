@@ -24,50 +24,93 @@ export async function GET(req: NextRequest) {
 
     await connectDB()
 
+    // Window boundaries (UTC) so the DB-side $dateToString buckets line up
+    // with the keys we build below.
     const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+    thirtyDaysAgo.setUTCDate(thirtyDaysAgo.getUTCDate() - 30)
 
-    const events = await AnalyticsEvent.find({
-      createdAt: { $gte: thirtyDaysAgo },
-    }).lean()
+    const fourteenDaysAgo = new Date()
+    fourteenDaysAgo.setUTCDate(fourteenDaysAgo.getUTCDate() - 13)
+    fourteenDaysAgo.setUTCHours(0, 0, 0, 0)
 
-    const messages = await ContactMessage.countDocuments()
+    // A single aggregation does all the work on the database side (using the
+    // { type, createdAt } / { createdAt } indexes) instead of streaming every
+    // document into Node and scanning the array repeatedly.
+    const aggregationPromise = AnalyticsEvent.aggregate([
+      { $match: { createdAt: { $gte: thirtyDaysAgo } } },
+      {
+        $facet: {
+          // Totals per event type over the 30 day window
+          typeCounts: [{ $group: { _id: '$type', count: { $sum: 1 } } }],
+          // Distinct visitor IPs over the 30 day window
+          uniqueVisitors: [{ $group: { _id: '$ip' } }, { $count: 'count' }],
+          // Per-day buckets for the last 14 days
+          daily: [
+            { $match: { createdAt: { $gte: fourteenDaysAgo } } },
+            {
+              $group: {
+                _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+                views: {
+                  $sum: { $cond: [{ $eq: ['$type', 'page_view'] }, 1, 0] },
+                },
+                ips: { $addToSet: '$ip' },
+              },
+            },
+            { $project: { _id: 0, date: '$_id', views: 1, visitors: { $size: '$ips' } } },
+          ],
+        },
+      },
+    ])
 
-    // Build chart data: last 14 days
+    // Run the unrelated message count in parallel with the aggregation.
+    const [aggResult, messages] = await Promise.all([
+      aggregationPromise,
+      ContactMessage.countDocuments(),
+    ])
+
+    const facet = aggResult[0] ?? { typeCounts: [], uniqueVisitors: [], daily: [] }
+
+    // type -> count lookup
+    const counts: Record<string, number> = {}
+    for (const row of facet.typeCounts as { _id: string; count: number }[]) {
+      counts[row._id] = row.count
+    }
+
+    // date(YYYY-MM-DD) -> { views, visitors } lookup
+    const dayMap = new Map<string, { views: number; visitors: number }>()
+    for (const row of facet.daily as { date: string; views: number; visitors: number }[]) {
+      dayMap.set(row.date, { views: row.views, visitors: row.visitors })
+    }
+
+    // Build a continuous 14-day series, filling gaps with zeros.
     const chartData: { date: string; views: number; visitors: number }[] = []
     for (let i = 13; i >= 0; i--) {
       const d = new Date()
-      d.setDate(d.getDate() - i)
-      const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-      const dayStart = new Date(d.setHours(0, 0, 0, 0))
-      const dayEnd = new Date(d.setHours(23, 59, 59, 999))
-      const dayEvents = events.filter(e => {
-        const t = new Date(e.createdAt as unknown as string)
-        return t >= dayStart && t <= dayEnd
-      })
+      d.setUTCDate(d.getUTCDate() - i)
+      const key = d.toISOString().slice(0, 10) // YYYY-MM-DD (UTC)
+      const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })
+      const entry = dayMap.get(key)
       chartData.push({
-        date: dateStr,
-        views: dayEvents.filter(e => e.type === 'page_view').length,
-        visitors: new Set(dayEvents.map(e => e.ip)).size,
+        date: label,
+        views: entry?.views ?? 0,
+        visitors: entry?.visitors ?? 0,
       })
     }
 
-    // CTA breakdown
     const ctaData = [
-      { name: 'Resume DL', value: events.filter(e => e.type === 'resume_download').length, color: '#00E5FF' },
-      { name: 'Audio', value: events.filter(e => e.type === 'audio_play').length, color: '#FF4FD8' },
-      { name: 'Projects', value: events.filter(e => e.type === 'project_view').length, color: '#7C3AED' },
-      { name: 'Contact', value: events.filter(e => e.type === 'contact_submit').length, color: '#10B981' },
+      { name: 'Resume DL', value: counts['resume_download'] ?? 0, color: '#00E5FF' },
+      { name: 'Audio', value: counts['audio_play'] ?? 0, color: '#FF4FD8' },
+      { name: 'Projects', value: counts['project_view'] ?? 0, color: '#7C3AED' },
+      { name: 'Contact', value: counts['contact_submit'] ?? 0, color: '#10B981' },
     ]
 
-    // Return the corrected shape
     return successResponse({
-      pageViews: events.filter(e => e.type === 'page_view').length,
-      uniqueVisitors: new Set(events.map(e => e.ip)).size,
+      pageViews: counts['page_view'] ?? 0,
+      uniqueVisitors: (facet.uniqueVisitors[0]?.count as number) ?? 0,
       messages,
-      downloads: events.filter(e => e.type === 'resume_download').length,
-      plays: events.filter(e => e.type === 'audio_play').length,
-      clicks: events.filter(e => e.type === 'cta_click').length,
+      downloads: counts['resume_download'] ?? 0,
+      plays: counts['audio_play'] ?? 0,
+      clicks: counts['cta_click'] ?? 0,
       chartData,
       ctaData,
     })

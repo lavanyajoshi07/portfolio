@@ -10,10 +10,13 @@ export default async function PortfolioLayout({ children }: { children: React.Re
   // Load settings from DB
   const siteSettings = await getSiteSettings()
 
+  // Splash is on by default; only disabled when explicitly turned off in settings.
+  const splashEnabled = siteSettings?.splashEnabled !== false
+
   return (
     <>
-      {/* Splash screen only if enabled */}
-      {siteSettings?.splashEnabled && <SplashScreen enabled={siteSettings.splashEnabled} />}
+      {/* Splash screen unless explicitly disabled */}
+      {splashEnabled && <SplashScreen enabled={splashEnabled} />}
 
       {/* Animated background only if enabled */}
       {siteSettings?.animatedBgEnabled && <ParticleCanvas />}
