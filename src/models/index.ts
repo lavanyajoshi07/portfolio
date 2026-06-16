@@ -315,5 +315,5 @@ export const ContactMessage = models.ContactMessage || model('ContactMessage', C
 export const ChatConversation = models.ChatConversation || model('ChatConversation', ChatConversationSchema)
 export const AnalyticsEvent = models.AnalyticsEvent || model('AnalyticsEvent', AnalyticsEventSchema)
 export const SiteSettings = models.SiteSettings || model('SiteSettings', SiteSettingsSchema)
-export const AdminUser = models.AdminUser || model('AdminUser', AdminUserSchema,'adminuser')
+export const AdminUser = models.AdminUser || model('AdminUser', AdminUserSchema)
 export const MediaAsset = models.MediaAsset || model('MediaAsset', MediaAssetSchema)

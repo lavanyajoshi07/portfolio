@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 import { useRouter, usePathname } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Sidebar from './components/Sidebar'
 import Topbar from './components/Topbar'
 import { Cpu } from 'lucide-react'
@@ -16,13 +16,27 @@ export default function DashboardLayout({
   const router = useRouter()
   const pathname = usePathname()
 
+  // Safety net: if the session check stalls (e.g. cookies blocked inside a
+  // cross-origin preview iframe), don't hang on the loading screen forever.
+  // After a few seconds we treat it as "not signed in" and send the user to login.
+  const [loadingTimedOut, setLoadingTimedOut] = useState(false)
+
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (status !== 'loading') {
+      setLoadingTimedOut(false)
+      return
+    }
+    const timer = setTimeout(() => setLoadingTimedOut(true), 4000)
+    return () => clearTimeout(timer)
+  }, [status])
+
+  useEffect(() => {
+    if (status === 'unauthenticated' || (status === 'loading' && loadingTimedOut)) {
       router.push('/admin/login')
     }
-  }, [status, router])
+  }, [status, loadingTimedOut, router])
 
-  if (status === 'loading') {
+  if (status === 'loading' && !loadingTimedOut) {
     return (
       <div className="min-h-screen bg-[#050816] flex flex-col items-center justify-center relative overflow-hidden">
         {/* Ambient Glows */}
@@ -51,7 +65,7 @@ export default function DashboardLayout({
     )
   }
 
-  if (status === 'unauthenticated') {
+  if (status !== 'authenticated') {
     return null
   }
 

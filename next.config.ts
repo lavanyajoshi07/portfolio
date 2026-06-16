@@ -9,8 +9,12 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     serverActions: { bodySizeLimit: '10mb' },
+    allowedDevOrigins: [
+      '10.217.110.109', // your first IP
+      '10.79.165.109',  // the one you’re currently using
+      'localhost',      // always include localhost
+    ],
   },
-  allowedDevOrigins: ['10.217.110.109'], // ✅ Fix for blocked dev resource requests
   async headers() {
     return [
       {
