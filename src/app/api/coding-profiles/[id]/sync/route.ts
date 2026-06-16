@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import connectDB from '@/lib/db'
 import { CodingProfile } from '@/models'
-import { successResponse, errorResponse, requireAdmin } from '@/lib/api'
+import { successResponse, errorResponse, requireAdmin, revalidatePortfolio } from '@/lib/api'
 import { syncCodingProfile } from '@/lib/coding-fetchers'
 import { Types } from 'mongoose'
 
@@ -39,6 +39,7 @@ export async function POST(
     profile.lastSynced = new Date()
     await profile.save()
 
+    revalidatePortfolio()
     return successResponse(profile, `${profile.platform} profile synchronized successfully`)
   } catch (error) {
     console.error('Error in coding profile sync route:', error)

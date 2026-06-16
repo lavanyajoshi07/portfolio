@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import connectDB from '@/lib/db'
 import { Skill } from '@/models'
-import { successResponse, errorResponse, requireAdmin } from '@/lib/api'
+import { successResponse, errorResponse, requireAdmin, revalidatePortfolio } from '@/lib/api'
 
 export async function GET() {
   try {
@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
     await connectDB()
 
     const skill = await Skill.create(data)
+    revalidatePortfolio()
     return successResponse(skill, 'Skill created successfully', 201)
   } catch (error) {
     console.error('Error creating skill:', error)

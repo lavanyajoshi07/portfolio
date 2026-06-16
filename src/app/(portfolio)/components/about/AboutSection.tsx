@@ -16,7 +16,9 @@ export default function AboutSection({ profile }: Props) {
   if (!profile) {
     return (
       <SectionWrapper id="about" title="About Me">
-        <p className="text-center text-slate-500">Profile information not available yet.</p>
+        <p className="text-center text-slate-500">
+          Profile information not available yet.
+        </p>
       </SectionWrapper>
     )
   }
@@ -25,10 +27,7 @@ export default function AboutSection({ profile }: Props) {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.2, delayChildren: 0.1 },
     },
   }
 
@@ -42,48 +41,43 @@ export default function AboutSection({ profile }: Props) {
   }
 
   return (
-    <SectionWrapper id="about" title="About Me" subtitle="My journey, education, and what drives my passion">
+    <SectionWrapper
+      id="about"
+      title="About Me"
+      subtitle="My journey, education, and what drives my passion"
+    >
       <div ref={ref} className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Left: Bio & Career Goals */}
+        {/* Left: Bio, Career Goals, Learning Journey */}
         <motion.div
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
           variants={containerVariants}
           className="space-y-6"
         >
-          {/* Bio */}
           {profile.bio && (
             <motion.div variants={itemVariants} className="glass-card rounded-2xl p-6">
               <h3 className="text-sm font-mono text-cyan-DEFAULT mb-3 uppercase tracking-wider">
                 Who I Am
               </h3>
-              <p className="text-slate-300 leading-relaxed text-lg">
-                {profile.bio}
-              </p>
+              <p className="text-slate-300 leading-relaxed text-lg">{profile.bio}</p>
             </motion.div>
           )}
 
-          {/* Career Goals */}
           {profile.careerGoals && (
             <motion.div variants={itemVariants} className="glass-card rounded-2xl p-6">
               <h3 className="text-sm font-mono text-violet-DEFAULT mb-3 uppercase tracking-wider">
                 Career Goals
               </h3>
-              <p className="text-slate-300 leading-relaxed">
-                {profile.careerGoals}
-              </p>
+              <p className="text-slate-300 leading-relaxed">{profile.careerGoals}</p>
             </motion.div>
           )}
 
-          {/* Learning Journey */}
           {profile.learningJourney && (
             <motion.div variants={itemVariants} className="glass-card rounded-2xl p-6">
               <h3 className="text-sm font-mono text-pink-DEFAULT mb-3 uppercase tracking-wider">
                 Learning Journey
               </h3>
-              <p className="text-slate-300 leading-relaxed">
-                {profile.learningJourney}
-              </p>
+              <p className="text-slate-300 leading-relaxed">{profile.learningJourney}</p>
             </motion.div>
           )}
         </motion.div>
@@ -99,24 +93,20 @@ export default function AboutSection({ profile }: Props) {
             Education
           </h3>
 
-          {profile.education && profile.education.length > 0 ? (
+          {profile.education?.length > 0 ? (
             profile.education.map((edu, i) => (
               <motion.div
                 key={i}
                 variants={itemVariants}
                 className="glass-card rounded-2xl p-6 relative pl-8 border-l-2 border-cyan-DEFAULT/30 hover:border-cyan-DEFAULT/60 transition-all duration-300"
               >
-                {/* Timeline dot */}
                 <div className="absolute -left-2 top-8 w-3 h-3 rounded-full bg-cyan-DEFAULT border-2 border-bg-primary shadow-lg shadow-cyan-DEFAULT/50" />
 
                 <div className="mb-2">
                   <h4 className="font-semibold text-slate-100">
-                    {edu.degree}
-                    {edu.field && ` in ${edu.field}`}
+                    {edu.degree}{edu.field && ` in ${edu.field}`}
                   </h4>
-                  <p className="text-sm text-cyan-DEFAULT/80 font-mono">
-                    {edu.institution}
-                  </p>
+                  <p className="text-sm text-cyan-DEFAULT/80 font-mono">{edu.institution}</p>
                 </div>
 
                 <div className="flex items-center gap-3 text-xs text-slate-400 mb-2">
@@ -136,7 +126,6 @@ export default function AboutSection({ profile }: Props) {
             <p className="text-slate-500 text-sm">Education information not added yet.</p>
           )}
 
-          {/* Stats */}
           {profile.yearsOfExperience && (
             <motion.div
               variants={itemVariants}

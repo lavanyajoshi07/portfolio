@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import connectDB from '@/lib/db'
 import { SiteSettings } from '@/models'
-import { successResponse, errorResponse, requireAdmin } from '@/lib/api'
+import { successResponse, errorResponse, requireAdmin, revalidatePortfolio } from '@/lib/api'
 
 export async function GET() {
   try {
@@ -45,6 +45,7 @@ export async function PUT(req: NextRequest) {
       await settings.save()
     }
 
+    revalidatePortfolio()
     return successResponse(settings, 'Site settings updated successfully')
   } catch (error) {
     console.error('Error updating settings:', error)

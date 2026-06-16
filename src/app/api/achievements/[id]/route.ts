@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import connectDB from '@/lib/db'
 import { Achievement } from '@/models'
-import { successResponse, errorResponse, requireAdmin } from '@/lib/api'
+import { successResponse, errorResponse, requireAdmin, revalidatePortfolio } from '@/lib/api'
 import { Types } from 'mongoose'
 
 export async function GET(
@@ -51,6 +51,7 @@ export async function PUT(
       return errorResponse('Achievement not found', 404)
     }
 
+    revalidatePortfolio()
     return successResponse(achievement, 'Achievement updated successfully')
   } catch (error) {
     console.error('Error updating achievement:', error)
@@ -78,6 +79,7 @@ export async function DELETE(
       return errorResponse('Achievement not found', 404)
     }
 
+    revalidatePortfolio()
     return successResponse({ id }, 'Achievement deleted successfully')
   } catch (error) {
     console.error('Error deleting achievement:', error)

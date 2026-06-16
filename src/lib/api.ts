@@ -1,7 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getServerSession } from 'next-auth'
 import { authOptions } from './auth'
 import { ApiResponse } from '@/types'
+
+// ============================================================
+// ON-DEMAND REVALIDATION
+// ============================================================
+// The public portfolio pages are ISR-cached.
+// Call this after any admin mutation so the public site reflects the change
+// immediately instead of waiting for the time-based `revalidate` window.
+export function revalidatePortfolio() {
+  try {
+    // Revalidate homepage
+    revalidatePath('/')
+
+    // Revalidate other portfolio routes that depend on admin data
+    revalidatePath('/profile')
+    revalidatePath('/projects')
+    revalidatePath('/skills')
+    revalidatePath('/contact')
+  } catch (e) {
+    // Revalidation should never break a successful write.
+    console.error('Failed to revalidate portfolio pages:', e)
+  }
+}
 
 // ============================================================
 // RATE LIMITING (in-memory, use Redis in production)

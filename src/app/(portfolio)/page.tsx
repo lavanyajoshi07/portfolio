@@ -3,7 +3,7 @@ import HeroSection from './components/hero/HeroSection'
 import AboutSection from './components/about/AboutSection'
 import SkillsSection from './components/skills/SkillsSection'
 import ProjectsSection from './components/projects/ProjectsSection'
-import CodingDashboard from './components/coding/CodingDashboard' // <-- Standard static import restored
+import CodingDashboard from './components/coding/CodingDashboard'
 import TimelineSection from './components/timeline/TimeLineSection'
 import CertificationsSection from './components/certifications/CertificationSection'
 import AchievementsSection from './components/achievements/AchievementsSection'
@@ -12,7 +12,10 @@ import SectionLoader from './components/shared/SectionLoader'
 import connectDB from '@/lib/db'
 import { Profile, Skill, Project, CodingProfile, Timeline, Certification, Achievement, SiteSettings } from '@/models'
 
-export const revalidate = 60 // ISR: revalidate every 60s
+// ✅ Always fetch fresh data after admin updates
+// If you want ISR with time-based caching, set a number (e.g. 60).
+// If you want instant updates after revalidatePortfolio(), set to 0.
+export const revalidate = 0
 
 async function getData() {
   try {

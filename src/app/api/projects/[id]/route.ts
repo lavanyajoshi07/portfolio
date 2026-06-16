@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import connectDB from '@/lib/db'
 import { Project } from '@/models'
-import { successResponse, errorResponse, requireAdmin, trackEvent } from '@/lib/api'
+import { successResponse, errorResponse, requireAdmin, trackEvent, revalidatePortfolio } from '@/lib/api'
 import { Types } from 'mongoose'
 
 export async function GET(
@@ -54,6 +54,7 @@ export async function PUT(
       return errorResponse('Project not found', 404)
     }
 
+    revalidatePortfolio()
     return successResponse(project, 'Project updated successfully')
   } catch (error) {
     console.error('Error updating project:', error)
@@ -81,6 +82,7 @@ export async function DELETE(
       return errorResponse('Project not found', 404)
     }
 
+    revalidatePortfolio()
     return successResponse({ id }, 'Project deleted successfully')
   } catch (error) {
     console.error('Error deleting project:', error)

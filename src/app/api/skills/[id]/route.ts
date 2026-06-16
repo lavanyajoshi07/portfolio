@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import connectDB from '@/lib/db'
 import { Skill } from '@/models'
-import { successResponse, errorResponse, requireAdmin } from '@/lib/api'
+import { successResponse, errorResponse, requireAdmin, revalidatePortfolio } from '@/lib/api'
 import { Types } from 'mongoose'
 
 export async function GET(
@@ -51,6 +51,7 @@ export async function PUT(
       return errorResponse('Skill not found', 404)
     }
 
+    revalidatePortfolio()
     return successResponse(skill, 'Skill updated successfully')
   } catch (error) {
     console.error('Error updating skill:', error)
@@ -78,6 +79,7 @@ export async function DELETE(
       return errorResponse('Skill not found', 404)
     }
 
+    revalidatePortfolio()
     return successResponse({ id }, 'Skill deleted successfully')
   } catch (error) {
     console.error('Error deleting skill:', error)

@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import connectDB from '@/lib/db';
 import { Certification } from '@/models';
-import { successResponse, errorResponse, requireAdmin } from '@/lib/api';
+import { successResponse, errorResponse, requireAdmin, revalidatePortfolio } from '@/lib/api';
 import { safeParse, certificationSchema } from '@/lib/validation';
 
 export async function GET() {
@@ -30,7 +30,8 @@ export async function POST(req: NextRequest) {
 
     await connectDB();
     const certification = await Certification.create(validation.data);
-    
+    revalidatePortfolio();
+
     return successResponse(certification, 'Certification created successfully', 201);
   } catch (error) {
     console.error('Error creating certification:', error);

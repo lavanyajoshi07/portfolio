@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import connectDB from '@/lib/db'
 import { Project } from '@/models'
-import { successResponse, errorResponse, requireAdmin, generateSlug } from '@/lib/api'
+import { successResponse, errorResponse, requireAdmin, generateSlug, revalidatePortfolio } from '@/lib/api'
 
 export async function GET(req: NextRequest) {
   try {
@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
     }
 
     const project = await Project.create(data)
+    revalidatePortfolio()
     return successResponse(project, 'Project created successfully', 201)
   } catch (error) {
     console.error('Error creating project:', error)

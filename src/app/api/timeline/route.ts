@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import connectDB from '@/lib/db'
 import { Timeline } from '@/models'
-import { successResponse, errorResponse, requireAdmin } from '@/lib/api'
+import { successResponse, errorResponse, requireAdmin, revalidatePortfolio } from '@/lib/api'
 
 export async function GET() {
   try {
@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
     await connectDB()
 
     const item = await Timeline.create(data)
+    revalidatePortfolio()
     return successResponse(item, 'Timeline item created successfully', 201)
   } catch (error) {
     console.error('Error creating timeline item:', error)

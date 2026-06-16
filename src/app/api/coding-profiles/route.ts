@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import connectDB from '@/lib/db'
 import { CodingProfile } from '@/models'
-import { successResponse, errorResponse, requireAdmin } from '@/lib/api'
+import { successResponse, errorResponse, requireAdmin, revalidatePortfolio } from '@/lib/api'
 import { syncCodingProfile } from '@/lib/coding-fetchers'
 
 export async function GET() {
@@ -51,6 +51,7 @@ export async function POST(req: NextRequest) {
       lastSynced: new Date(),
     })
 
+    revalidatePortfolio()
     return successResponse(newProfile, 'Coding profile created successfully', 201)
   } catch (error) {
     console.error('Error creating coding profile:', error)
