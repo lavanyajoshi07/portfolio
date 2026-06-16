@@ -84,7 +84,19 @@ export default function ProfilePage() {
     fetchProfile()
   }, [reset, toast])
 
+  // Runs when Zod validation FAILS — without this, a failed validation just
+  // silently does nothing (no request, no error), which looks like "not saving".
+  const onInvalid = (formErrors: any) => {
+    console.log('[v0] Profile validation failed:', formErrors)
+    toast({
+      title: 'Validation Error',
+      description: 'Some fields are invalid. Check highlighted inputs and any URL fields.',
+      variant: 'destructive',
+    })
+  }
+
   const onSubmit = async (data: any) => {
+    console.log('[v0] Submitting profile payload:', data)
     setSaving(true)
     try {
       const res = await fetch('/api/profile', {
@@ -127,7 +139,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pb-12">
+    <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-8 pb-12">
       {/* Header controls */}
       <div className="flex items-center justify-between border-b border-slate-900 pb-4">
         <div>

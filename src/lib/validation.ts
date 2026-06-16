@@ -1,5 +1,20 @@
 import { z } from 'zod'
 
+// A URL field that also accepts an empty string (so untouched optional inputs
+// don't block submission). `.optional()` alone only allows `undefined`, NOT ''.
+const optionalUrl = z.string().url('Must be a valid URL').optional().or(z.literal(''))
+
+const educationItemSchema = z.object({
+  institution: z.string().optional().or(z.literal('')),
+  degree: z.string().optional().or(z.literal('')),
+  field: z.string().optional().or(z.literal('')),
+  startYear: z.number().optional(),
+  endYear: z.number().optional(),
+  current: z.boolean().optional(),
+  gpa: z.string().optional().or(z.literal('')),
+  description: z.string().optional().or(z.literal('')),
+})
+
 // Profile
 export const profileSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -8,11 +23,24 @@ export const profileSchema = z.object({
   bio: z.string().optional(),
   email: z.string().email('Invalid email address'),
   location: z.string().optional(),
-  profileImage: z.string().url().optional(),
-  heroVideo: z.string().url().optional(),
-  resumeUrl: z.string().url().optional(),
+  profileImage: optionalUrl,
+  heroVideo: optionalUrl,
+  resumeUrl: optionalUrl,
   yearsOfExperience: z.number().min(0).optional(),
   isAvailableForWork: z.boolean().default(true),
+  // These were missing — Zod was silently stripping them from the payload,
+  // so they could never be saved even when the request went through.
+  socialLinks: z
+    .object({
+      github: optionalUrl,
+      linkedin: optionalUrl,
+      twitter: optionalUrl,
+      website: optionalUrl,
+    })
+    .optional(),
+  education: z.array(educationItemSchema).optional(),
+  careerGoals: z.string().optional(),
+  learningJourney: z.string().optional(),
 })
 
 // Skill
