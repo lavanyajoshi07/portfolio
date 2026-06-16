@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/useToast'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import DataTable from '../components/DataTable'
 import ConfirmDialog from '../components/ConfirmDialog'
+import IssuerLogo from '@/components/IssuerLogo'
 
 interface Certification {
   _id: string
@@ -21,6 +22,7 @@ interface Certification {
   issueDate: string
   expiryDate?: string
   credentialUrl?: string
+  certificateImage?: string
   skills?: string[]
   featured: boolean
 }
@@ -50,12 +52,53 @@ export default function CertificationsPage() {
       issueDate: '',
       expiryDate: '',
       credentialUrl: '',
+      certificateImage: '',
       skills: [] as string[],
       featured: false,
     },
   })
 
   const featuredValue = watch('featured')
+  const certImageValue = watch('certificateImage')
+  const issuerValue = watch('issuer')
+  const [uploadingCertImg, setUploadingCertImg] = useState(false)
+
+  const handleUploadCertImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadingCertImg(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await fetch('/api/media', {
+        method: 'POST',
+        body: formData,
+      })
+      const result = await res.json()
+      if (result.success && result.data?.url) {
+        setValue('certificateImage', result.data.url, { shouldDirty: true })
+        toast({
+          title: 'Success',
+          description: 'Certificate scan uploaded successfully.',
+        })
+      } else {
+        toast({
+          title: 'Upload Failed',
+          description: result.error || 'Failed to upload image.',
+          variant: 'destructive',
+        })
+      }
+    } catch (err) {
+      console.error(err)
+      toast({
+        title: 'Error',
+        description: 'An error occurred during file upload.',
+        variant: 'destructive',
+      })
+    } finally {
+      setUploadingCertImg(false)
+    }
+  }
 
   const fetchCerts = async () => {
     setLoading(true)
@@ -90,6 +133,7 @@ export default function CertificationsPage() {
       issueDate: '',
       expiryDate: '',
       credentialUrl: '',
+      certificateImage: '',
       skills: [],
       featured: false,
     })
@@ -105,6 +149,7 @@ export default function CertificationsPage() {
       issueDate: cert.issueDate,
       expiryDate: cert.expiryDate || '',
       credentialUrl: cert.credentialUrl || '',
+      certificateImage: cert.certificateImage || '',
       skills: cert.skills || [],
       featured: cert.featured,
     })
@@ -333,6 +378,25 @@ export default function CertificationsPage() {
               {errors.issuer && <p className="text-xs text-red-500 font-mono">{errors.issuer.message as string}</p>}
             </div>
 
+            <div className="space-y-1.5">
+              <Label className="font-mono text-[10px] text-slate-500 uppercase">Issuer Dropdown Select</Label>
+              <select
+                onChange={(e) => {
+                  if (e.target.value) {
+                    setValue('issuer', e.target.value, { shouldDirty: true })
+                  }
+                }}
+                value={issuerValue}
+                className="w-full bg-[#101827]/70 border border-slate-800 rounded-lg text-slate-300 p-2 text-xs font-mono focus:border-[#00E5FF]/40 outline-none"
+              >
+                <option value="">-- Choose Common Issuer --</option>
+                <option value="AWS">AWS</option>
+                <option value="Google">Google</option>
+                <option value="NPTEL">NPTEL</option>
+                <option value="Amazon">Amazon</option>
+              </select>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="font-mono text-[10px] text-slate-500 uppercase">Issue Date</Label>
@@ -361,6 +425,53 @@ export default function CertificationsPage() {
                 placeholder="Verifiable validation URL"
                 className="bg-[#101827]/70 border-slate-800 text-white text-xs"
               />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 border border-slate-900 p-3 rounded-lg bg-[#0F172A]/50">
+              <div className="flex flex-col items-center justify-center space-y-2">
+                <span className="font-mono text-[9px] text-slate-500 uppercase">Issuer Logo Preview</span>
+                <IssuerLogo issuer={issuerValue} className="w-16 h-16" />
+              </div>
+              <div className="flex flex-col items-center justify-center space-y-2">
+                <span className="font-mono text-[9px] text-slate-500 uppercase">Certificate Scan Preview</span>
+                {certImageValue ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={certImageValue}
+                    alt="Certificate Scan"
+                    className="w-16 h-16 object-cover rounded-lg border border-slate-800"
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-600 text-[10px] font-mono uppercase text-center p-1">
+                    No image uploaded
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="font-mono text-[10px] text-slate-500 uppercase">Certificate Scan Image</Label>
+              <div className="flex gap-2">
+                <Input
+                  {...register('certificateImage')}
+                  placeholder="Scan Image URL (or upload via button)"
+                  className="bg-[#101827]/70 border-slate-800 text-white text-xs flex-1"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="relative overflow-hidden border-slate-800 bg-[#101827]/70 hover:bg-slate-900/60 font-mono text-[10px] px-3 py-2 cursor-pointer"
+                  disabled={uploadingCertImg}
+                >
+                  {uploadingCertImg ? 'Uploading...' : 'Upload File'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleUploadCertImage}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+                </Button>
+              </div>
             </div>
 
             <div className="space-y-1.5">

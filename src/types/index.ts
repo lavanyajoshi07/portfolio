@@ -85,6 +85,7 @@ export interface Project {
   description: string
   longDescription?: string
   coverImage?: string
+  projectImage?: string
   gallery?: string[]
   technologies: string[]
   category: string
@@ -117,6 +118,7 @@ export interface Certification {
   credentialId?: string
   credentialUrl?: string
   image?: string
+  certificateImage?: string
   skills?: string[]
   featured: boolean
   order: number

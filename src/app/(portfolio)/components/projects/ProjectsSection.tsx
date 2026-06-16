@@ -129,9 +129,16 @@ function ProjectCard({
       onClick={onClick}
       className="glass-card rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300"
     >
-      {/* Cover image */}
+      {/* Cover image / Project image */}
       <div className={`relative overflow-hidden bg-bg-tertiary ${featured ? 'h-52' : 'h-40'}`}>
-        {project.coverImage ? (
+        {project.projectImage ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={project.projectImage}
+            alt={project.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : project.coverImage ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={project.coverImage}
@@ -234,10 +241,13 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
         onClick={e => e.stopPropagation()}
         className="glass-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
       >
-        {project.coverImage && (
+        {project.projectImage ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={project.projectImage} alt={project.title} className="w-full h-56 object-cover rounded-t-2xl" />
+        ) : project.coverImage ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={project.coverImage} alt={project.title} className="w-full h-56 object-cover rounded-t-2xl" />
-        )}
+        ) : null}
         <div className="p-6">
           <div className="flex items-start justify-between mb-4">
             <h2 className="text-xl font-bold text-slate-100">{project.title}</h2>

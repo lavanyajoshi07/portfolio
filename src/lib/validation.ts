@@ -94,6 +94,7 @@ export const projectSchema = z.object({
   featured: z.boolean().default(false),
   status: z.enum(['completed', 'in_progress', 'archived']).default('completed'),
   coverImage: z.string().optional(),
+  projectImage: optionalUrl,
 })
 
 // Certification
@@ -103,6 +104,7 @@ export const certificationSchema = z.object({
   issueDate: z.string(),
   expiryDate: z.string().optional(),
   credentialUrl: z.string().url().optional(),
+  certificateImage: optionalUrl,
   skills: z.array(z.string()).optional(),
   featured: z.boolean().default(false),
 })

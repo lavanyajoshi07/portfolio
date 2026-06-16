@@ -73,6 +73,7 @@ const ProjectSchema = new Schema({
   description: { type: String, required: true },
   longDescription: String,
   coverImage: String,
+  projectImage: String,
   gallery: [String],
   technologies: [String],
   category: String,
@@ -105,6 +106,7 @@ const CertificationSchema = new Schema({
   credentialId: String,
   credentialUrl: String,
   image: String,
+  certificateImage: String,
   skills: [String],
   featured: { type: Boolean, default: false },
   order: { type: Number, default: 0 },
@@ -304,6 +306,11 @@ const MediaAssetSchema = new Schema({
 // ============================================================
 // EXPORT MODELS (with hot reload safety)
 // ============================================================
+if (process.env.NODE_ENV === 'development') {
+  delete (mongoose.models as any).Project;
+  delete (mongoose.models as any).Certification;
+}
+
 export const Profile = models.Profile || model('Profile', ProfileSchema)
 export const Skill = models.Skill || model('Skill', SkillSchema)
 export const Project = models.Project || model('Project', ProjectSchema)

@@ -23,6 +23,7 @@ interface Project {
   description: string
   longDescription?: string
   coverImage?: string
+  projectImage?: string
   technologies: string[]
   category?: string
   githubUrl?: string
@@ -60,12 +61,52 @@ export default function ProjectsPage() {
       featured: false,
       status: 'completed' as any,
       coverImage: '',
+      projectImage: '',
     },
   })
 
   const featuredValue = watch('featured')
   const longDescValue = watch('longDescription')
+  const projectImageValue = watch('projectImage')
   const [techString, setTechString] = useState('')
+  const [uploadingProjImg, setUploadingProjImg] = useState(false)
+
+  const handleUploadProjectImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadingProjImg(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await fetch('/api/media', {
+        method: 'POST',
+        body: formData,
+      })
+      const result = await res.json()
+      if (result.success && result.data?.url) {
+        setValue('projectImage', result.data.url, { shouldDirty: true })
+        toast({
+          title: 'Success',
+          description: 'Project image uploaded successfully.',
+        })
+      } else {
+        toast({
+          title: 'Upload Failed',
+          description: result.error || 'Failed to upload image.',
+          variant: 'destructive',
+        })
+      }
+    } catch (err) {
+      console.error(err)
+      toast({
+        title: 'Error',
+        description: 'An error occurred during file upload.',
+        variant: 'destructive',
+      })
+    } finally {
+      setUploadingProjImg(false)
+    }
+  }
 
   const fetchProjects = async () => {
     setLoading(true)
@@ -105,6 +146,7 @@ export default function ProjectsPage() {
       featured: false,
       status: 'completed',
       coverImage: '',
+      projectImage: '',
     })
     setDialogOpen(true)
   }
@@ -123,6 +165,7 @@ export default function ProjectsPage() {
       featured: project.featured,
       status: project.status,
       coverImage: project.coverImage || '',
+      projectImage: project.projectImage || '',
     })
     setDialogOpen(true)
   }
@@ -400,7 +443,7 @@ export default function ProjectsPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="font-mono text-[10px] text-slate-500 uppercase">Cover Image Path</Label>
                 <Input
@@ -420,6 +463,50 @@ export default function ProjectsPage() {
                   <option value="in_progress">In Progress</option>
                   <option value="archived">Archived</option>
                 </select>
+              </div>
+            </div>
+
+            {/* Project Image Upload and Preview */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border border-slate-900 p-3 rounded-lg bg-[#0F172A]/50">
+              <div className="space-y-1.5 flex flex-col justify-center">
+                <Label className="font-mono text-[10px] text-slate-500 uppercase">Landing Page Image (projectImage)</Label>
+                <div className="flex gap-2">
+                  <Input
+                    {...register('projectImage')}
+                    placeholder="Uploaded Image URL"
+                    className="bg-[#101827]/70 border-slate-800 text-white text-xs flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="relative overflow-hidden border-slate-800 bg-[#101827]/70 hover:bg-slate-900/60 font-mono text-[10px] px-3 py-2 cursor-pointer"
+                    disabled={uploadingProjImg}
+                  >
+                    {uploadingProjImg ? 'Uploading...' : 'Upload'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleUploadProjectImage}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                    />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center justify-center space-y-1">
+                <span className="font-mono text-[9px] text-slate-500 uppercase">Image Preview</span>
+                {projectImageValue ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={projectImageValue}
+                    alt="Project Landing Page"
+                    className="w-full h-20 object-cover rounded-lg border border-slate-800"
+                  />
+                ) : (
+                  <div className="w-full h-20 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-600 text-[10px] font-mono uppercase">
+                    No image uploaded
+                  </div>
+                )}
               </div>
             </div>
 
