@@ -2,17 +2,38 @@ import { z } from 'zod'
 
 // A URL field that also accepts an empty string (so untouched optional inputs
 // don't block submission). `.optional()` alone only allows `undefined`, NOT ''.
-const optionalUrl = z.string().url('Must be a valid URL').optional().or(z.literal(''))
+// A preprocessor helper for optional URLs to handle null, undefined, and empty string
+const optionalUrl = z.preprocess(
+  (val) => (val === '' || val === null || val === undefined) ? undefined : val,
+  z.string().url('Must be a valid URL').optional()
+)
+
+// A preprocessor helper for optional strings to handle null
+const optionalString = z.preprocess(
+  (val) => (val === null || val === undefined) ? undefined : val,
+  z.string().optional()
+)
+
+// A preprocessor helper for optional numbers to handle null, undefined, empty strings, and NaN values
+const optionalNumber = z.preprocess(
+  (val) => {
+    if (val === '' || val === null || val === undefined || (typeof val === 'number' && isNaN(val))) {
+      return undefined
+    }
+    return Number(val)
+  },
+  z.number().optional()
+)
 
 const educationItemSchema = z.object({
-  institution: z.string().optional().or(z.literal('')),
-  degree: z.string().optional().or(z.literal('')),
-  field: z.string().optional().or(z.literal('')),
-  startYear: z.number().optional(),
-  endYear: z.number().optional(),
-  current: z.boolean().optional(),
-  gpa: z.string().optional().or(z.literal('')),
-  description: z.string().optional().or(z.literal('')),
+  institution: optionalString,
+  degree: optionalString,
+  field: optionalString,
+  startYear: optionalNumber,
+  endYear: optionalNumber,
+  current: z.preprocess((val) => val === null ? undefined : val, z.boolean().optional()),
+  gpa: optionalString,
+  description: optionalString,
 })
 
 // Profile
@@ -20,13 +41,21 @@ export const profileSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   title: z.string().min(5, 'Title must be at least 5 characters'),
   tagline: z.string().min(10, 'Tagline must be at least 10 characters'),
-  bio: z.string().optional(),
+  bio: optionalString,
   email: z.string().email('Invalid email address'),
-  location: z.string().optional(),
+  location: optionalString,
   profileImage: optionalUrl,
   heroVideo: optionalUrl,
   resumeUrl: optionalUrl,
-  yearsOfExperience: z.number().min(0).optional(),
+  yearsOfExperience: z.preprocess(
+    (val) => {
+      if (val === '' || val === null || val === undefined || (typeof val === 'number' && isNaN(val))) {
+        return undefined
+      }
+      return Number(val)
+    },
+    z.number().min(0, 'Years of experience must be at least 0').optional()
+  ),
   isAvailableForWork: z.boolean().default(true),
   // These were missing — Zod was silently stripping them from the payload,
   // so they could never be saved even when the request went through.
@@ -39,8 +68,8 @@ export const profileSchema = z.object({
     })
     .optional(),
   education: z.array(educationItemSchema).optional(),
-  careerGoals: z.string().optional(),
-  learningJourney: z.string().optional(),
+  careerGoals: optionalString,
+  learningJourney: optionalString,
 })
 
 // Skill

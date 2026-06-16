@@ -1,7 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { motion } from 'framer-motion'
 import SectionWrapper from '../shared/SectionWrapper'
 import { Profile } from '@/types'
 
@@ -10,8 +9,6 @@ interface Props {
 }
 
 export default function AboutSection({ profile }: Props) {
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-100px' })
 
   if (!profile) {
     return (
@@ -46,11 +43,12 @@ export default function AboutSection({ profile }: Props) {
       title="About Me"
       subtitle="My journey, education, and what drives my passion"
     >
-      <div ref={ref} className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Left: Bio, Career Goals, Learning Journey */}
         <motion.div
           initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
+          whileInView="visible"
+          viewport={{ once: true, margin: '-100px' }}
           variants={containerVariants}
           className="space-y-6"
         >
@@ -94,7 +92,8 @@ export default function AboutSection({ profile }: Props) {
         {/* Right: Education Timeline */}
         <motion.div
           initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
+          whileInView="visible"
+          viewport={{ once: true, margin: '-100px' }}
           variants={containerVariants}
           className="space-y-4"
         >
@@ -135,7 +134,7 @@ export default function AboutSection({ profile }: Props) {
             <p className="text-slate-500 text-sm">Education information not added yet.</p>
           )}
 
-          {profile.yearsOfExperience && (
+          {profile.yearsOfExperience != null && (
             <motion.div
               variants={itemVariants}
               className="glass-card rounded-2xl p-6 mt-6 bg-gradient-to-br from-violet-DEFAULT/10 to-pink-DEFAULT/10 border-violet-DEFAULT/20"

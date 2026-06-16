@@ -11,7 +11,7 @@ export default function FloatingCards({ profile }: Props) {
   const cards = [
     {
       label: 'Years Learning',
-      value: profile?.yearsOfExperience ? `${profile.yearsOfExperience}+` : '1+',
+      value: profile?.yearsOfExperience !== undefined && profile?.yearsOfExperience !== null ? `${profile.yearsOfExperience}+` : '1+',
       icon: '🎓',
       position: '-top-8 -left-16',
       delay: 0.5,
