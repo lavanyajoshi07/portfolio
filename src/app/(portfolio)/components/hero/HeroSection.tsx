@@ -73,14 +73,14 @@ export default function HeroSection({ profile }: Props) {
       )}
 
       {/* ================= PREMIUM CINEMATIC BACKGROUND LAYER ================= */}
-      <div className="absolute inset-0 w-full h-full pointer-events-none select-none z-0">
+      <div className="absolute inset-0 w-full h-full pointer-events-none select-none z-0 overflow-hidden">
         <video
           autoPlay
           muted
           loop
           playsInline
           src={profile?.heroVideo || "/videos/avatar.mp4"}
-          className="w-full h-full object-cover opacity-60 brightness-110 contrast-105 saturate-110"
+          className="w-full h-full object-cover lg:scale-110 lg:translate-x-8 xl:translate-x-16 opacity-60 brightness-110 contrast-105 saturate-110 transition-transform duration-500"
         />
 
         <div className="absolute inset-y-0 left-0 w-[50%] bg-gradient-to-r from-cyan-500/20 via-transparent to-transparent mix-blend-screen" />
@@ -103,7 +103,7 @@ export default function HeroSection({ profile }: Props) {
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center min-h-[80vh]">
 
-          <div className="flex flex-col gap-6 lg:col-span-7 relative z-20">
+          <div className="flex flex-col gap-6 lg:col-span-6 lg:-translate-x-4 xl:-translate-x-12 transition-transform duration-300 relative z-20">
             {profile?.isAvailableForWork && (
               <div className="glass-card px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-emerald-500/20 bg-emerald-950/20 backdrop-blur-md">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -173,7 +173,7 @@ export default function HeroSection({ profile }: Props) {
             {profile?.socialLinks && <div className="mt-4"><SocialLinks links={profile.socialLinks} /></div>}
           </div>
 
-          <div className="relative flex items-center justify-center h-full min-h-[400px] lg:col-span-5 z-20">
+          <div className="relative flex items-center justify-center h-full min-h-[400px] lg:col-span-6 lg:translate-x-4 xl:translate-x-12 transition-transform duration-300 z-20">
             <FloatingCards profile={profile} />
           </div>
 
