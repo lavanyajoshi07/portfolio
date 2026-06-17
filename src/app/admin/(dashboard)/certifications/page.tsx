@@ -357,7 +357,7 @@ export default function CertificationsPage() {
             </DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-3">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-3 max-h-[75vh] overflow-y-auto pr-2">
             <div className="space-y-1.5">
               <Label className="font-mono text-[10px] text-slate-500 uppercase">Certification Title</Label>
               <Input

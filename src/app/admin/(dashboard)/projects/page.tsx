@@ -23,7 +23,6 @@ interface Project {
   description: string
   longDescription?: string
   coverImage?: string
-  projectImage?: string
   technologies: string[]
   category?: string
   githubUrl?: string
@@ -61,20 +60,19 @@ export default function ProjectsPage() {
       featured: false,
       status: 'completed' as any,
       coverImage: '',
-      projectImage: '',
     },
   })
 
   const featuredValue = watch('featured')
   const longDescValue = watch('longDescription')
-  const projectImageValue = watch('projectImage')
+  const coverImageValue = watch('coverImage')
   const [techString, setTechString] = useState('')
-  const [uploadingProjImg, setUploadingProjImg] = useState(false)
+  const [uploadingCoverImg, setUploadingCoverImg] = useState(false)
 
-  const handleUploadProjectImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUploadCoverImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    setUploadingProjImg(true)
+    setUploadingCoverImg(true)
     try {
       const formData = new FormData()
       formData.append('file', file)
@@ -84,10 +82,10 @@ export default function ProjectsPage() {
       })
       const result = await res.json()
       if (result.success && result.data?.url) {
-        setValue('projectImage', result.data.url, { shouldDirty: true })
+        setValue('coverImage', result.data.url, { shouldDirty: true })
         toast({
           title: 'Success',
-          description: 'Project image uploaded successfully.',
+          description: 'Cover image uploaded successfully.',
         })
       } else {
         toast({
@@ -104,7 +102,7 @@ export default function ProjectsPage() {
         variant: 'destructive',
       })
     } finally {
-      setUploadingProjImg(false)
+      setUploadingCoverImg(false)
     }
   }
 
@@ -146,7 +144,6 @@ export default function ProjectsPage() {
       featured: false,
       status: 'completed',
       coverImage: '',
-      projectImage: '',
     })
     setDialogOpen(true)
   }
@@ -165,7 +162,6 @@ export default function ProjectsPage() {
       featured: project.featured,
       status: project.status,
       coverImage: project.coverImage || '',
-      projectImage: project.projectImage || '',
     })
     setDialogOpen(true)
   }
@@ -445,15 +441,6 @@ export default function ProjectsPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="font-mono text-[10px] text-slate-500 uppercase">Cover Image Path</Label>
-                <Input
-                  {...register('coverImage')}
-                  placeholder="/placeholders/project.png or Cloudinary URL"
-                  className="bg-[#101827]/70 border-slate-800 text-white text-xs"
-                />
-              </div>
-
-              <div className="space-y-1.5">
                 <Label className="font-mono text-[10px] text-slate-500 uppercase">Project Status</Label>
                 <select
                   {...register('status')}
@@ -466,13 +453,13 @@ export default function ProjectsPage() {
               </div>
             </div>
 
-            {/* Project Image Upload and Preview */}
+            {/* Cover Image Upload and Preview */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border border-slate-900 p-3 rounded-lg bg-[#0F172A]/50">
               <div className="space-y-1.5 flex flex-col justify-center">
-                <Label className="font-mono text-[10px] text-slate-500 uppercase">Landing Page Image (projectImage)</Label>
+                <Label className="font-mono text-[10px] text-slate-500 uppercase">Cover Image (coverImage)</Label>
                 <div className="flex gap-2">
                   <Input
-                    {...register('projectImage')}
+                    {...register('coverImage')}
                     placeholder="Uploaded Image URL"
                     className="bg-[#101827]/70 border-slate-800 text-white text-xs flex-1"
                   />
@@ -480,26 +467,27 @@ export default function ProjectsPage() {
                     type="button"
                     variant="outline"
                     className="relative overflow-hidden border-slate-800 bg-[#101827]/70 hover:bg-slate-900/60 font-mono text-[10px] px-3 py-2 cursor-pointer"
-                    disabled={uploadingProjImg}
+                    disabled={uploadingCoverImg}
                   >
-                    {uploadingProjImg ? 'Uploading...' : 'Upload'}
+                    {uploadingCoverImg ? 'Uploading...' : 'Upload'}
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={handleUploadProjectImage}
+                      onChange={handleUploadCoverImage}
                       className="absolute inset-0 opacity-0 cursor-pointer"
                     />
                   </Button>
                 </div>
+                {errors.coverImage && <p className="text-xs text-red-500 font-mono mt-1">{errors.coverImage.message as string}</p>}
               </div>
 
               <div className="flex flex-col items-center justify-center space-y-1">
-                <span className="font-mono text-[9px] text-slate-500 uppercase">Image Preview</span>
-                {projectImageValue ? (
+                <span className="font-mono text-[9px] text-slate-500 uppercase">Cover Image Preview</span>
+                {coverImageValue ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={projectImageValue}
-                    alt="Project Landing Page"
+                    src={coverImageValue}
+                    alt="Project Cover Page"
                     className="w-full h-20 object-cover rounded-lg border border-slate-800"
                   />
                 ) : (

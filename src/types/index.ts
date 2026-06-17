@@ -85,7 +85,6 @@ export interface Project {
   description: string
   longDescription?: string
   coverImage?: string
-  projectImage?: string
   gallery?: string[]
   technologies: string[]
   category: string

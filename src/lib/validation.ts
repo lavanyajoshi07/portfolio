@@ -94,7 +94,6 @@ export const projectSchema = z.object({
   featured: z.boolean().default(false),
   status: z.enum(['completed', 'in_progress', 'archived']).default('completed'),
   coverImage: z.string().optional(),
-  projectImage: optionalUrl,
 })
 
 // Certification

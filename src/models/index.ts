@@ -73,7 +73,6 @@ const ProjectSchema = new Schema({
   description: { type: String, required: true },
   longDescription: String,
   coverImage: String,
-  projectImage: String,
   gallery: [String],
   technologies: [String],
   category: String,
