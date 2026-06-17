@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
       {
         source: '/(.*)',
         headers: [
-          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           {
@@ -36,7 +36,7 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: blob: https://res.cloudinary.com https://avatars.githubusercontent.com; " +
               "media-src 'self' blob: https://res.cloudinary.com; " +
               "connect-src 'self' https://api.anthropic.com https://api.github.com; " +
-              "frame-src 'none'",
+              "frame-src 'self'",
           },
         ],
       },
@@ -44,6 +44,35 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return []
+  },
+  async redirects() {
+    return [
+      {
+        source: '/about',
+        destination: '/#about',
+        permanent: true,
+      },
+      {
+        source: '/techstack',
+        destination: '/#skills',
+        permanent: true,
+      },
+      {
+        source: '/projects',
+        destination: '/#projects',
+        permanent: true,
+      },
+      {
+        source: '/certificates',
+        destination: '/#certifications',
+        permanent: true,
+      },
+      {
+        source: '/contact',
+        destination: '/#contact',
+        permanent: true,
+      },
+    ]
   },
 }
 

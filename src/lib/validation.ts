@@ -160,6 +160,53 @@ export const codingProfileSchema = z.object({
   enabled: z.boolean().default(true),
 })
 
+const resumeSkillSchema = z.object({
+  label: z.string().min(1, 'Label is required'),
+  value: z.string().min(1, 'Value is required'),
+})
+
+const resumeProjectSchema = z.object({
+  title: z.string().min(1, 'Project title is required'),
+  technologies: z.string().optional().default(''),
+  bullets: z.array(z.string()).optional().default([]),
+})
+
+const resumeExperienceSchema = z.object({
+  role: z.string().min(1, 'Role is required'),
+  company: z.string().min(1, 'Company is required'),
+  duration: z.string().optional().default(''),
+  bullets: z.array(z.string()).optional().default([]),
+})
+
+const resumeEducationSchema = z.object({
+  degree: z.string().min(1, 'Degree is required'),
+  institution: z.string().min(1, 'Institution is required'),
+  duration: z.string().optional().default(''),
+  coursework: z.string().optional().default(''),
+})
+
+const resumeSoftSkillSchema = z.object({
+  title: z.string().min(1, 'Soft skill title is required'),
+  description: z.string().optional().default(''),
+})
+
+export const resumeSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Invalid email address').or(z.literal('')).optional().default(''),
+  phone: z.string().optional().default(''),
+  github: z.string().optional().default(''),
+  linkedin: z.string().optional().default(''),
+  address: z.string().optional().default(''),
+  summary: z.string().optional().default(''),
+  skills: z.array(resumeSkillSchema).optional().default([]),
+  projects: z.array(resumeProjectSchema).optional().default([]),
+  experience: z.array(resumeExperienceSchema).optional().default([]),
+  education: z.array(resumeEducationSchema).optional().default([]),
+  certifications: z.array(z.string()).optional().default([]),
+  achievements: z.array(z.string()).optional().default([]),
+  softSkills: z.array(resumeSoftSkillSchema).optional().default([]),
+})
+
 // Type exports
 export type Profile = z.infer<typeof profileSchema>
 export type Skill = z.infer<typeof skillSchema>
@@ -172,6 +219,7 @@ export type ChatMessage = z.infer<typeof chatMessageSchema>
 export type AdminUser = z.infer<typeof adminUserSchema>
 export type Login = z.infer<typeof loginSchema>
 export type CodingProfile = z.infer<typeof codingProfileSchema>
+export type Resume = z.infer<typeof resumeSchema>
 
 /**
  * Safe parse with error handling for API routes

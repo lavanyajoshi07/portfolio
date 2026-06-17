@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="weblogo.jpg" />
+  <link rel="shortcut icon" href="weblogo.jpg" type="image/svg+xml" />
+  <title>Lavanya Joshi</title>
+  <!-- Import Inter Font for a modern, premium look -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset and general page layout */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
+      color: #1e293b; /* Slate-800 for high-end neutral text */
+      background-color: #ffffff;
+      line-height: 1.4;
+      font-size: 10pt;
+      padding: 0.5in 0.6in;
+      width: 8.5in;
+      min-height: 11in;
+      margin: 0 auto;
+    }
+    
+    /* Document header styling */
+    header {
+      text-align: center;
+      margin-bottom: 12pt;
+    }
+    h1 {
+      font-size: 20pt;
+      font-weight: 700;
+      color: #0f172a; /* Slate-900 */
+      text-transform: uppercase;
+      margin-bottom: 3pt;
+      letter-spacing: 0.5pt;
+    }
+    .contact-info {
+      font-size: 9pt;
+      color: #64748b; /* Slate-500 */
+      margin-bottom: 4pt;
+      font-weight: 400;
+    }
+    .contact-info a {
+      color: #0284c7; /* Sky-700 accent for links */
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .contact-info a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Section structures */
+    section {
+      margin-bottom: 12pt;
+    }
+    h2 {
+      font-size: 11pt;
+      font-weight: 600;
+      color: #0f172a;
+      text-transform: uppercase;
+      border-bottom: 2px solid #e2e8f0; /* Soft slate border */
+      padding-bottom: 2pt;
+      margin-bottom: 6pt;
+      letter-spacing: 0.5pt;
+    }
+    
+    p {
+      margin-bottom: 4pt;
+      text-align: justify;
+      color: #334155; /* Slate-700 */
+    }
+    
+    /* Project styling */
+    .project-item {
+      margin-bottom: 8pt;
+    }
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 2pt;
+    }
+    .project-tech {
+      font-style: italic;
+      font-weight: 400;
+      font-size: 9pt;
+      color: #64748b;
+    }
+    
+    /* Experience styling */
+    .experience-item {
+      margin-bottom: 8pt;
+    }
+    .experience-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 2pt;
+    }
+    .experience-date {
+      font-weight: 400;
+      font-size: 9pt;
+      color: #64748b;
+    }
+    
+    /* Bullet lists */
+    ul {
+      margin-left: 12pt;
+      margin-bottom: 4pt;
+      list-style-type: square;
+    }
+    li {
+      margin-bottom: 2pt;
+      padding-left: 2pt;
+      color: #334155;
+    }
+    
+    /* Education & Certs details */
+    .education-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2pt;
+    }
+    .institution {
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .grad-date {
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .coursework {
+      margin-top: 2pt;
+      font-size: 9pt;
+      color: #64748b;
+    }
+
+    /* Skills details */
+    .skills-grid {
+      display: table;
+      width: 100%;
+      margin-top: 2pt;
+    }
+    .skills-row {
+      display: table-row;
+    }
+    .skills-label {
+      display: table-cell;
+      font-weight: 600;
+      width: 1.8in;
+      padding-bottom: 4pt;
+      color: #0f172a;
+    }
+    .skills-value {
+      display: table-cell;
+      padding-bottom: 4pt;
+      color: #334155;
+    }
+    
+    /* Print optimizations */
+    @media print {
+      body {
+        width: 100%;
+        margin: 0;
+        padding: 0.4in 0.5in;
+        font-size: 10pt;
+        color: #000000 !important;
+      }
+      a {
+        color: #000000 !important;
+      }
+      h2 {
+        border-bottom-color: #000000 !important;
+        page-break-after: avoid;
+      }
+      .project-item, .skills-row, .education-item, .experience-item {
+        page-break-inside: avoid;
+      }
+      .download-btn-container {
+        display: none !important;
+      }
+    }
+
+    /* Floating Action Panel for download & print */
+    .download-btn-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      background-color: rgba(15, 23, 42, 0.9); /* Glassmorphism Slate-900 */
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 6px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+    .download-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #0284c7; /* Sky-600 */
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-family: 'Inter', sans-serif;
+      font-size: 9.5pt;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .download-btn:hover {
+      background-color: #0369a1; /* Sky-700 */
+      transform: translateY(-1px);
+    }
+    .download-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.5;
+    }
+    .print-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: transparent;
+      color: #94a3b8; /* Slate-400 */
+      border: none;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .print-btn:hover {
+      color: #ffffff;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    .print-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Lavanya Joshi</h1>
+    <div class="contact-info">
+      Email: <a href="mailto:lavanyajoshi889@gmail.com">lavanyajoshi889@gmail.com</a>
+       | Phone: +91-8279806809
+       | GitHub: <a href="https://github.com/lavanyajoshi07" target="_blank">github.com/lavanyajoshi07</a>
+       | LinkedIn: <a href="https://linkedin.com/in/lavanyajoshi889" target="_blank">linkedin.com/in/lavanyajoshi889</a>
+    </div>
+    <div class="address">Dehradun, Uttarakhand, India</div>
+  </header>
+
+  
+  <section id="summary">
+    <h2>Professional Summary</h2>
+    <p>Performance‑driven Full‑Stack Developer and B.Tech Computer Science Engineering (AI Full Stack) sophomore at Graphic Era Hill University with strong expertise in Next.js, TypeScript, Tailwind CSS, Java, JavaFX, and Capacitor. Skilled in designing secure RESTful APIs, implementing authentication and encryption, and optimizing MongoDB Atlas and PostgreSQL databases. Adept at integrating external APIs and building scalable, cloud‑deployed applications. Passionate about Machine Learning, NLP, and Generative AI, with a focus on delivering secure, high‑performance, and intelligent solutions.</p>
+  </section>
+
+  
+  <section id="skills">
+    <h2>Technical Skills</h2>
+    <div class="skills-grid">
+      
+      <div class="skills-row">
+        <span class="skills-label">Languages:</span>
+        <span class="skills-value">JavaScript, TypeScript, Python, Java, C, C++</span>
+      </div>
+  
+      <div class="skills-row">
+        <span class="skills-label">Frontend:</span>
+        <span class="skills-value">React.js, Next.js, HTML5, CSS3, Tailwind CSS</span>
+      </div>
+  
+      <div class="skills-row">
+        <span class="skills-label">Backend & Databases:</span>
+        <span class="skills-value">Node.js, Express.js, Next.js API Routes, MongoDB, PostgreSQL, MySQL</span>
+      </div>
+  
+      <div class="skills-row">
+        <span class="skills-label">Tools & Platforms:</span>
+        <span class="skills-value">Git, GitHub, VS Code, AWS , Vercel, Render</span>
+      </div>
+  
+      <div class="skills-row">
+        <span class="skills-label">Core Concepts:</span>
+        <span class="skills-value">Data Structures & Algorithms (DSA), OOP, Database Management Systems (DBMS), REST APIs, RBAC Security, Machine Learning, NLP, Software Engineering Lifecycle</span>
+      </div>
+  
+    </div>
+  </section>
+
+  
+  <section id="experience">
+    <h2>Work Experience</h2>
+    
+  <div class="experience-item">
+    <div class="experience-header">
+      <span>Team Lead – Multithreaded Chat Application (PBL Project) – Graphic Era Hill University</span>
+      <span class="experience-date">01/2026 – 04/2026</span>
+    </div>
+    <ul>
+      <li>Led a 4-member team to design and deploy a secure multithreaded chat system using Java, JavaFX, and PostgreSQL.</li>
+      <li>Applied Agile and SDLC principles to manage sprints, code reviews, and version control via Git.</li>
+      <li>Implemented database schemas and data privacy protocols ensuring encrypted communication.</li>
+      <li>Delivered a production-ready system with measurable results — reduced message latency by 40% and improved user concurrency handling.</li>
+    </ul>
+  </div>
+
+  <div class="experience-item">
+    <div class="experience-header">
+      <span>Independent Full‑Stack Developer – Personal Projects – Dehradun, Uttarakhand</span>
+      <span class="experience-date">2025 – Present</span>
+    </div>
+    <ul>
+      <li>Developed and deployed Period Tracker and ReviewLens AI using Next.js, TypeScript, MongoDB, and RESTful APIs.</li>
+      <li>Integrated Google Gemini API and implemented RBAC Security for user authentication and data protection.</li>
+      <li>Applied Agile workflows and SDLC best practices to ensure scalable, maintainable codebases.</li>
+      <li>Achieved measurable outcomes — improved API response time by 30% and enhanced data visualization accuracy by 25%.</li>
+    </ul>
+  </div>
+  </section>
+
+  
+  <section id="projects">
+    <h2>Academic & Personal Projects</h2>
+    
+  <div class="project-item">
+    <div class="project-header">
+      <span>PeriodTracker – Cycle Tracking & Health Analytics</span>
+      <span class="project-tech">Next.js, TypeScript, Tailwind CSS, MongoDB, Recharts, NextAuth, Capacitor</span>
+    </div>
+    <ul>
+      <li>Health Analytics: Built a privacy-focused cycle tracking platform with Recharts to visualize biological logs into trends and insights.</li>
+      <li>Secure Authentication: Implemented NextAuth for session persistence and protected user metrics with encrypted storage.</li>
+      <li>Mobile Deployment: Integrated Capacitor to package the web app into a native Android application for wider accessibility.</li>
+      <li>Serverless APIs: Designed Next.js API Routes for secure, high-throughput log aggregation directly connected to MongoDB.</li>
+    </ul>
+  </div>
+
+  <div class="project-item">
+    <div class="project-header">
+      <span>Multithreaded Chat Application</span>
+      <span class="project-tech">Java, JavaFX, PostgreSQL, Socket Programming</span>
+    </div>
+    <ul>
+      <li>Concurrent Communication: Developed a multithreaded client-server chat system supporting multiple simultaneous users over TCP sockets.</li>
+      <li>Data Security: Implemented PBKDF2 password hashing and AES-GCM-256 encryption for secure authentication and messaging.</li>
+      <li>Database Integration: Utilized PostgreSQL for persistent user data storage and message history tracking.</li>
+      <li>UI Design: Built an interactive JavaFX interface for real-time chat and user management.</li>
+    </ul>
+  </div>
+
+  <div class="project-item">
+    <div class="project-header">
+      <span>ReviewLens AI – Customer Review Analysis Platform</span>
+      <span class="project-tech">Next.js, TypeScript, Tailwind CSS, MongoDB Atlas, Mongoose, Next.js API Routes, Google Gemini API, Recharts, Vercel</span>
+    </div>
+    <ul>
+      <li>Sentiment Analysis: Implemented NLP-based classification of customer reviews into Positive, Neutral, and Negative categories.</li>
+      <li>Category Detection: Automated feedback tagging for Food, Cleanliness, Location, Host, Value, and Experience.</li>
+      <li>AI Integration: Leveraged Google Gemini API to generate professional response suggestions for owners.</li>
+      <li>Dashboard Analytics: Designed summary cards and Recharts visualizations for review trends and statistics.</li>
+      <li>Scalable Deployment: Deployed the platform on Vercel with optimized API routes and MongoDB Atlas storage.</li>
+    </ul>
+  </div>
+  </section>
+
+  
+  <section id="education">
+    <h2>Education</h2>
+    
+  <div class="education-item">
+    <span class="institution">Graphic Era Hill University | Dehradun, Uttarakhand</span>
+    <span class="grad-date">Expected Graduation: 05/2028</span>
+  </div>
+  <div class="degree" style="font-weight: 500; font-size: 9.5pt; color: #334155; margin-top: 1pt;">
+    Bachelor of Technology (B.Tech) in Computer Science Engineering – AI Full Stack Focus
+  </div>
+  <div class="coursework"><strong>Relevant Coursework:</strong> Data Structures & Algorithms, Object-Oriented Programming (OOP), Database Management Systems (DBMS), Operating Systems, Computer Networks, Software Engineering, Machine Learning, Artificial Intelligence, Web Applications</div>
+  <div style="height: 6pt;"></div>
+  
+  </section>
+
+  
+  <section id="certifications">
+    <h2>Certifications</h2>
+    <p style="font-size: 9pt; text-align: left; line-height: 1.5; color: #334155;">
+      • NPTEL – Programming in C++ and C • AWS Cloud CLI Essentials • DSA & C++ Bootcamp • Git & GitHub Bootcamp • JavaScript Bootcamp • Google AI for Data Analysis • Google AI for Research and Insights • Machine Learning Workshop
+    </p>
+  </section>
+
+  
+  <section id="achievements">
+    <h2>Key Achievements</h2>
+    <ul>
+          <li>Successfully developed and deployed personal full-stack applications including Period Tracker and ReviewLens AI, showcasing expertise in Next.js, TypeScript, MongoDB, and API integration.</li>
+    <li>Led a team in building a Multithreaded Chat Application, coordinating development tasks, implementing secure authentication, and ensuring delivery of a production-ready system.</li>
+    <li>Applied professional software engineering practices including Git source control, RESTful API design, and schema modeling for both SQL and NoSQL databases.</li>
+    <li>Serving as an active IEEE member in the Designing Team, managing poster design workflows and guiding the design team for technical events.</li>
+    <li>Integrated external AI APIs (Google Gemini) and deployed scalable applications on cloud platforms (Vercel, AWS), demonstrating adaptability in modern development workflows.</li>
+    <li>Solved 200+ data structure and algorithm problems on LeetCode, strengthening system design and problem-solving skills.</li>
+    </ul>
+  </section>
+
+  
+  <section id="soft-skills">
+    <h2>Soft Skills</h2>
+    <ul>
+          <li><strong>Leadership:</strong> Guided project teams and IEEE design team, ensuring collaboration and timely delivery.</li>
+    <li><strong>Communication:</strong> Presented technical solutions clearly to peers and faculty, bridging design and development teams.</li>
+    <li><strong>Problem-Solving:</strong> Tackled complex coding challenges and optimized system workflows under tight deadlines.</li>
+    <li><strong>Collaboration:</strong> Worked effectively in team-based projects, applying Agile practices for smooth coordination.</li>
+    <li><strong>Adaptability:</strong> Quickly learned new frameworks and tools (Next.js, Capacitor, Gemini API) to deliver production-ready solutions.</li>
+    </ul>
+  </section>
+
+  <!-- Floating Action Bar for download & print (hidden during print) -->
+  <div class="download-btn-container">
+    <button onclick="downloadPDF()" class="download-btn" title="Download PDF">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+      Download PDF
+    </button>
+
+    <button onclick="window.print()" class="print-btn" title="Print Resume">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+        <rect x="6" y="14" width="12" height="8"></rect>
+      </svg>
+    </button>
+  </div>
+
+  <script>
+  function downloadPDF() {
+      window.print();
+  }
+  </script>
+
+</body>
+</html>

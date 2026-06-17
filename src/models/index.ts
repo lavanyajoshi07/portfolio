@@ -303,11 +303,62 @@ const MediaAssetSchema = new Schema({
 }, { timestamps: true })
 
 // ============================================================
+// RESUME
+// ============================================================
+const ResumeSkillSchema = new Schema({
+  label: { type: String, required: true },
+  value: { type: String, required: true },
+})
+
+const ResumeProjectSchema = new Schema({
+  title: { type: String, required: true },
+  technologies: String,
+  bullets: [String],
+})
+
+const ResumeExperienceSchema = new Schema({
+  role: { type: String, required: true },
+  company: { type: String, required: true },
+  duration: String,
+  bullets: [String],
+})
+
+const ResumeEducationSchema = new Schema({
+  degree: { type: String, required: true },
+  institution: { type: String, required: true },
+  duration: String,
+  coursework: String,
+})
+
+const ResumeSoftSkillSchema = new Schema({
+  title: { type: String, required: true },
+  description: String,
+})
+
+const ResumeSchema = new Schema({
+  name: { type: String, required: true },
+  email: String,
+  phone: String,
+  github: String,
+  linkedin: String,
+  address: String,
+  summary: String,
+  skills: [ResumeSkillSchema],
+  projects: [ResumeProjectSchema],
+  experience: [ResumeExperienceSchema],
+  education: [ResumeEducationSchema],
+  certifications: [String],
+  achievements: [String],
+  softSkills: [ResumeSoftSkillSchema],
+}, { timestamps: true })
+
+// ============================================================
 // EXPORT MODELS (with hot reload safety)
 // ============================================================
 if (process.env.NODE_ENV === 'development') {
   delete (mongoose.models as any).Project;
   delete (mongoose.models as any).Certification;
+  delete (mongoose.models as any).Resume;
 }
 
 export const Profile = models.Profile || model('Profile', ProfileSchema)
@@ -323,3 +374,4 @@ export const AnalyticsEvent = models.AnalyticsEvent || model('AnalyticsEvent', A
 export const SiteSettings = models.SiteSettings || model('SiteSettings', SiteSettingsSchema)
 export const AdminUser = models.AdminUser || model('AdminUser', AdminUserSchema)
 export const MediaAsset = models.MediaAsset || model('MediaAsset', MediaAssetSchema)
+export const Resume = models.Resume || model('Resume', ResumeSchema)
