@@ -49,68 +49,68 @@ const cards = [
     name: 'Java',
     subtitle: 'LANGUAGE',
     theme: 'magenta' as const,
-    pos: { left: '50%', top: '10%' },
+    pos: { left: '50%', top: '12%' },
     delay: 0.1,
   },
   {
     name: 'C++',
     subtitle: 'LANGUAGE',
     theme: 'cyan' as const,
-    pos: { left: '17%', top: '27%' },
+    pos: { left: '20%', top: '26.4%' },
     delay: 0.2,
   },
   {
     name: 'C',
     subtitle: 'LANGUAGE',
     theme: 'blue' as const,
-    pos: { left: '83%', top: '27%' },
+    pos: { left: '80%', top: '26.4%' },
     delay: 0.3,
   },
   {
     name: 'Python',
     subtitle: 'CORE',
     theme: 'violet' as const,
-    pos: { left: '12%', top: '57%' },
+    pos: { left: '13%', top: '58.4%' },
     delay: 0.4,
   },
   {
     name: 'MongoDB',
     subtitle: 'DATABASE',
     theme: 'cyan' as const,
-    pos: { left: '85%', top: '47%' },
+    pos: { left: '87%', top: '58.4%' },
     delay: 0.5,
   },
   {
     name: 'PostgreSQL',
     subtitle: 'DATABASE',
     theme: 'blue' as const,
-    pos: { left: '78%', top: '73%' },
+    pos: { left: '33.6%', top: '84.2%' },
     delay: 0.6,
   },
   {
     name: 'AI Models',
     subtitle: 'INTELLIGENCE',
     theme: 'magenta' as const,
-    pos: { left: '50%', top: '89%' },
+    pos: { left: '66.4%', top: '84.2%' },
     delay: 0.7,
   },
 ]
 
 // Glowing circuit lines using magenta, cyan, violet, and blue colors
 const circuitLines = [
-  // Core Connections
-  { id: 'java-line', d: 'M 250,160 L 250,75', color: '#FF007F', duration: 4.5 },
-  { id: 'cpp-line', d: 'M 186,186 C 140,186 110,160 95,140', color: '#00E5FF', duration: 5 },
-  { id: 'c-line', d: 'M 314,186 C 360,186 390,160 405,140', color: '#38BDF8', duration: 5.5 },
-  { id: 'python-line', d: 'M 160,250 C 110,250 90,270 85,290', color: '#7C3AED', duration: 6 },
-  { id: 'mongodb-line', d: 'M 340,250 C 380,250 390,230 415,230', color: '#00E5FF', duration: 4.8 },
-  { id: 'postgresql-line', d: 'M 314,314 C 350,314 360,340 375,360', color: '#38BDF8', duration: 6.2 },
-  { id: 'ai-line', d: 'M 250,340 L 250,420', color: '#FF007F', duration: 4.2 },
+  // Core Connections (symmetric mathematically based on card positions)
+  { id: 'java-line', d: 'M 250,160 L 250,84', color: '#FF007F', duration: 4.5 },
+  { id: 'cpp-line', d: 'M 180,194 C 145,194 125,170 115,150', color: '#00E5FF', duration: 5 },
+  { id: 'c-line', d: 'M 320,194 C 355,194 375,170 385,150', color: '#38BDF8', duration: 5.5 },
+  { id: 'python-line', d: 'M 162,270 C 120,270 100,285 90,292', color: '#7C3AED', duration: 6 },
+  { id: 'mongodb-line', d: 'M 338,270 C 380,270 400,285 410,292', color: '#00E5FF', duration: 4.8 },
+  { id: 'postgresql-line', d: 'M 211,331 C 180,345 175,375 175,400', color: '#38BDF8', duration: 6.2 },
+  { id: 'ai-line', d: 'M 289,331 C 320,345 325,375 325,400', color: '#FF007F', duration: 4.2 },
 
-  // Secondary network connections flowing to the right (glowing neural trails)
-  { id: 'network-trail-1', d: 'M 405,140 C 430,140 450,160 480,160 C 510,160 520,180 550,180', color: '#00E5FF', duration: 8, delay: 0.5 },
-  { id: 'network-trail-2', d: 'M 415,230 C 440,230 460,210 490,210 C 510,210 530,225 550,225', color: '#7C3AED', duration: 7, delay: 1.2 },
-  { id: 'network-trail-3', d: 'M 375,360 C 400,360 430,340 460,340 C 490,340 510,360 550,360', color: '#FF007F', duration: 9, delay: 0 },
+  // Secondary network connections flowing to the right (glowing neural trails aligned to right cards)
+  { id: 'network-trail-1', d: 'M 385,150 C 420,150 440,160 470,160 C 500,160 510,180 550,180', color: '#00E5FF', duration: 8, delay: 0.5 },
+  { id: 'network-trail-2', d: 'M 410,292 C 440,292 460,270 490,270 C 510,270 530,285 550,285', color: '#7C3AED', duration: 7, delay: 1.2 },
+  { id: 'network-trail-3', d: 'M 325,400 C 370,400 400,380 440,380 C 480,380 500,390 550,390', color: '#FF007F', duration: 9, delay: 0 },
 ]
 
 const consoleLines = [
@@ -192,63 +192,126 @@ export default function FloatingCards({ profile }: Props) {
         className="absolute w-full h-full pointer-events-none overflow-visible z-0"
       >
         <defs>
-          <linearGradient id="cyan-violet-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.5" />
-            <stop offset="100%" stopColor="#7C3AED" stopOpacity="0.1" />
-          </linearGradient>
-          <linearGradient id="magenta-blue-grad" x1="100%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#FF007F" stopOpacity="0.5" />
-            <stop offset="100%" stopColor="#38BDF8" stopOpacity="0.1" />
-          </linearGradient>
-          {/* Backing circle gradient set to extremely low opacity to keep face clear */}
-          <radialGradient id="center-glow-grad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#020617" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#020617" stopOpacity="0" />
+          {/* Jellyfish layered glow filter */}
+          <filter id="jellyfish-glow-filter" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur2" />
+            <feMerge>
+              <feMergeNode in="blur2" />
+              <feMergeNode in="blur1" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+
+          {/* Soft layered gradients to achieve the organic jellyfish look */}
+          <radialGradient id="jellyfish-radial" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.15" />
+            <stop offset="45%" stopColor="#7C3AED" stopOpacity="0.1" />
+            <stop offset="85%" stopColor="#FF007F" stopOpacity="0.04" />
+            <stop offset="100%" stopColor="#000000" stopOpacity="0" />
           </radialGradient>
+          
+          <linearGradient id="jelly-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#00E5FF" />
+            <stop offset="50%" stopColor="#7C3AED" />
+            <stop offset="100%" stopColor="#FF007F" />
+          </linearGradient>
+
+          <linearGradient id="jelly-grad-2" x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#FF007F" />
+            <stop offset="50%" stopColor="#38BDF8" />
+            <stop offset="100%" stopColor="#7C3AED" />
+          </linearGradient>
         </defs>
 
-        {/* Central visual hub background shadow - highly transparent to protect portrait face */}
-        <circle
+        {/* Central jellyfish body fill - soft glow, pulsating */}
+        <motion.circle
           cx="250"
           cy="250"
-          r="105"
-          fill="url(#center-glow-grad)"
-          opacity="0.25"
+          r="115"
+          fill="url(#jellyfish-radial)"
+          animate={{
+            scale: [1, 1.06, 0.95, 1.03, 1],
+            opacity: [0.7, 0.9, 0.6, 0.85, 0.7],
+          }}
+          transition={{
+            duration: 7,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          style={{ originX: '250px', originY: '250px' }}
         />
 
-        {/* Central HUD rotating outer ring - reduced opacity and stroke for visual balance */}
+        {/* Jellyfish inner bell - pulsating glow */}
+        <motion.circle
+          cx="250"
+          cy="250"
+          r="82"
+          fill="none"
+          stroke="url(#jelly-grad-1)"
+          strokeWidth="1.5"
+          filter="url(#jellyfish-glow-filter)"
+          animate={{
+            scale: [1, 1.05, 0.96, 1.03, 1],
+            opacity: [0.55, 0.8, 0.45, 0.7, 0.55],
+            rotate: [0, 90, 180, 270, 360],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          style={{ originX: '250px', originY: '250px' }}
+        />
+
+        {/* Jellyfish middle ring - dashes and counter-rotation */}
         <motion.circle
           cx="250"
           cy="250"
           r="95"
           fill="none"
-          stroke="url(#cyan-violet-grad)"
-          strokeWidth="1"
-          strokeDasharray="40 25 10 25"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
+          stroke="url(#jelly-grad-2)"
+          strokeWidth="1.2"
+          strokeDasharray="25 15 5 15"
+          filter="url(#jellyfish-glow-filter)"
+          animate={{
+            scale: [1, 0.96, 1.04, 0.98, 1],
+            rotate: [360, 270, 180, 90, 0],
+            opacity: [0.45, 0.7, 0.4, 0.6, 0.45],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
           style={{ originX: '250px', originY: '250px' }}
-          opacity="0.35"
         />
 
-        {/* Central HUD rotating inner ring */}
+        {/* Jellyfish outer halo */}
         <motion.circle
           cx="250"
           cy="250"
-          r="80"
+          r="110"
           fill="none"
-          stroke="url(#magenta-blue-grad)"
+          stroke="url(#jelly-grad-1)"
           strokeWidth="0.8"
-          strokeDasharray="8 30"
-          animate={{ rotate: -360 }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+          strokeDasharray="10 20"
+          animate={{
+            scale: [1, 1.03, 0.97, 1.02, 1],
+            rotate: [0, -360],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: 'linear',
+          }}
           style={{ originX: '250px', originY: '250px' }}
-          opacity="0.45"
+          opacity="0.4"
         />
 
-        {/* Static concentric circle helpers for futuristic board texture */}
-        <circle cx="250" cy="250" r="115" fill="none" stroke="rgba(56, 189, 248, 0.03)" strokeWidth="0.8" strokeDasharray="4 4" />
-        <circle cx="250" cy="250" r="130" fill="none" stroke="rgba(255, 0, 127, 0.03)" strokeWidth="0.8" />
+        {/* Static concentric circle helper rings */}
+        <circle cx="250" cy="250" r="122" fill="none" stroke="rgba(56, 189, 248, 0.04)" strokeWidth="0.8" strokeDasharray="4 4" />
+        <circle cx="250" cy="250" r="135" fill="none" stroke="rgba(255, 0, 127, 0.03)" strokeWidth="0.8" />
 
         {/* Base circuit lines (dormant tracks) */}
         {circuitLines.map((line) => (
@@ -258,7 +321,7 @@ export default function FloatingCards({ profile }: Props) {
             stroke={line.color}
             strokeWidth="1.2"
             fill="none"
-            opacity="0.35"
+            opacity="0.4"
           />
         ))}
 
@@ -268,7 +331,7 @@ export default function FloatingCards({ profile }: Props) {
             key={`active-${line.id}`}
             d={line.d}
             stroke={line.color}
-            strokeWidth="2.2"
+            strokeWidth="2.5"
             fill="none"
             strokeDasharray="15 90"
             style={{
