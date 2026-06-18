@@ -37,7 +37,6 @@ async function seed() {
         siteKeywords: ['AI', 'Machine Learning', 'Next.js', 'React', 'MongoDB'],
         ogImage: '/placeholders/placeholder-project.png',
         maintenanceMode: false,
-        allowChatbot: true,
         contactEmail: 'admin@portfolio.com',
         copyrightText: '© 2026 Jane Doe. All rights reserved.',
         accentColor: '#00E5FF',

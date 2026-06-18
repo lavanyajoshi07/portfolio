@@ -134,11 +134,6 @@ export const contactMessageSchema = z.object({
   message: z.string().min(10, 'Message must be at least 10 characters').max(5000),
 })
 
-// Chat Message
-export const chatMessageSchema = z.object({
-  message: z.string().min(1, 'Message required').max(5000),
-  sessionId: z.string(),
-})
 
 // Admin User
 export const adminUserSchema = z.object({
@@ -215,7 +210,6 @@ export type Certification = z.infer<typeof certificationSchema>
 export type Achievement = z.infer<typeof achievementSchema>
 export type Timeline = z.infer<typeof timelineSchema>
 export type ContactMessage = z.infer<typeof contactMessageSchema>
-export type ChatMessage = z.infer<typeof chatMessageSchema>
 export type AdminUser = z.infer<typeof adminUserSchema>
 export type Login = z.infer<typeof loginSchema>
 export type CodingProfile = z.infer<typeof codingProfileSchema>

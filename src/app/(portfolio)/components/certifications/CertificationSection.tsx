@@ -158,28 +158,32 @@ function CertCard({
           {cert.expiryDate && <p>Expires: {cert.expiryDate}</p>}
         </div>
 
-        <div className="mt-4 flex flex-col gap-2">
-          {cert.credentialUrl && (
-            <a
-              href={cert.credentialUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={e => e.stopPropagation()}
-              className="px-3 py-2 rounded-lg text-xs font-medium bg-violet-DEFAULT/20 text-violet-DEFAULT border border-violet-DEFAULT/30 hover:bg-violet-DEFAULT/30 transition-colors text-center"
-            >
-              View Credential
-            </a>
-          )}
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              onViewCertificate(cert)
-            }}
-            className="px-3 py-2 rounded-lg text-xs font-medium bg-cyan-DEFAULT/20 text-cyan-DEFAULT border border-cyan-DEFAULT/30 hover:bg-cyan-DEFAULT/30 transition-colors text-center"
-          >
-            View Certificate
-          </button>
-        </div>
+        {(cert.credentialUrl || cert.certificateImage) && (
+          <div className="mt-4 flex flex-col gap-2">
+            {cert.credentialUrl && (
+              <a
+                href={cert.credentialUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={e => e.stopPropagation()}
+                className="px-3 py-2 rounded-lg text-xs font-medium bg-violet-DEFAULT/20 text-violet-DEFAULT border border-violet-DEFAULT/30 hover:bg-violet-DEFAULT/30 transition-colors text-center"
+              >
+                View Credentials
+              </a>
+            )}
+            {cert.certificateImage && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onViewCertificate(cert)
+                }}
+                className="px-3 py-2 rounded-lg text-xs font-medium bg-cyan-DEFAULT/20 text-cyan-DEFAULT border border-cyan-DEFAULT/30 hover:bg-cyan-DEFAULT/30 transition-colors text-center"
+              >
+                View Certificate
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </motion.div>
   )
@@ -250,24 +254,28 @@ function CertModal({
             </div>
           )}
 
-          <div className="flex flex-col gap-2">
-            {cert.credentialUrl && (
-              <a
-                href={cert.credentialUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full px-4 py-2 rounded-lg text-sm font-medium bg-violet-DEFAULT/20 text-violet-DEFAULT border border-violet-DEFAULT/30 hover:bg-violet-DEFAULT/30 transition-colors text-center"
-              >
-                View Full Credential
-              </a>
-            )}
-            <button
-              onClick={() => onViewCertificate(cert)}
-              className="block w-full px-4 py-2 rounded-lg text-sm font-medium bg-cyan-DEFAULT/20 text-cyan-DEFAULT border border-cyan-DEFAULT/30 hover:bg-cyan-DEFAULT/30 transition-colors text-center"
-            >
-              View Certificate Scan
-            </button>
-          </div>
+          {(cert.credentialUrl || cert.certificateImage) && (
+            <div className="flex flex-col gap-2">
+              {cert.credentialUrl && (
+                <a
+                  href={cert.credentialUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full px-4 py-2 rounded-lg text-sm font-medium bg-violet-DEFAULT/20 text-violet-DEFAULT border border-violet-DEFAULT/30 hover:bg-violet-DEFAULT/30 transition-colors text-center"
+                >
+                  View Credentials
+                </a>
+              )}
+              {cert.certificateImage && (
+                <button
+                  onClick={() => onViewCertificate(cert)}
+                  className="block w-full px-4 py-2 rounded-lg text-sm font-medium bg-cyan-DEFAULT/20 text-cyan-DEFAULT border border-cyan-DEFAULT/30 hover:bg-cyan-DEFAULT/30 transition-colors text-center"
+                >
+                  View Certificate
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </motion.div>
     </motion.div>
@@ -294,7 +302,7 @@ function CertificateLightbox({
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         onClick={(e) => e.stopPropagation()}
-        className="glass-card rounded-2xl max-w-2xl w-full p-6 text-slate-200 border border-[#00E5FF]/20 relative cursor-default"
+        className="glass-card rounded-2xl max-w-2xl w-full p-6 text-slate-200 border border-cyan-DEFAULT/30 shadow-[0_0_30px_rgba(0,229,255,0.2)] relative cursor-default"
       >
         <button
           onClick={onClose}
@@ -309,19 +317,18 @@ function CertificateLightbox({
           </h3>
 
           {imageUrl ? (
-            <div className="relative rounded-lg overflow-hidden border border-slate-800 bg-black max-h-[70vh] flex items-center justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+            <div className="relative rounded-xl border border-cyan-DEFAULT/20 bg-[#020617] overflow-hidden shadow-[0_0_20px_rgba(0,229,255,0.1)] h-[450px] md:h-[550px]">
+              <iframe
                 src={imageUrl}
-                alt="Certificate Scan"
-                className="max-h-[60vh] w-auto object-contain mx-auto"
+                className="w-full h-full border-none scrollbar-thin"
+                title="Certificate Viewer"
               />
             </div>
           ) : (
             <div className="py-12 border border-dashed border-slate-800 rounded-xl bg-slate-950/50 flex flex-col items-center justify-center space-y-3">
               <div className="text-4xl text-amber-500">⚠️</div>
               <p className="font-mono text-sm text-slate-400">
-                No certificate image available
+                No certificate scan available
               </p>
             </div>
           )}

@@ -1,6 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import SectionWrapper from '../shared/SectionWrapper'
 import { Profile } from '@/types'
 
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function AboutSection({ profile }: Props) {
+  const [showResume, setShowResume] = useState(false)
 
   if (!profile) {
     return (
@@ -153,42 +155,57 @@ export default function AboutSection({ profile }: Props) {
         </motion.div>
       </div>
 
-      {/* Sleek full-width Resume Reader block */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
-        className="mt-16 glass-card rounded-2xl p-6 relative overflow-hidden"
-      >
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-4 mb-6">
-          <div>
-            <h3 className="text-sm font-mono text-cyan-DEFAULT uppercase tracking-wider">
-              Interactive Resume Document
-            </h3>
-            <p className="text-xs text-slate-400 mt-1 font-mono uppercase tracking-widest">
-              Live compiled stylesheet view
-            </p>
-          </div>
+      {/* Sleek full-width Resume Reader block with toggle button */}
+      <div className="mt-16 flex flex-col items-center justify-center gap-6">
+        <div className="flex flex-wrap gap-5 items-center justify-center">
+          {/* View Resume Button (Blue Gradient Border / Background) */}
+          <button
+            onClick={() => setShowResume(!showResume)}
+            className="relative p-[1.5px] rounded-xl overflow-hidden group transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <span className="absolute inset-0 bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500" />
+            <span className={`relative block px-6 py-2.5 rounded-[10px] font-mono text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+              showResume
+                ? 'bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500 text-slate-950 shadow-[0_0_20px_rgba(6,182,212,0.4)]'
+                : 'bg-slate-950 text-blue-400 group-hover:text-cyan-300'
+            }`}>
+              {showResume ? 'Hide Resume' : 'View Resume'}
+            </span>
+          </button>
+
+          {/* View in Full Tab Button (Purple Gradient Border) */}
           <a
             href="/resume.html"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 bg-[#00E5FF]/10 text-[#00E5FF] hover:bg-[#00E5FF]/20 border border-[#00E5FF]/30 font-mono text-xs uppercase tracking-wider py-2.5 px-5 rounded-lg transition-all duration-300 shadow-md hover:shadow-[#00E5FF]/5"
+            className="relative p-[1.5px] rounded-xl overflow-hidden group transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
           >
-            <span>Open in New Tab</span>
+            <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-400 to-purple-500" />
+            <span className="relative block px-6 py-2.5 rounded-[10px] bg-slate-950 text-purple-400 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-300 group-hover:text-pink-300">
+              View in Full Tab
+            </span>
           </a>
         </div>
 
-        {/* Embedded styled iframe */}
-        <div className="relative rounded-xl border border-slate-800 bg-white overflow-hidden shadow-2xl">
-          <iframe 
-            src="/resume.html" 
-            className="w-full h-[650px] md:h-[800px] border-none"
-            title="Resume Document Viewer"
-          />
-        </div>
-      </motion.div>
+        {/* Embedded styled iframe inside a light background container for original styling */}
+        <AnimatePresence>
+          {showResume && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: '550px' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.4, ease: 'easeInOut' }}
+              className="w-full relative rounded-xl border border-slate-300 bg-white overflow-hidden shadow-2xl flex flex-col"
+            >
+              <iframe 
+                src="/resume.html" 
+                className="w-full h-full border-none"
+                title="Resume Document Viewer"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </SectionWrapper>
   )
 }

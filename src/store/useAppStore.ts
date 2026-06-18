@@ -3,14 +3,12 @@ import { useState, useEffect } from 'react'
 interface AppState {
   theme: 'dark' | 'light'
   audioPlaying: boolean
-  chatbotOpen: boolean
   sidebarCollapsed: boolean
 }
 
 let state: AppState = {
   theme: 'dark',
   audioPlaying: false,
-  chatbotOpen: false,
   sidebarCollapsed: false,
 }
 
@@ -31,10 +29,6 @@ export const useAppStore = () => {
     listeners.forEach(l => l(state))
   }
 
-  const setChatbotOpen = (chatbotOpen: boolean) => {
-    state = { ...state, chatbotOpen }
-    listeners.forEach(l => l(state))
-  }
 
   const setSidebarCollapsed = (sidebarCollapsed: boolean) => {
     state = { ...state, sidebarCollapsed }
@@ -44,7 +38,6 @@ export const useAppStore = () => {
   return {
     ...value,
     setAudioPlaying,
-    setChatbotOpen,
     setSidebarCollapsed,
   }
 }

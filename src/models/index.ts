@@ -210,22 +210,6 @@ const ContactMessageSchema = new Schema({
 }, { timestamps: true })
 
 // ============================================================
-// CHAT CONVERSATION
-// ============================================================
-const ChatMessageSchema = new Schema({
-  role: { type: String, enum: ['user', 'assistant'], required: true },
-  content: { type: String, required: true },
-  timestamp: { type: Date, default: Date.now },
-})
-
-const ChatConversationSchema = new Schema({
-  sessionId: { type: String, required: true, unique: true },
-  messages: [ChatMessageSchema],
-  visitorName: String,
-  visitorEmail: String,
-}, { timestamps: true })
-
-// ============================================================
 // ANALYTICS
 // ============================================================
 const AnalyticsEventSchema = new Schema({
@@ -255,7 +239,6 @@ const SiteSettingsSchema = new Schema({
   ogImage: String,
   googleAnalyticsId: String,
   maintenanceMode: { type: Boolean, default: false },
-  allowChatbot: { type: Boolean, default: true },
   splashEnabled: { type: Boolean, default: true },
   videoAvatarEnabled: { type: Boolean, default: true },
   animatedBgEnabled: { type: Boolean, default: true },
@@ -369,7 +352,6 @@ export const Achievement = models.Achievement || model('Achievement', Achievemen
 export const Timeline = models.Timeline || model('Timeline', TimelineSchema)
 export const CodingProfile = models.CodingProfile || model('CodingProfile', CodingProfileSchema)
 export const ContactMessage = models.ContactMessage || model('ContactMessage', ContactMessageSchema)
-export const ChatConversation = models.ChatConversation || model('ChatConversation', ChatConversationSchema)
 export const AnalyticsEvent = models.AnalyticsEvent || model('AnalyticsEvent', AnalyticsEventSchema)
 export const SiteSettings = models.SiteSettings || model('SiteSettings', SiteSettingsSchema)
 export const AdminUser = models.AdminUser || model('AdminUser', AdminUserSchema)

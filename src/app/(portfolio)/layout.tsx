@@ -1,8 +1,6 @@
 import ParticleCanvas from './components/shared/ParticleCanvas'
-import ChatWidget from './components/chat/ChatWidget'
 import Navbar from './components/shared/Navbar'
 import SplashScreen from './components/shared/SplashScreen'
-import VideoAvatar from './components/shared/VideoAvatar'
 import AudioPlayer from './components/shared/AudioPlayer'
 import { getSiteSettings } from '@/lib/site-settings' // adjust import if needed
 
@@ -24,8 +22,6 @@ export default async function PortfolioLayout({ children }: { children: React.Re
       <div className="relative z-10">
         <Navbar />
 
-        {/* Video avatar only if enabled */}
-        {siteSettings?.videoAvatarEnabled && <VideoAvatar />}
 
         <main>{children}</main>
 
@@ -33,7 +29,6 @@ export default async function PortfolioLayout({ children }: { children: React.Re
         {siteSettings?.audioPlayerEnabled && <AudioPlayer />}
       </div>
 
-      <ChatWidget />
     </>
   )
 }

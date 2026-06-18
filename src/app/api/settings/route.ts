@@ -15,7 +15,6 @@ export async function GET() {
         siteDescription: 'Portfolio of an AI Software Engineer & Researcher',
         siteKeywords: ['AI', 'Next.js', 'React', 'MongoDB', 'Python', 'Machine Learning'],
         maintenanceMode: false,
-        allowChatbot: true,
         accentColor: '#00E5FF',
         secondaryColor: '#FF4FD8',
       })

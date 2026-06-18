@@ -214,13 +214,6 @@ audio::-webkit-media-controls {
   display: none !important;
 }
 
-/* AI Chat widget */
-.chat-widget {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  z-index: 99;
-}
 
 /* Skill bar */
 .skill-bar-fill {

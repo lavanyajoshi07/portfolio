@@ -19,7 +19,6 @@ const settingsSchema = z.object({
   contactEmail: z.string().email('Invalid email address').or(z.literal('')),
   copyrightText: z.string().optional(),
   maintenanceMode: z.boolean().default(false),
-  allowChatbot: z.boolean().default(true),
   accentColor: z.string().min(4, 'Color code required').default('#00E5FF'),
   secondaryColor: z.string().min(4, 'Color code required').default('#FF4FD8'),
   splashEnabled: z.boolean().default(true),
@@ -53,7 +52,6 @@ export default function SettingsPage() {
       contactEmail: '',
       copyrightText: '',
       maintenanceMode: false,
-      allowChatbot: true,
       accentColor: '#00E5FF',
       secondaryColor: '#FF4FD8',
       splashEnabled: true,
@@ -65,7 +63,6 @@ audioPlayerEnabled: true,
   })
 
   const maintenanceModeValue = watch('maintenanceMode')
-  const allowChatbotValue = watch('allowChatbot')
 
   const fetchSettings = async () => {
     setLoading(true)
@@ -81,7 +78,6 @@ audioPlayerEnabled: true,
           contactEmail: d.contactEmail || '',
           copyrightText: d.copyrightText || '',
           maintenanceMode: d.maintenanceMode || false,
-          allowChatbot: d.allowChatbot || false,
           accentColor: d.accentColor || '#00E5FF',
           secondaryColor: d.secondaryColor || '#FF4FD8',
           splashEnabled: d.splashEnabled ?? true,
@@ -286,19 +282,6 @@ audioPlayerEnabled: d.audioPlayerEnabled ?? true,
   </div>
 
   <div className="space-y-4">
-    {/* Chatbot toggle */}
-    <div className="flex items-center justify-between p-4 bg-[#101827]/30 rounded-lg border border-slate-900">
-      <div className="space-y-0.5">
-        <Label className="font-mono text-xs text-slate-200 uppercase">Interactive AI Chatbot</Label>
-        <p className="text-[10px] font-mono text-slate-500 uppercase">
-          Allow users to interact with Claude chatbot in public interface
-        </p>
-      </div>
-      <Switch
-        checked={allowChatbotValue}
-        onCheckedChange={(checked) => setValue('allowChatbot', checked)}
-      />
-    </div>
 
     {/* Maintenance toggle */}
     <div className="flex items-center justify-between p-4 bg-[#101827]/30 rounded-lg border border-slate-900">

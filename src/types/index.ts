@@ -219,21 +219,6 @@ export interface ContactMessage {
   source: 'contact_form' | 'chat'
 }
 
-export interface ChatConversation {
-  _id?: string
-  sessionId: string
-  messages: ChatMessage[]
-  visitorName?: string
-  visitorEmail?: string
-  createdAt?: string
-  updatedAt?: string
-}
-
-export interface ChatMessage {
-  role: 'user' | 'assistant'
-  content: string
-  timestamp: string
-}
 
 // ============================================================
 // ANALYTICS
@@ -273,7 +258,6 @@ export interface SiteSettings {
   ogImage?: string
   googleAnalyticsId?: string
   maintenanceMode: boolean
-  allowChatbot: boolean
   contactEmail: string
   copyrightText: string
   accentColor: string
