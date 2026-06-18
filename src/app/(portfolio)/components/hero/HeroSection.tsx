@@ -173,7 +173,7 @@ export default function HeroSection({ profile }: Props) {
             {profile?.socialLinks && <div className="mt-4"><SocialLinks links={profile.socialLinks} /></div>}
           </div>
 
-          <div className="relative flex items-center justify-center h-full min-h-[400px] lg:col-span-6 lg:translate-x-4 xl:translate-x-12 transition-transform duration-300 z-20">
+          <div className="relative flex items-center justify-center h-full min-h-[400px] lg:col-span-6 lg:translate-x-16 xl:translate-x-32 transition-transform duration-300 z-20">
             <FloatingCards profile={profile} />
           </div>
 

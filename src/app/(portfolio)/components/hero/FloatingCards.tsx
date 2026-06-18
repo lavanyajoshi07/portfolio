@@ -256,9 +256,9 @@ export default function FloatingCards({ profile }: Props) {
             key={`base-${line.id}`}
             d={line.d}
             stroke={line.color}
-            strokeWidth="0.8"
+            strokeWidth="1.2"
             fill="none"
-            opacity="0.12"
+            opacity="0.35"
           />
         ))}
 
@@ -268,11 +268,11 @@ export default function FloatingCards({ profile }: Props) {
             key={`active-${line.id}`}
             d={line.d}
             stroke={line.color}
-            strokeWidth="1.4"
+            strokeWidth="2.2"
             fill="none"
             strokeDasharray="15 90"
             style={{
-              filter: `drop-shadow(0 0 3px ${line.color})`,
+              filter: `drop-shadow(0 0 3px ${line.color}) drop-shadow(0 0 8px ${line.color})`,
             }}
             animate={{ strokeDashoffset: [0, -105] }}
             transition={{
@@ -281,7 +281,7 @@ export default function FloatingCards({ profile }: Props) {
               ease: 'linear',
               delay: line.delay || 0,
             }}
-            opacity="0.7"
+            opacity="0.95"
           />
         ))}
       </svg>
