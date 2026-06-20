@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       
       {/* 3. Variables ab yahan safely accessible hain */}
-      <body className={`${inter.variable} ${jetbrains.variable} ${orbitron.variable} font-sans antialiased bg-slate-950 text-slate-200 overflow-x-hidden`}>
+      <body className={`${inter.variable} ${jetbrains.variable} ${orbitron.variable} font-sans antialiased bg-[#050816] text-slate-200 overflow-x-hidden`}>
         {children}
       </body>
     </html>

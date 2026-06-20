@@ -14,7 +14,7 @@ const colorThemes = {
     text: 'text-[#00E5FF]',
     subtitle: 'text-[#00E5FF]/70',
     border: 'border-[#00E5FF]/20 hover:border-[#00E5FF]/60',
-    glow: 'shadow-[0_0_15px_rgba(0,229,255,0.1)] hover:shadow-[0_0_25px_rgba(0,229,255,0.3)]',
+    glow: 'shadow-[0_0_10px_rgba(0,229,255,0.07)] hover:shadow-[0_0_18px_rgba(0,229,255,0.22)]',
     pulse: 'bg-[#00E5FF]',
     hex: '#00E5FF',
   },
@@ -22,7 +22,7 @@ const colorThemes = {
     text: 'text-[#FF007F]',
     subtitle: 'text-[#FF007F]/70',
     border: 'border-[#FF007F]/20 hover:border-[#FF007F]/60',
-    glow: 'shadow-[0_0_15px_rgba(255,0,127,0.1)] hover:shadow-[0_0_25px_rgba(255,0,127,0.3)]',
+    glow: 'shadow-[0_0_10px_rgba(255,0,127,0.07)] hover:shadow-[0_0_18px_rgba(255,0,127,0.22)]',
     pulse: 'bg-[#FF007F]',
     hex: '#FF007F',
   },
@@ -30,7 +30,7 @@ const colorThemes = {
     text: 'text-[#7C3AED]',
     subtitle: 'text-[#7C3AED]/70',
     border: 'border-[#7C3AED]/20 hover:border-[#7C3AED]/60',
-    glow: 'shadow-[0_0_15px_rgba(124,58,237,0.1)] hover:shadow-[0_0_25px_rgba(124,58,237,0.3)]',
+    glow: 'shadow-[0_0_10px_rgba(124,58,237,0.07)] hover:shadow-[0_0_18px_rgba(124,58,237,0.22)]',
     pulse: 'bg-[#7C3AED]',
     hex: '#7C3AED',
   },
@@ -38,7 +38,7 @@ const colorThemes = {
     text: 'text-[#38BDF8]',
     subtitle: 'text-[#38BDF8]/70',
     border: 'border-[#38BDF8]/20 hover:border-[#38BDF8]/60',
-    glow: 'shadow-[0_0_15px_rgba(56,189,248,0.1)] hover:shadow-[0_0_25px_rgba(56,189,248,0.3)]',
+    glow: 'shadow-[0_0_10px_rgba(56,189,248,0.07)] hover:shadow-[0_0_18px_rgba(56,189,248,0.22)]',
     pulse: 'bg-[#38BDF8]',
     hex: '#38BDF8',
   },
@@ -49,49 +49,49 @@ const cards = [
     name: 'Java',
     subtitle: 'LANGUAGE',
     theme: 'magenta' as const,
-    pos: { left: '50%', top: '12%' },
+    pos: { left: '50%', top: '5%' },
     delay: 0.1,
   },
   {
     name: 'C++',
     subtitle: 'LANGUAGE',
     theme: 'cyan' as const,
-    pos: { left: '20%', top: '26.4%' },
+    pos: { left: '17%', top: '20%' },
     delay: 0.2,
   },
   {
     name: 'C',
     subtitle: 'LANGUAGE',
     theme: 'blue' as const,
-    pos: { left: '80%', top: '26.4%' },
+    pos: { left: '83%', top: '20%' },
     delay: 0.3,
   },
   {
     name: 'Python',
     subtitle: 'CORE',
     theme: 'violet' as const,
-    pos: { left: '13%', top: '58.4%' },
+    pos: { left: '8%', top: '58%' },
     delay: 0.4,
   },
   {
     name: 'MongoDB',
     subtitle: 'DATABASE',
     theme: 'cyan' as const,
-    pos: { left: '87%', top: '58.4%' },
+    pos: { left: '92%', top: '58%' },
     delay: 0.5,
   },
   {
     name: 'PostgreSQL',
     subtitle: 'DATABASE',
     theme: 'blue' as const,
-    pos: { left: '33.6%', top: '84.2%' },
+    pos: { left: '27%', top: '89%' },
     delay: 0.6,
   },
   {
     name: 'AI Models',
     subtitle: 'INTELLIGENCE',
     theme: 'magenta' as const,
-    pos: { left: '66.4%', top: '84.2%' },
+    pos: { left: '73%', top: '89%' },
     delay: 0.7,
   },
 ]
@@ -99,18 +99,18 @@ const cards = [
 // Glowing circuit lines using magenta, cyan, violet, and blue colors
 const circuitLines = [
   // Core Connections (symmetric mathematically based on card positions)
-  { id: 'java-line', d: 'M 250,160 L 250,84', color: '#FF007F', duration: 4.5 },
-  { id: 'cpp-line', d: 'M 180,194 C 145,194 125,170 115,150', color: '#00E5FF', duration: 5 },
-  { id: 'c-line', d: 'M 320,194 C 355,194 375,170 385,150', color: '#38BDF8', duration: 5.5 },
-  { id: 'python-line', d: 'M 162,270 C 120,270 100,285 90,292', color: '#7C3AED', duration: 6 },
-  { id: 'mongodb-line', d: 'M 338,270 C 380,270 400,285 410,292', color: '#00E5FF', duration: 4.8 },
-  { id: 'postgresql-line', d: 'M 211,331 C 180,345 175,375 175,400', color: '#38BDF8', duration: 6.2 },
-  { id: 'ai-line', d: 'M 289,331 C 320,345 325,375 325,400', color: '#FF007F', duration: 4.2 },
+  { id: 'java-line', d: 'M 250,160 L 250,51', color: '#FF007F', duration: 4.5 },
+  { id: 'cpp-line', d: 'M 180,194 C 150,194 135,150 125,126', color: '#00E5FF', duration: 5 },
+  { id: 'c-line', d: 'M 320,194 C 350,194 365,150 375,126', color: '#38BDF8', duration: 5.5 },
+  { id: 'python-line', d: 'M 162,270 C 130,270 105,280 90,290', color: '#7C3AED', duration: 6 },
+  { id: 'mongodb-line', d: 'M 338,270 C 370,270 395,280 410,290', color: '#00E5FF', duration: 4.8 },
+  { id: 'postgresql-line', d: 'M 211,331 C 185,345 180,385 175,419', color: '#38BDF8', duration: 6.2 },
+  { id: 'ai-line', d: 'M 289,331 C 315,345 320,385 325,419', color: '#FF007F', duration: 4.2 },
 
   // Secondary network connections flowing to the right (glowing neural trails aligned to right cards)
-  { id: 'network-trail-1', d: 'M 385,150 C 420,150 440,160 470,160 C 500,160 510,180 550,180', color: '#00E5FF', duration: 8, delay: 0.5 },
-  { id: 'network-trail-2', d: 'M 410,292 C 440,292 460,270 490,270 C 510,270 530,285 550,285', color: '#7C3AED', duration: 7, delay: 1.2 },
-  { id: 'network-trail-3', d: 'M 325,400 C 370,400 400,380 440,380 C 480,380 500,390 550,390', color: '#FF007F', duration: 9, delay: 0 },
+  { id: 'network-trail-1', d: 'M 460,118 C 485,118 500,130 550,130', color: '#00E5FF', duration: 8, delay: 0.5 },
+  { id: 'network-trail-2', d: 'M 480,290 C 505,290 520,300 550,300', color: '#7C3AED', duration: 7, delay: 1.2 },
+  { id: 'network-trail-3', d: 'M 380,445 C 430,445 470,410 550,410', color: '#FF007F', duration: 9, delay: 0 },
 ]
 
 const consoleLines = [
@@ -152,11 +152,11 @@ export default function FloatingCards({ profile }: Props) {
   }, [])
 
   return (
-    <div className="relative w-full max-w-[520px] aspect-square flex items-center justify-center select-none z-10">
+    <div className="relative w-full max-w-[340px] sm:max-w-[430px] aspect-square flex items-center justify-center select-none z-10">
       
       {/* Soft glowing ambient backgrounds - set to low opacity to protect portrait clarity */}
-      <div className="absolute top-1/4 left-1/4 w-[160px] h-[160px] rounded-full bg-violet-600/5 blur-[60px] animate-pulse pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-[180px] h-[180px] rounded-full bg-cyan-600/5 blur-[70px] animate-pulse pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 w-[160px] h-[160px] rounded-full bg-violet-600/[0.03] blur-[60px] animate-pulse pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-[180px] h-[180px] rounded-full bg-cyan-600/[0.03] blur-[70px] animate-pulse pointer-events-none" />
       
       {/* Floating Particle Lights for depth & elegance */}
       {mounted && clientParticles.map((p) => (
@@ -205,9 +205,9 @@ export default function FloatingCards({ profile }: Props) {
 
           {/* Soft layered gradients to achieve the organic jellyfish look */}
           <radialGradient id="jellyfish-radial" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.15" />
-            <stop offset="45%" stopColor="#7C3AED" stopOpacity="0.1" />
-            <stop offset="85%" stopColor="#FF007F" stopOpacity="0.04" />
+            <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.12" />
+            <stop offset="45%" stopColor="#7C3AED" stopOpacity="0.08" />
+            <stop offset="85%" stopColor="#FF007F" stopOpacity="0.03" />
             <stop offset="100%" stopColor="#000000" stopOpacity="0" />
           </radialGradient>
           
@@ -232,7 +232,7 @@ export default function FloatingCards({ profile }: Props) {
           fill="url(#jellyfish-radial)"
           animate={{
             scale: [1, 1.06, 0.95, 1.03, 1],
-            opacity: [0.7, 0.9, 0.6, 0.85, 0.7],
+            opacity: [0.55, 0.72, 0.48, 0.68, 0.55],
           }}
           transition={{
             duration: 7,
@@ -253,7 +253,7 @@ export default function FloatingCards({ profile }: Props) {
           filter="url(#jellyfish-glow-filter)"
           animate={{
             scale: [1, 1.05, 0.96, 1.03, 1],
-            opacity: [0.55, 0.8, 0.45, 0.7, 0.55],
+            opacity: [0.44, 0.64, 0.36, 0.56, 0.44],
             rotate: [0, 90, 180, 270, 360],
           }}
           transition={{
@@ -277,7 +277,7 @@ export default function FloatingCards({ profile }: Props) {
           animate={{
             scale: [1, 0.96, 1.04, 0.98, 1],
             rotate: [360, 270, 180, 90, 0],
-            opacity: [0.45, 0.7, 0.4, 0.6, 0.45],
+            opacity: [0.36, 0.56, 0.32, 0.48, 0.36],
           }}
           transition={{
             duration: 8,
@@ -306,12 +306,12 @@ export default function FloatingCards({ profile }: Props) {
             ease: 'linear',
           }}
           style={{ originX: '250px', originY: '250px' }}
-          opacity="0.4"
+          opacity="0.32"
         />
 
         {/* Static concentric circle helper rings */}
-        <circle cx="250" cy="250" r="122" fill="none" stroke="rgba(56, 189, 248, 0.04)" strokeWidth="0.8" strokeDasharray="4 4" />
-        <circle cx="250" cy="250" r="135" fill="none" stroke="rgba(255, 0, 127, 0.03)" strokeWidth="0.8" />
+        <circle cx="250" cy="250" r="122" fill="none" stroke="rgba(56, 189, 248, 0.015)" strokeWidth="0.8" strokeDasharray="4 4" />
+        <circle cx="250" cy="250" r="135" fill="none" stroke="rgba(255, 0, 127, 0.01)" strokeWidth="0.8" />
 
         {/* Base circuit lines (dormant tracks) */}
         {circuitLines.map((line) => (
@@ -357,7 +357,7 @@ export default function FloatingCards({ profile }: Props) {
           WebkitMaskImage: 'radial-gradient(circle, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 70%)',
         }}
       >
-        <div className="opacity-[0.06] text-center w-full flex flex-col gap-0.5">
+        <div className="opacity-[0.02] text-center w-full flex flex-col gap-0.5">
           <AnimatePresence mode="wait">
             <motion.div
               key={consoleIndex}
@@ -387,7 +387,7 @@ export default function FloatingCards({ profile }: Props) {
               transition: { staggerChildren: 0.05 },
             },
           }}
-          className="flex flex-row items-center font-display font-black text-[12px] md:text-[13px] tracking-wider text-slate-100 uppercase"
+          className="flex flex-row items-center font-display font-black text-[10px] sm:text-[11px] tracking-wider text-slate-100 uppercase"
         >
           {Array.from("SYSTEM_INTEGRATION").map((char, index) => (
             <motion.span
@@ -405,7 +405,7 @@ export default function FloatingCards({ profile }: Props) {
           ))}
           <motion.span
             animate={{ opacity: [1, 0, 1] }}
-            transition={{ repeat: Infinity, duration: 1.2, ease: 'steps(2)' }}
+            transition={{ repeat: Infinity, duration: 1.2, ease: 'linear' }}
             className="text-[#00E5FF] font-bold ml-1"
           >
             //
@@ -450,28 +450,28 @@ export default function FloatingCards({ profile }: Props) {
                 transition: { duration: 0.2 },
               }}
               className={`
-                w-[110px] md:w-[130px] h-[48px] md:h-[52px]
-                flex flex-col justify-center px-3 md:px-4
+                w-[96px] sm:w-[115px] h-[38px] sm:h-[46px]
+                flex flex-col justify-center px-2 sm:px-3
                 bg-slate-950/30 backdrop-blur-md
                 border rounded-xl transition-all duration-300 cursor-pointer
                 ${theme.border} ${theme.glow}
               `}
             >
               {/* Card Title */}
-              <div className={`font-sans font-extrabold text-xs md:text-sm tracking-wide ${theme.text}`}>
+              <div className={`font-sans font-extrabold text-[10px] sm:text-xs tracking-wide ${theme.text}`}>
                 {card.name}
               </div>
               
               {/* Card Subtitle - styled in all-small-caps */}
               <div 
-                className={`font-mono text-[8px] md:text-[9px] tracking-widest font-bold ${theme.subtitle}`}
+                className={`font-mono text-[7px] sm:text-[8px] tracking-widest font-bold ${theme.subtitle}`}
                 style={{ fontVariant: 'all-small-caps' }}
               >
                 {card.subtitle}
               </div>
 
               {/* Glowing micro pulse light dot inside each card */}
-              <div className="absolute top-2 right-2 flex items-center justify-center">
+              <div className="absolute top-1.5 right-1.5 flex items-center justify-center">
                 <span className={`w-1 h-1 rounded-full ${theme.pulse} opacity-70`} />
                 <span className={`absolute w-2 h-2 rounded-full ${theme.pulse} opacity-30 animate-ping`} />
               </div>

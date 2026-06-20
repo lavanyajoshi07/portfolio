@@ -8,7 +8,7 @@ export default function Topbar() {
   const { data: session } = useSession()
   const pathname = usePathname()
 
-  // Format title from pathname (e.g. /admin/coding-profiles -> Coding Profiles)
+  // Format title from pathname (e.g. /admin/coding-activity -> Coding Activity)
   const getPageTitle = () => {
     const segments = pathname.split('/')
     const lastSegment = segments[segments.length - 1]

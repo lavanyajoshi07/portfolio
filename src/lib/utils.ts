@@ -125,3 +125,53 @@ export const getQueryParams = (url: string): Record<string, string> => {
 export const sleep = (ms: number): Promise<void> => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+/**
+ * Parse and optimize Cloudinary video URLs or return default urls
+ */
+export function getOptimizedVideoUrls(url: string | undefined): {
+  webm: string
+  mp4: string
+  isCloudinary: boolean
+} {
+  if (!url) {
+    return {
+      webm: '',
+      mp4: '/videos/avatar.mp4',
+      isCloudinary: false,
+    }
+  }
+
+  const isCloudinary = url.includes('res.cloudinary.com')
+  if (isCloudinary) {
+    const parts = url.split('/video/upload/')
+    if (parts.length === 2) {
+      const prefix = parts[0] + '/video/upload'
+      const rest = parts[1]
+
+      // Extract path without file extension
+      const lastDotIndex = rest.lastIndexOf('.')
+      const pathWithoutExtension = lastDotIndex !== -1 ? rest.substring(0, lastDotIndex) : rest
+
+      // Cloudinary video transformations:
+      // q_auto:eco -> economy quality (highly recommended for background/ambient video)
+      // w_1280,c_limit -> limit width to 1280px to prevent excessive bandwidth usage
+      // e_brightness:10,e_contrast:5,e_saturation:10 -> offloads CSS filters to server side pre-processing
+      const transformationsWebm = 'f_webm,q_auto:eco,w_1280,c_limit,e_brightness:10,e_contrast:5,e_saturation:10'
+      const transformationsMp4 = 'f_mp4,q_auto:eco,w_1280,c_limit,e_brightness:10,e_contrast:5,e_saturation:10'
+
+      return {
+        webm: `${prefix}/${transformationsWebm}/${pathWithoutExtension}.webm`,
+        mp4: `${prefix}/${transformationsMp4}/${pathWithoutExtension}.mp4`,
+        isCloudinary: true,
+      }
+    }
+  }
+
+  // Fallback for non-Cloudinary direct URLs (e.g. local public files or other hosts)
+  return {
+    webm: '',
+    mp4: url,
+    isCloudinary: false,
+  }
+}

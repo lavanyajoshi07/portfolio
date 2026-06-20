@@ -7,7 +7,6 @@ export interface Profile {
   name: string
   title: string
   tagline: string
-  bio: string
   email: string
   location: string
   profileImage?: string
@@ -21,24 +20,14 @@ export interface Profile {
     twitter?: string
     instagram?: string
     website?: string
+    phone?: string
+    leetcode?: string
+    devto?: string
+    medium?: string
   }
-  education: Education[]
-  careerGoals?: string
-  learningJourney?: string
   isAvailableForWork: boolean
   yearsOfExperience?: number
   updatedAt?: string
-}
-
-export interface Education {
-  institution: string
-  degree: string
-  field: string
-  startYear: number
-  endYear?: number
-  current: boolean
-  gpa?: string
-  description?: string
 }
 
 export interface TranscriptEntry {
@@ -51,27 +40,52 @@ export interface TranscriptEntry {
 // SKILLS
 // ============================================================
 
-export type SkillCategory =
-  | 'frontend'
-  | 'backend'
-  | 'database'
-  | 'devops'
-  | 'ai_ml'
-  | 'tools'
-  | 'languages'
-  | 'mobile'
-  | 'other'
+export interface TechStackSettings {
+  _id?: string
+  badgeText: string
+  title: string
+  subtitle?: string
+  quote?: string
+  categoriesEnabled: boolean
+  statsEnabled: boolean
+  quoteEnabled: boolean
+  animationsEnabled: boolean
+}
 
-export interface Skill {
+export interface TechnologyCategory {
   _id?: string
   name: string
-  category: SkillCategory
-  level: number // 0-100
-  yearsOfExperience?: number
-  icon?: string
-  color?: string
-  featured: boolean
+  slug: string
   order: number
+  active: boolean
+  deletedAt?: string | null
+}
+
+export interface Technology {
+  _id?: string
+  name: string
+  iconType: 'library' | 'upload'
+  icon: string
+  categoryId: string
+  proficiency: number
+  experience?: string
+  description?: string
+  color?: string
+  displayOrder: number
+  active: boolean
+  featured: boolean
+  deletedAt?: string | null
+}
+
+export interface TechStats {
+  _id?: string
+  iconType: 'library' | 'upload'
+  icon?: string
+  value: string
+  label: string
+  order: number
+  active: boolean
+  deletedAt?: string | null
 }
 
 // ============================================================
@@ -80,26 +94,54 @@ export interface Skill {
 
 export interface Project {
   _id?: string
-  slug: string
   title: string
-  description: string
-  longDescription?: string
-  coverImage?: string
-  gallery?: string[]
-  technologies: string[]
-  category: string
-  tags: string[]
-  githubUrl?: string
-  liveUrl?: string
-  featured: boolean
+  slug: string
+  shortDescription: string
+  fullDescription?: string
+  thumbnail?: {
+    image: string
+    alt: string
+  }
+  gallery?: {
+    image: string
+    alt: string
+  }[]
+  architectureDiagram?: string
+  category?: string
   status: 'completed' | 'in_progress' | 'archived'
-  startDate?: string
-  endDate?: string
-  challenges?: string[]
-  lessons?: string[]
-  features?: string[]
+  publishStatus?: 'draft' | 'preview' | 'published'
+  featured: boolean
+  featuredOrder?: number
+  isPublished: boolean
+  showOnHomepage: boolean
+  isCaseStudy: boolean
+  sortOrder?: number
+  duration?: string
+  teamSize?: string
+  techStack: string[]
+  tags?: string[]
+  searchKeywords?: string[]
+  keyMetrics?: {
+    value: string
+    label: string
+  }[]
+  highlights?: string[]
+  problemStatement?: string
+  solution?: string
+  challenges?: string
+  outcomes?: string
+  githubUrl?: string
+  demoUrl?: string
+  documentationUrl?: string
+  videoDemoUrl?: string
+  showGithub?: boolean
+  showDemo?: boolean
+  showDocumentation?: boolean
+  showVideoDemo?: boolean
+  seoTitle?: string
+  seoDescription?: string
+  seoKeywords?: string[]
   viewCount: number
-  order: number
   createdAt?: string
   updatedAt?: string
 }
@@ -112,97 +154,116 @@ export interface Certification {
   _id?: string
   title: string
   issuer: string
-  issueDate: string
-  expiryDate?: string
-  credentialId?: string
+  logoMode: 'auto' | 'custom'
+  logo?: string
+  logoAlt?: string
+  thumbnail?: string
+  tags?: string[]
+  certificateUrl?: string
   credentialUrl?: string
-  image?: string
-  certificateImage?: string
-  skills?: string[]
   featured: boolean
-  order: number
+  sortOrder: number
+  isPublished: boolean
 }
 
 // ============================================================
 // ACHIEVEMENTS
 // ============================================================
 
-export type AchievementType = 'hackathon' | 'competition' | 'leadership' | 'academic' | 'award' | 'other'
+export interface AchievementCategory {
+  _id?: string
+  name: string
+  slug: string
+  icon?: string
+  color?: string
+  description?: string
+  coverImage?: string
+  displayOrder: number
+  active: boolean
+  deletedAt?: string | null
+  createdAt?: string
+  updatedAt?: string
+}
 
 export interface Achievement {
   _id?: string
   title: string
-  description: string
-  type: AchievementType
+  organization?: string
+  description?: string
   date: string
-  position?: string
-  organizer?: string
-  image?: string
-  url?: string
-  featured: boolean
-  order: number
+  year: string
+  category: string | AchievementCategory
+  icon?: string
+  badgeColor?: string
+  showInCategory: boolean
+  displayOrder: number
+  achievementImage?: string
+  achievementUrl?: string
+  tags?: string[]
+  metricValue?: string
+  metricLabel?: string
+  deletedAt?: string | null
+  createdAt?: string
+  updatedAt?: string
 }
 
-// ============================================================
-// TIMELINE
-// ============================================================
-
-export type TimelineType = 'education' | 'project' | 'achievement' | 'milestone' | 'work'
-
-export interface TimelineItem {
+export interface AchievementSettings {
   _id?: string
   title: string
-  description: string
-  type: TimelineType
-  date: string
-  icon?: string
-  color?: string
-  tags?: string[]
-  url?: string
-  featured: boolean
-  order: number
+  subtitle?: string
+  showCategoryGrid: boolean
+  animationsEnabled: boolean
+  createdAt?: string
+  updatedAt?: string
 }
 
 // ============================================================
-// CODING PROFILES
+// CODING ACTIVITY
 // ============================================================
 
-export interface CodingProfile {
+export interface CodingActivitySettings {
   _id?: string
-  platform: 'github' | 'leetcode' | 'hackerrank' | 'codechef' | 'codeforces' | 'other'
-  username: string
-  profileUrl?: string
-  apiToken?: string // stored encrypted, never sent to client
-  displayData?: CodingStats
-  enabled: boolean
-  lastSynced?: string
-}
+  title: string
+  subtitle: string
 
-export interface CodingStats {
-  totalSolved?: number
-  easySolved?: number
-  mediumSolved?: number
-  hardSolved?: number
-  ranking?: number
-  rating?: number
-  stars?: number
-  contributions?: number
-  followers?: number
-  publicRepos?: number
-  streak?: number
-  heatmapData?: HeatmapEntry[]
-  languageStats?: LanguageStat[]
-}
+  problemsSolved: string
+  problemsSolvedSource: string
+  contributions: string
+  contributionsSource: string
+  publicRepos: string
+  publicReposSource: string
+  followers: string
+  followersSource: string
 
-export interface HeatmapEntry {
-  date: string
-  count: number
-}
+  contributionGraphImage: string
+  contributionGraphAlt: string
+  graphImageDisplayMode?: 'cover' | 'contain' | 'fill'
 
-export interface LanguageStat {
-  language: string
-  percentage: number
-  color: string
+  totalContributions: string
+  currentStreak: string
+  longestStreak: string
+  activeDays: string
+
+  profileImage: string
+  profileName: string
+  profileUsername: string
+  profileBio: string
+
+  githubFollowers: string
+  githubFollowing: string
+  githubRepos: string
+  githubContributions: string
+  githubCurrentStreak: string
+  githubProfileUrl: string
+
+  motivationalQuote: string
+  motivationalIcon: string
+  motivationalEmoji: string
+
+  showOverviewCards: boolean
+  showContributionGraph: boolean
+  showGithubProfile: boolean
+  showMotivationalBanner: boolean
 }
 
 // ============================================================
@@ -250,6 +311,13 @@ export interface AnalyticsSummary {
 // SETTINGS
 // ============================================================
 
+export interface SectionSetting {
+  sectionId: string
+  visible: boolean
+  recruiterVisible: boolean
+  order: number
+}
+
 export interface SiteSettings {
   _id?: string
   siteName: string
@@ -258,10 +326,16 @@ export interface SiteSettings {
   ogImage?: string
   googleAnalyticsId?: string
   maintenanceMode: boolean
+  splashEnabled?: boolean
+  videoAvatarEnabled?: boolean
+  animatedBgEnabled?: boolean
+  audioPlayerEnabled?: boolean
   contactEmail: string
   copyrightText: string
   accentColor: string
   secondaryColor: string
+  recruiterModeEnabled?: boolean
+  sectionSettings?: SectionSetting[]
   updatedAt?: string
 }
 
@@ -333,4 +407,54 @@ export interface AudioPlayerState {
   currentTime: number
   duration: number
   currentTranscript?: string
+}
+
+// ============================================================
+// NEW INTERFACES FOR MASTER REDESIGN
+// ============================================================
+
+
+export interface ActivityLog {
+  _id?: string
+  text: string
+  date: string
+  icon?: string
+  order: number
+  enabled: boolean
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface FutureGoal {
+  _id?: string
+  text: string
+  category?: string
+  completed: boolean
+  order: number
+  enabled: boolean
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface Faq {
+  _id?: string
+  question: string
+  answer: string
+  order: number
+  enabled: boolean
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface CommunityItem {
+  _id?: string
+  title: string
+  description?: string
+  category: 'hackathon' | 'open_source' | 'workshop' | 'event' | 'other'
+  date?: string
+  link?: string
+  enabled: boolean
+  order: number
+  createdAt?: string
+  updatedAt?: string
 }

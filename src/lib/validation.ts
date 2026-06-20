@@ -5,7 +5,19 @@ import { z } from 'zod'
 // A preprocessor helper for optional URLs to handle null, undefined, and empty string
 const optionalUrl = z.preprocess(
   (val) => (val === '' || val === null || val === undefined) ? undefined : val,
-  z.string().url('Must be a valid URL').optional()
+  z.string().refine(
+    (v) => {
+      if (!v) return true
+      if (v.startsWith('/')) return true
+      try {
+        new URL(v)
+        return true
+      } catch {
+        return false
+      }
+    },
+    { message: 'Must be a valid URL or relative path' }
+  ).optional()
 )
 
 // A preprocessor helper for optional strings to handle null
@@ -25,23 +37,11 @@ const optionalNumber = z.preprocess(
   z.number().optional()
 )
 
-const educationItemSchema = z.object({
-  institution: optionalString,
-  degree: optionalString,
-  field: optionalString,
-  startYear: optionalNumber,
-  endYear: optionalNumber,
-  current: z.preprocess((val) => val === null ? undefined : val, z.boolean().optional()),
-  gpa: optionalString,
-  description: optionalString,
-})
-
 // Profile
 export const profileSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   title: z.string().min(5, 'Title must be at least 5 characters'),
   tagline: z.string().min(10, 'Tagline must be at least 10 characters'),
-  bio: optionalString,
   email: z.string().email('Invalid email address'),
   location: optionalString,
   profileImage: optionalUrl,
@@ -65,66 +65,174 @@ export const profileSchema = z.object({
       linkedin: optionalUrl,
       twitter: optionalUrl,
       website: optionalUrl,
+      phone: z.preprocess((val) => (val === '' || val === null || val === undefined) ? undefined : val, z.string().optional()),
+      leetcode: optionalUrl,
+      devto: optionalUrl,
+      medium: optionalUrl,
     })
     .optional(),
-  education: z.array(educationItemSchema).optional(),
-  careerGoals: optionalString,
-  learningJourney: optionalString,
 })
 
-// Skill
-export const skillSchema = z.object({
-  name: z.string().min(2, 'Skill name required'),
-  category: z.enum(['frontend', 'backend', 'database', 'devops', 'ai_ml', 'tools', 'languages', 'mobile', 'other']),
-  level: z.number().min(0).max(100),
-  yearsOfExperience: z.number().optional(),
-  featured: z.boolean().default(false),
-  order: z.number().default(0),
+// Tech Stack Settings
+export const techStackSettingsSchema = z.object({
+  badgeText: z.string().min(1, 'Badge text is required').default('Tech Stack'),
+  title: z.string().min(1, 'Title is required').default('Tech Stack'),
+  subtitle: z.string().optional().default(''),
+  quote: z.string().optional().default(''),
+  categoriesEnabled: z.boolean().default(true),
+  statsEnabled: z.boolean().default(true),
+  quoteEnabled: z.boolean().default(true),
+  animationsEnabled: z.boolean().default(true),
+})
+
+// Technology Category
+export const technologyCategorySchema = z.object({
+  name: z.string().min(1, 'Category name is required'),
+  slug: z.string().min(1, 'Category slug is required'),
+  order: z.number().default(0).optional(),
+  active: z.boolean().default(true).optional(),
+  deletedAt: z.preprocess(
+    (val) => (val === '' || val === null || val === undefined) ? null : new Date(val as string),
+    z.date().nullable().optional()
+  ),
+})
+
+// Technology
+export const technologySchema = z.object({
+  name: z.string().min(1, 'Technology name is required'),
+  iconType: z.enum(['library', 'upload']).default('library'),
+  icon: z.string().min(1, 'Icon name is required'),
+  categoryId: z.string().min(1, 'Category ID is required'),
+  proficiency: z.number().min(0).max(100).default(80).optional(),
+  experience: z.string().optional().default(''),
+  description: z.string().optional().default(''),
+  color: z.string().optional().default(''),
+  displayOrder: z.number().default(0).optional(),
+  active: z.boolean().default(true).optional(),
+  featured: z.boolean().default(false).optional(),
+  deletedAt: z.preprocess(
+    (val) => (val === '' || val === null || val === undefined) ? null : new Date(val as string),
+    z.date().nullable().optional()
+  ),
+})
+
+// Tech Stats
+export const techStatsSchema = z.object({
+  iconType: z.enum(['library', 'upload']).default('library'),
+  icon: z.string().optional().default(''),
+  value: z.string().min(1, 'Value is required'),
+  label: z.string().min(1, 'Label is required'),
+  order: z.number().default(0).optional(),
+  active: z.boolean().default(true).optional(),
+  deletedAt: z.preprocess(
+    (val) => (val === '' || val === null || val === undefined) ? null : new Date(val as string),
+    z.date().nullable().optional()
+  ),
 })
 
 // Project
 export const projectSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  longDescription: z.string().optional(),
-  technologies: z.array(z.string()),
-  category: z.string().optional(),
-  githubUrl: z.string().url().or(z.literal('')).optional(),
-  liveUrl: z.string().url().or(z.literal('')).optional(),
-  featured: z.boolean().default(false),
+  shortDescription: z.string().min(10, 'Short description must be at least 10 characters'),
+  fullDescription: z.string().optional().default(''),
+  thumbnail: z.object({
+    image: z.string().optional().default(''),
+    alt: z.string().optional().default(''),
+  }).optional().default({ image: '', alt: '' }),
+  gallery: z.array(z.object({
+    image: z.string(),
+    alt: z.string().optional().default(''),
+  })).optional().default([]),
+  architectureDiagram: z.string().optional().default(''),
+  category: z.string().optional().default(''),
   status: z.enum(['completed', 'in_progress', 'archived']).default('completed'),
-  coverImage: z.string().optional(),
+  publishStatus: z.enum(['draft', 'preview', 'published']).default('draft'),
+  featured: z.boolean().default(false),
+  featuredOrder: z.number().default(0).optional(),
+  isPublished: z.boolean().default(true),
+  showOnHomepage: z.boolean().default(true),
+  isCaseStudy: z.boolean().default(false),
+  sortOrder: z.number().default(0).optional(),
+  duration: z.string().optional().default(''),
+  teamSize: z.string().optional().default(''),
+  techStack: z.array(z.string()).default([]),
+  tags: z.array(z.string()).default([]),
+  searchKeywords: z.array(z.string()).default([]),
+  keyMetrics: z.array(z.object({
+    value: z.string().min(1, 'Metric value required'),
+    label: z.string().min(1, 'Metric label required'),
+  })).default([]),
+  highlights: z.array(z.string()).default([]),
+  problemStatement: z.string().optional().default(''),
+  solution: z.string().optional().default(''),
+  challenges: z.string().optional().default(''),
+  outcomes: z.string().optional().default(''),
+  githubUrl: z.string().optional().default(''),
+  demoUrl: z.string().optional().default(''),
+  documentationUrl: z.string().optional().default(''),
+  videoDemoUrl: z.string().optional().default(''),
+  showGithub: z.boolean().default(true),
+  showDemo: z.boolean().default(true),
+  showDocumentation: z.boolean().default(true),
+  showVideoDemo: z.boolean().default(true),
+  seoTitle: z.string().optional().default(''),
+  seoDescription: z.string().optional().default(''),
+  seoKeywords: z.array(z.string()).default([]),
 })
 
 // Certification
 export const certificationSchema = z.object({
   title: z.string().min(3, 'Title required'),
   issuer: z.string().min(2, 'Issuer required'),
-  issueDate: z.string(),
-  expiryDate: z.string().optional(),
-  credentialUrl: z.string().url().optional(),
-  certificateImage: optionalUrl,
-  skills: z.array(z.string()).optional(),
+  logoMode: z.enum(['auto', 'custom']).default('auto'),
+  logo: optionalUrl,
+  logoAlt: z.string().optional(),
+  thumbnail: z.string().optional(),
+  tags: z.array(z.string()).default([]),
+  certificateUrl: optionalUrl,
+  credentialUrl: optionalUrl,
   featured: z.boolean().default(false),
+  sortOrder: z.number().default(0).optional(),
+  isPublished: z.boolean().default(true).optional(),
+})
+
+// Achievement Category
+export const achievementCategorySchema = z.object({
+  name: z.string().min(1, 'Category name is required'),
+  slug: z.string().min(1, 'Category slug is required'),
+  icon: z.string().optional().default(''),
+  color: z.string().optional().default(''),
+  description: z.string().optional().default(''),
+  coverImage: z.string().optional().default(''),
+  displayOrder: z.number().default(0).optional(),
+  active: z.boolean().default(true).optional(),
+})
+
+// Achievement Settings
+export const achievementSettingsSchema = z.object({
+  title: z.string().min(1, 'Section title is required').default('ACHIEVEMENTS & AWARDS'),
+  subtitle: z.string().optional().default(''),
+  showCategoryGrid: z.boolean().default(true),
+  animationsEnabled: z.boolean().default(true),
 })
 
 // Achievement
 export const achievementSchema = z.object({
-  title: z.string().min(3, 'Title required'),
-  description: z.string().optional(),
-  type: z.enum(['hackathon', 'competition', 'leadership', 'academic', 'award', 'other']),
-  date: z.string(),
-  position: z.string().optional(),
-  organizer: z.string().optional(),
-})
-
-// Timeline
-export const timelineSchema = z.object({
-  title: z.string().min(3, 'Title required'),
-  description: z.string().optional(),
-  type: z.enum(['education', 'project', 'achievement', 'milestone', 'work']),
-  date: z.string(),
-  tags: z.array(z.string()).optional(),
+  title: z.string().min(3, 'Title must be at least 3 characters'),
+  organization: z.string().optional().default(''),
+  description: z.string().optional().default(''),
+  date: z.string().min(1, 'Date is required'),
+  year: z.string().min(4, 'Year is required'),
+  category: z.string().min(1, 'Category ID reference is required'),
+  icon: z.string().optional().default(''),
+  badgeColor: z.string().optional().default(''),
+  showInCategory: z.boolean().default(true),
+  displayOrder: z.number().default(0).optional(),
+  achievementImage: z.string().optional().default(''),
+  achievementUrl: optionalUrl,
+  tags: z.array(z.string()).default([]),
+  metricValue: z.string().optional().default(''),
+  metricLabel: z.string().optional().default(''),
 })
 
 // Contact Message
@@ -148,12 +256,6 @@ export const loginSchema = z.object({
   password: z.string().min(1, 'Password required'),
 })
 
-// Coding Profile
-export const codingProfileSchema = z.object({
-  platform: z.enum(['github', 'leetcode', 'hackerrank', 'codechef', 'codeforces', 'other']),
-  username: z.string().min(1, 'Username required'),
-  enabled: z.boolean().default(true),
-})
 
 const resumeSkillSchema = z.object({
   label: z.string().min(1, 'Label is required'),
@@ -178,6 +280,8 @@ const resumeEducationSchema = z.object({
   institution: z.string().min(1, 'Institution is required'),
   duration: z.string().optional().default(''),
   coursework: z.string().optional().default(''),
+  description: z.string().optional().default(''),
+  bullets: z.array(z.string()).optional().default([]),
 })
 
 const resumeSoftSkillSchema = z.object({
@@ -204,15 +308,19 @@ export const resumeSchema = z.object({
 
 // Type exports
 export type Profile = z.infer<typeof profileSchema>
-export type Skill = z.infer<typeof skillSchema>
+export type TechStackSettings = z.infer<typeof techStackSettingsSchema>
+export type TechnologyCategory = z.infer<typeof technologyCategorySchema>
+export type Technology = z.infer<typeof technologySchema>
+export type TechStats = z.infer<typeof techStatsSchema>
 export type Project = z.infer<typeof projectSchema>
 export type Certification = z.infer<typeof certificationSchema>
 export type Achievement = z.infer<typeof achievementSchema>
-export type Timeline = z.infer<typeof timelineSchema>
+export type AchievementCategory = z.infer<typeof achievementCategorySchema>
+export type AchievementSettings = z.infer<typeof achievementSettingsSchema>
 export type ContactMessage = z.infer<typeof contactMessageSchema>
 export type AdminUser = z.infer<typeof adminUserSchema>
 export type Login = z.infer<typeof loginSchema>
-export type CodingProfile = z.infer<typeof codingProfileSchema>
+
 export type Resume = z.infer<typeof resumeSchema>
 
 /**

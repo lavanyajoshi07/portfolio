@@ -30,10 +30,21 @@ audioPlayerEnabled: z.boolean().default(true),
 
 type SettingsFormData = z.infer<typeof settingsSchema>
 
+interface SectionSetting {
+  sectionId: string
+  visible: boolean
+  recruiterVisible: boolean
+  order: number
+}
+
 export default function SettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [keywords, setKeywords] = useState('')
+  const [sectionSettings, setSectionSettings] = useState<SectionSetting[]>([])
+  const [newSectionId, setNewSectionId] = useState('')
+  const [newSectionVisible, setNewSectionVisible] = useState(true)
+  const [newSectionRecruiterVisible, setNewSectionRecruiterVisible] = useState(true)
   const { toast } = useToast()
 
   const {
@@ -89,6 +100,9 @@ audioPlayerEnabled: d.audioPlayerEnabled ?? true,
         if (d.siteKeywords && Array.isArray(d.siteKeywords)) {
           setKeywords(d.siteKeywords.join(', '))
         }
+        if (d.sectionSettings && Array.isArray(d.sectionSettings)) {
+          setSectionSettings(d.sectionSettings.sort((a: any, b: any) => a.order - b.order))
+        }
       }
     } catch (err) {
       console.error(err)
@@ -118,6 +132,7 @@ audioPlayerEnabled: d.audioPlayerEnabled ?? true,
     const payload = {
       ...data,
       siteKeywords: parsedKeywords,
+      sectionSettings,
     }
 
     try {
@@ -343,6 +358,170 @@ audioPlayerEnabled: d.audioPlayerEnabled ?? true,
         checked={watch('audioPlayerEnabled')}
         onCheckedChange={(checked) => setValue('audioPlayerEnabled', checked)}
       />
+    </div>
+  </div>
+</div>
+
+{/* Section Layout & Visibility Manager Card */}
+<div className="glass-card bg-[#0A1020]/40 border border-[#00E5FF]/10 rounded-xl p-6 space-y-6">
+  <div className="flex items-center gap-2 border-b border-slate-900/60 pb-3">
+    <Settings2 className="w-4.5 h-4.5 text-[#00E5FF]" />
+    <h2 className="font-mono text-xs font-semibold text-white uppercase tracking-wider">
+      Section Layout & Visibility Manager
+    </h2>
+  </div>
+
+  <div className="space-y-4">
+    <div className="overflow-x-auto">
+      <table className="w-full text-left font-mono text-xs text-slate-300">
+        <thead>
+          <tr className="border-b border-slate-800 text-[10px] text-slate-500 uppercase tracking-wider">
+            <th className="py-2">Section ID</th>
+            <th className="py-2">Normal View</th>
+            <th className="py-2">Recruiter View</th>
+            <th className="py-2 text-center">Order</th>
+            <th className="py-2 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-slate-900">
+          {sectionSettings.map((sec, idx) => (
+            <tr key={sec.sectionId} className="hover:bg-slate-950/20">
+              <td className="py-3 font-semibold text-white uppercase tracking-wide">
+                {sec.sectionId.replace('-', ' ')}
+                <span className="block font-mono text-[9px] text-slate-500 lowercase mt-0.5">#{sec.sectionId}</span>
+              </td>
+              <td className="py-3">
+                <Switch
+                  checked={sec.visible}
+                  onCheckedChange={(checked) => {
+                    const next = [...sectionSettings]
+                    next[idx].visible = checked
+                    setSectionSettings(next)
+                  }}
+                />
+              </td>
+              <td className="py-3">
+                <Switch
+                  checked={sec.recruiterVisible}
+                  onCheckedChange={(checked) => {
+                    const next = [...sectionSettings]
+                    next[idx].recruiterVisible = checked
+                    setSectionSettings(next)
+                  }}
+                />
+              </td>
+              <td className="py-3 text-center">
+                <input
+                  type="number"
+                  value={sec.order}
+                  onChange={(e) => {
+                    const next = [...sectionSettings]
+                    next[idx].order = Number(e.target.value)
+                    setSectionSettings(next.sort((a, b) => a.order - b.order))
+                  }}
+                  className="w-16 bg-[#101827]/70 border border-slate-800 rounded text-center text-white py-1 focus:border-[#00E5FF]/40 outline-none"
+                />
+              </td>
+              <td className="py-3 text-right space-x-1">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={idx === 0}
+                  onClick={() => {
+                    const next = [...sectionSettings]
+                    const temp = next[idx].order
+                    next[idx].order = next[idx - 1].order
+                    next[idx - 1].order = temp
+                    setSectionSettings(next.sort((a, b) => a.order - b.order))
+                  }}
+                  className="border-slate-800 px-2 text-slate-400 hover:text-white"
+                >
+                  ↑
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={idx === sectionSettings.length - 1}
+                  onClick={() => {
+                    const next = [...sectionSettings]
+                    const temp = next[idx].order
+                    next[idx].order = next[idx + 1].order
+                    next[idx + 1].order = temp
+                    setSectionSettings(next.sort((a, b) => a.order - b.order))
+                  }}
+                  className="border-slate-800 px-2 text-slate-400 hover:text-white"
+                >
+                  ↓
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setSectionSettings(sectionSettings.filter(s => s.sectionId !== sec.sectionId))
+                  }}
+                  className="border-slate-800 px-2 text-red-400 hover:bg-red-950/20 hover:border-red-500/20"
+                >
+                  Delete
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    {/* Form to add custom sections */}
+    <div className="border-t border-slate-900 pt-4 mt-2">
+      <h3 className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-3">Add Custom Layout Section</h3>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end bg-[#101827]/20 p-3 rounded-lg border border-slate-900">
+        <div className="space-y-1.5 md:col-span-2">
+          <Label className="font-mono text-[9px] text-slate-500 uppercase">New Section ID / Name</Label>
+          <Input
+            value={newSectionId}
+            onChange={(e) => setNewSectionId(e.target.value)}
+            placeholder="e.g. hackathons-list"
+            className="bg-[#101827]/70 border-slate-800 text-white font-mono"
+          />
+        </div>
+        <div className="flex gap-4">
+          <div className="space-y-1.5 flex flex-col items-center">
+            <Label className="font-mono text-[9px] text-slate-500 uppercase">Normal</Label>
+            <Switch checked={newSectionVisible} onCheckedChange={setNewSectionVisible} />
+          </div>
+          <div className="space-y-1.5 flex flex-col items-center">
+            <Label className="font-mono text-[9px] text-slate-500 uppercase">Recruiter</Label>
+            <Switch checked={newSectionRecruiterVisible} onCheckedChange={setNewSectionRecruiterVisible} />
+          </div>
+        </div>
+        <div>
+          <Button
+            type="button"
+            onClick={() => {
+              if (!newSectionId.trim()) return
+              const id = newSectionId.trim().toLowerCase().replace(/\s+/g, '-')
+              if (sectionSettings.some(s => s.sectionId === id)) {
+                toast({ title: 'Error', description: 'Section ID already exists.', variant: 'destructive' })
+                return
+              }
+              const nextOrder = sectionSettings.length > 0 ? Math.max(...sectionSettings.map(s => s.order)) + 1 : 1
+              setSectionSettings([...sectionSettings, {
+                sectionId: id,
+                visible: newSectionVisible,
+                recruiterVisible: newSectionRecruiterVisible,
+                order: nextOrder
+              }].sort((a, b) => a.order - b.order))
+              setNewSectionId('')
+              toast({ title: 'Success', description: 'Section registered in local state.' })
+            }}
+            className="w-full bg-[#00E5FF]/10 border border-[#00E5FF]/20 text-[#00E5FF] hover:bg-[#00E5FF]/20 text-xs py-5 uppercase font-mono tracking-wider"
+          >
+            Add Section
+          </Button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -34,7 +34,7 @@ export default function ConfirmDialog({
 }: ConfirmDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="bg-[#0A1020] border border-red-500/30 text-slate-200 rounded-xl max-w-md backdrop-blur-xl">
+      <DialogContent className="bg-[#0A1020] border border-red-500/30 text-slate-200 rounded-3xl max-w-md backdrop-blur-xl">
         <DialogHeader className="flex flex-col items-center text-center gap-2">
           <div className="w-12 h-12 rounded-full bg-red-950/40 border border-red-500/40 flex items-center justify-center text-red-400 mb-2 animate-pulse">
             <AlertTriangle className="w-6 h-6" />

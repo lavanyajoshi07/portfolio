@@ -16,7 +16,7 @@ export async function GET(
       return errorResponse('Invalid achievement ID', 400)
     }
 
-    const achievement = await Achievement.findById(id).lean()
+    const achievement = await Achievement.findById(id).populate('category').lean()
 
     if (!achievement) {
       return errorResponse('Achievement not found', 404)
@@ -60,7 +60,7 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -73,16 +73,30 @@ export async function DELETE(
     }
 
     await connectDB()
-    const achievement = await Achievement.findByIdAndDelete(id)
+
+    const url = new URL(req.url)
+    const isPermanent = url.searchParams.get('permanent') === 'true'
+
+    let achievement
+    if (isPermanent) {
+      achievement = await Achievement.findByIdAndDelete(id)
+    } else {
+      achievement = await Achievement.findByIdAndUpdate(
+        id,
+        { deletedAt: new Date() },
+        { new: true }
+      )
+    }
 
     if (!achievement) {
       return errorResponse('Achievement not found', 404)
     }
 
     revalidatePortfolio()
-    return successResponse({ id }, 'Achievement deleted successfully')
+    return successResponse({ id }, isPermanent ? 'Achievement permanently deleted' : 'Achievement moved to trash')
   } catch (error) {
     console.error('Error deleting achievement:', error)
     return errorResponse('Failed to delete achievement', 500)
   }
 }
+

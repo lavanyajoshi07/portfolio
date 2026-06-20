@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
-import { Project, Skill } from '@/types'
+import { Project, Technology } from '@/types'
 
 interface PortfolioState {
   projects: Project[]
-  skills: Skill[]
+  technologies: Technology[]
   activeCategory: string
 }
 
 let state: PortfolioState = {
   projects: [],
-  skills: [],
+  technologies: [],
   activeCategory: 'all',
 }
 
@@ -30,8 +30,8 @@ export const usePortfolioStore = () => {
     listeners.forEach(l => l(state))
   }
 
-  const setSkills = (skills: Skill[]) => {
-    state = { ...state, skills }
+  const setTechnologies = (technologies: Technology[]) => {
+    state = { ...state, technologies }
     listeners.forEach(l => l(state))
   }
 
@@ -43,7 +43,7 @@ export const usePortfolioStore = () => {
   return {
     ...value,
     setProjects,
-    setSkills,
+    setTechnologies,
     setActiveCategory,
   }
 }

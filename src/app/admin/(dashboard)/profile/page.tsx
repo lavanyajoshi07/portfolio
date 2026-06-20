@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { profileSchema } from '@/lib/validation'
 import { Save, Plus, Trash2, GraduationCap, Link2, Briefcase, User } from 'lucide-react'
@@ -20,7 +20,6 @@ export default function ProfilePage() {
   const {
     register,
     handleSubmit,
-    control,
     reset,
     setValue,
     watch,
@@ -31,7 +30,6 @@ export default function ProfilePage() {
       name: '',
       title: '',
       tagline: '',
-      bio: '',
       email: '',
       location: '',
       profileImage: '',
@@ -44,22 +42,14 @@ export default function ProfilePage() {
         linkedin: '',
         twitter: '',
         website: '',
+        phone: '',
+        leetcode: '',
+        devto: '',
+        medium: '',
       },
-      education: [] as any[],
-      careerGoals: '',
-      learningJourney: '',
     },
   })
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'education',
-  })
-
-  // Watch for rich text content
-  const bioValue = watch('bio')
-  const careerGoalsValue = watch('careerGoals')
-  const learningJourneyValue = watch('learningJourney')
   const isAvailableValue = watch('isAvailableForWork')
 
   useEffect(() => {
@@ -222,151 +212,6 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Biography text editor */}
-          <div className="glass-card bg-[#0A1020]/60 border border-[#00E5FF]/10 rounded-xl p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-900 pb-3 mb-2">
-              <div className="flex items-center gap-2">
-                <Briefcase className="w-4 h-4 text-[#7C3AED]" />
-                <h3 className="font-mono text-xs font-semibold text-white uppercase tracking-wider">Biography / Narrative</h3>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label className="font-mono text-xs text-slate-400 uppercase">Biographical Text</Label>
-              <RichTextEditor
-                value={bioValue || ''}
-                onChange={(val) => setValue('bio', val, { shouldDirty: true })}
-                placeholder="Write biographical details..."
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-              <div className="space-y-2">
-                <Label className="font-mono text-xs text-slate-400 uppercase">Learning Journey</Label>
-                <RichTextEditor
-                  value={learningJourneyValue || ''}
-                  onChange={(val) => setValue('learningJourney', val, { shouldDirty: true })}
-                  placeholder="Outline learning roadmap..."
-                  rows={4}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="font-mono text-xs text-slate-400 uppercase">Career Goals</Label>
-                <RichTextEditor
-                  value={careerGoalsValue || ''}
-                  onChange={(val) => setValue('careerGoals', val, { shouldDirty: true })}
-                  placeholder="Outline long-term goals..."
-                  rows={4}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Education Log */}
-          <div className="glass-card bg-[#0A1020]/60 border border-[#00E5FF]/10 rounded-xl p-6 space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-900 pb-3 mb-2">
-              <div className="flex items-center gap-2">
-                <GraduationCap className="w-4.5 h-4.5 text-[#FF4FD8]" />
-                <h3 className="font-mono text-xs font-semibold text-white uppercase tracking-wider">Education Log</h3>
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => append({ institution: '', degree: '', field: '', startYear: new Date().getFullYear(), endYear: new Date().getFullYear(), current: false, gpa: '', description: '' })}
-                className="border-slate-800 hover:border-[#FF4FD8]/40 hover:bg-[#FF4FD8]/5 text-slate-300 font-mono text-[10px] uppercase"
-              >
-                <Plus className="w-3.5 h-3.5 mr-1" />
-                Add Record
-              </Button>
-            </div>
-
-            {fields.length === 0 ? (
-              <p className="text-center font-mono text-xs text-slate-600 py-6 uppercase tracking-wider">No education logs active</p>
-            ) : (
-              <div className="space-y-6 divide-y divide-slate-900/60">
-                {fields.map((field, idx) => (
-                  <div key={field.id} className={`pt-6 ${idx === 0 ? 'pt-0' : ''} space-y-4`}>
-                    <div className="flex justify-between items-center">
-                      <span className="font-mono text-[10px] text-[#FF4FD8] uppercase">Record Node #{idx + 1}</span>
-                      <button
-                        type="button"
-                        onClick={() => remove(idx)}
-                        className="text-red-500 hover:text-red-400 p-1 transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="space-y-1">
-                        <Label className="font-mono text-[10px] text-slate-500 uppercase">Institution</Label>
-                        <Input
-                          {...register(`education.${idx}.institution`)}
-                          placeholder="University name"
-                          className="bg-[#101827]/70 border-slate-800 text-xs"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <Label className="font-mono text-[10px] text-slate-500 uppercase">Degree</Label>
-                        <Input
-                          {...register(`education.${idx}.degree`)}
-                          placeholder="e.g. B.Tech"
-                          className="bg-[#101827]/70 border-slate-800 text-xs"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <Label className="font-mono text-[10px] text-slate-500 uppercase">Field of Study</Label>
-                        <Input
-                          {...register(`education.${idx}.field`)}
-                          placeholder="e.g. Computer Science"
-                          className="bg-[#101827]/70 border-slate-800 text-xs"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <Label className="font-mono text-[10px] text-slate-500 uppercase">Start Year</Label>
-                        <Input
-                          type="number"
-                          {...register(`education.${idx}.startYear`, { valueAsNumber: true })}
-                          className="bg-[#101827]/70 border-slate-800 text-xs"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <Label className="font-mono text-[10px] text-slate-500 uppercase">End Year (or Present)</Label>
-                        <Input
-                          type="number"
-                          {...register(`education.${idx}.endYear`, { valueAsNumber: true })}
-                          className="bg-[#101827]/70 border-slate-800 text-xs"
-                          disabled={watch(`education.${idx}.current`)}
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <Label className="font-mono text-[10px] text-slate-500 uppercase">GPA (Optional)</Label>
-                        <Input
-                          {...register(`education.${idx}.gpa`)}
-                          placeholder="e.g. 3.9/4.0"
-                          className="bg-[#101827]/70 border-slate-800 text-xs"
-                        />
-                      </div>
-                      <div className="md:col-span-3 flex items-center gap-3 py-1">
-                        <Switch
-                          checked={watch(`education.${idx}.current`) || false}
-                          onCheckedChange={(checked) => setValue(`education.${idx}.current`, checked)}
-                        />
-                        <Label className="font-mono text-[10px] text-slate-400 uppercase">Currently Enrolled</Label>
-                      </div>
-                      <div className="md:col-span-3 space-y-1">
-                        <Label className="font-mono text-[10px] text-slate-500 uppercase">Record Details</Label>
-                        <Input
-                          {...register(`education.${idx}.description`)}
-                          placeholder="Specializations or clubs..."
-                          className="bg-[#101827]/70 border-slate-800 text-xs"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
 
         {/* Right Col: Sidebar assets */}
@@ -432,6 +277,38 @@ export default function ProfilePage() {
                   className="bg-[#101827]/70 border-slate-800 text-xs"
                 />
               </div>
+              <div className="space-y-1">
+                <Label className="font-mono text-[10px] text-slate-500 uppercase">Phone Number</Label>
+                <Input
+                  {...register('socialLinks.phone')}
+                  placeholder="+1 (555) 019-2834"
+                  className="bg-[#101827]/70 border-slate-800 text-xs"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="font-mono text-[10px] text-slate-500 uppercase">LeetCode Profile</Label>
+                <Input
+                  {...register('socialLinks.leetcode')}
+                  placeholder="https://leetcode.com/u/..."
+                  className="bg-[#101827]/70 border-slate-800 text-xs"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="font-mono text-[10px] text-slate-500 uppercase">Dev.to Profile</Label>
+                <Input
+                  {...register('socialLinks.devto')}
+                  placeholder="https://dev.to/..."
+                  className="bg-[#101827]/70 border-slate-800 text-xs"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="font-mono text-[10px] text-slate-500 uppercase">Medium Profile</Label>
+                <Input
+                  {...register('socialLinks.medium')}
+                  placeholder="https://medium.com/@..."
+                  className="bg-[#101827]/70 border-slate-800 text-xs"
+                />
+              </div>
             </div>
           </div>
 
@@ -458,14 +335,7 @@ export default function ProfilePage() {
                   className="bg-[#101827]/70 border-slate-800 text-xs"
                 />
               </div>
-              <div className="space-y-1">
-                <Label className="font-mono text-[10px] text-slate-500 uppercase font-semibold">Resume PDF URL</Label>
-                <Input
-                  {...register('resumeUrl')}
-                  placeholder="Cloudinary document URL"
-                  className="bg-[#101827]/70 border-slate-800 text-xs"
-                />
-              </div>
+
             </div>
           </div>
         </div>

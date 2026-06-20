@@ -45,6 +45,8 @@ interface ResumeEducation {
   institution: string
   duration: string
   coursework: string
+  description?: string
+  bullets?: string[]
 }
 
 interface ResumeSoftSkill {
@@ -263,7 +265,7 @@ export default function ResumePage() {
   const handleAddEducation = () => {
     setResume(prev => ({
       ...prev,
-      education: [...prev.education, { degree: '', institution: '', duration: '', coursework: '' }]
+      education: [...prev.education, { degree: '', institution: '', duration: '', coursework: '', description: '', bullets: [''] }]
     }))
   }
   const handleRemoveEducation = (index: number) => {
@@ -276,6 +278,24 @@ export default function ResumePage() {
     setResume(prev => ({
       ...prev,
       education: prev.education.map((item, i) => i === index ? { ...item, [field]: val } : item)
+    }))
+  }
+  const handleAddEducationBullet = (eduIdx: number) => {
+    setResume(prev => ({
+      ...prev,
+      education: prev.education.map((item, i) => i === eduIdx ? { ...item, bullets: [...(item.bullets || []), ''] } : item)
+    }))
+  }
+  const handleRemoveEducationBullet = (eduIdx: number, bulletIdx: number) => {
+    setResume(prev => ({
+      ...prev,
+      education: prev.education.map((item, i) => i === eduIdx ? { ...item, bullets: (item.bullets || []).filter((_, bi) => bi !== bulletIdx) } : item)
+    }))
+  }
+  const handleEducationBulletChange = (eduIdx: number, bulletIdx: number, val: string) => {
+    setResume(prev => ({
+      ...prev,
+      education: prev.education.map((item, i) => i === eduIdx ? { ...item, bullets: (item.bullets || []).map((b, bi) => bi === bulletIdx ? val : b) } : item)
     }))
   }
 
@@ -742,23 +762,67 @@ export default function ResumePage() {
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="font-mono text-[10px] text-slate-500 uppercase">Institution & Location</Label>
-                    <Input 
-                      value={edu.institution} 
-                      onChange={(e) => handleEducationChange(index, 'institution', e.target.value)}
-                      placeholder="e.g. Graphic Era Hill University | Dehradun, Uttarakhand"
-                      className="bg-[#101827]/70 border-slate-800 text-white"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="font-mono text-[10px] text-slate-500 uppercase">Relevant Coursework</Label>
-                    <Input 
-                      value={edu.coursework} 
-                      onChange={(e) => handleEducationChange(index, 'coursework', e.target.value)}
-                      placeholder="Data Structures, DBMS, Web Applications..."
-                      className="bg-[#101827]/70 border-slate-800 text-white"
-                    />
-                  </div>
+                     <Label className="font-mono text-[10px] text-slate-500 uppercase">Institution & Location</Label>
+                     <Input 
+                       value={edu.institution} 
+                       onChange={(e) => handleEducationChange(index, 'institution', e.target.value)}
+                       placeholder="e.g. Graphic Era Hill University | Dehradun, Uttarakhand"
+                       className="bg-[#101827]/70 border-slate-800 text-white"
+                     />
+                   </div>
+                   <div className="space-y-1.5">
+                     <Label className="font-mono text-[10px] text-slate-500 uppercase">Academic Description</Label>
+                     <Textarea 
+                       value={edu.description || ''} 
+                       onChange={(e) => handleEducationChange(index, 'description', e.target.value)}
+                       placeholder="e.g. Specializing in AI Full Stack. Laying a solid foundation in low-level system design..."
+                       rows={2}
+                       className="bg-[#101827]/70 border-slate-800 text-white resize-y"
+                     />
+                   </div>
+                   <div className="space-y-3">
+                     <div className="flex justify-between items-center">
+                       <Label className="font-mono text-[10px] text-slate-500 uppercase">Core Outcomes & Grades</Label>
+                       <Button 
+                         onClick={() => handleAddEducationBullet(index)} 
+                         type="button" 
+                         size="sm" 
+                         variant="outline" 
+                         className="border-slate-800 hover:border-[#00E5FF]/20 text-slate-400 hover:text-white text-[10px] font-mono"
+                       >
+                         <ListPlus className="w-3.5 h-3.5 mr-1" /> Add Outcome
+                       </Button>
+                     </div>
+                     <div className="space-y-2">
+                       {(edu.bullets || []).map((bullet, bulletIdx) => (
+                         <div key={bulletIdx} className="flex gap-2 items-center">
+                           <Input 
+                             value={bullet} 
+                             onChange={(e) => handleEducationBulletChange(index, bulletIdx, e.target.value)}
+                             placeholder="e.g. Academic Performance: 9.2 GPA Equivalent"
+                             className="bg-[#101827]/70 border-slate-800 text-white flex-1"
+                           />
+                           <Button 
+                             onClick={() => handleRemoveEducationBullet(index, bulletIdx)} 
+                             variant="outline" 
+                             size="icon" 
+                             className="border-slate-800 hover:border-red-500/30 text-slate-500 hover:text-red-400 shrink-0"
+                           >
+                             <Trash2 className="w-3.5 h-3.5" />
+                           </Button>
+                         </div>
+                       ))}
+                     </div>
+                   </div>
+                   <div className="space-y-1.5">
+                     <Label className="font-mono text-[10px] text-slate-500 uppercase">Relevant Coursework</Label>
+                     <Input 
+                       value={edu.coursework} 
+                       onChange={(e) => handleEducationChange(index, 'coursework', e.target.value)}
+                       placeholder="Data Structures, DBMS, Web Applications..."
+                       className="bg-[#101827]/70 border-slate-800 text-white"
+                     />
+                   </div>
                 </div>
               ))}
             </div>

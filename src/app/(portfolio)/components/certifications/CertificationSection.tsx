@@ -1,20 +1,16 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
+import { motion } from 'framer-motion'
 import SectionWrapper from '../shared/SectionWrapper'
 import { Certification } from '@/types'
 import IssuerLogo from '@/components/IssuerLogo'
+import { Eye, ExternalLink } from 'lucide-react'
 
 interface Props {
   certifications: Certification[]
 }
 
 export default function CertificationsSection({ certifications }: Props) {
-  const [selected, setSelected] = useState<Certification | null>(null)
-  const [lightboxImage, setLightboxImage] = useState<string | null | undefined>(null)
-  const [showLightbox, setShowLightbox] = useState(false)
-
   if (!certifications.length) {
     return (
       <SectionWrapper id="certifications" title="Certifications">
@@ -35,305 +31,127 @@ export default function CertificationsSection({ certifications }: Props) {
       subtitle="Professional certifications and verified credentials"
       accentColor="violet"
     >
-      {/* Featured */}
-      {featured.length > 0 && (
-        <div className="mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            {featured.map((cert, i) => (
+      <div className="space-y-8">
+        {/* Featured */}
+        {featured.length > 0 && (
+          <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {featured.map((cert, i) => (
+                <CertCard
+                  key={cert._id}
+                  cert={cert}
+                  index={i}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Regular */}
+        {rest.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {rest.map((cert, i) => (
               <CertCard
                 key={cert._id}
                 cert={cert}
-                featured
-                onClick={() => setSelected(cert)}
-                onViewCertificate={(c) => {
-                  setLightboxImage(c.certificateImage)
-                  setShowLightbox(true)
-                }}
-                index={i}
+                index={i + featured.length}
               />
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Regular */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {rest.map((cert, i) => (
-          <CertCard
-            key={cert._id}
-            cert={cert}
-            onClick={() => setSelected(cert)}
-            onViewCertificate={(c) => {
-              setLightboxImage(c.certificateImage)
-              setShowLightbox(true)
-            }}
-            index={i}
-          />
-        ))}
+        )}
       </div>
-
-      {/* Detail Modal */}
-      <AnimatePresence>
-        {selected && (
-          <CertModal
-            cert={selected}
-            onClose={() => setSelected(null)}
-            onViewCertificate={(c) => {
-              setLightboxImage(c.certificateImage)
-              setShowLightbox(true)
-            }}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Lightbox Modal */}
-      <AnimatePresence>
-        {showLightbox && (
-          <CertificateLightbox
-            imageUrl={lightboxImage || null}
-            onClose={() => {
-              setShowLightbox(false)
-              setLightboxImage(null)
-            }}
-          />
-        )}
-      </AnimatePresence>
     </SectionWrapper>
   )
 }
 
 function CertCard({
   cert,
-  featured = false,
-  onClick,
-  onViewCertificate,
   index,
 }: {
   cert: Certification
-  featured?: boolean
-  onClick: () => void
-  onViewCertificate: (cert: Certification) => void
   index: number
 }) {
+  const hasCTAs = !!(cert.certificateUrl || cert.credentialUrl)
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.08 }}
-      whileHover={{ y: -4 }}
-      onClick={onClick}
-      className="glass-card rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300 flex flex-col"
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ delay: index * 0.05, duration: 0.5 }}
+      className="glass-card rounded-3xl bg-[#0A1020]/70 border border-cyan-500/10 backdrop-blur p-6 flex flex-col justify-between min-h-[300px] max-h-[360px] h-[330px] hover:-translate-y-2 hover:border-cyan-400/30 hover:shadow-[0_0_30px_rgba(0,229,255,0.12)] transition-all duration-300 group"
     >
-      {/* Image / Issuer Logo */}
-      <div className={`relative overflow-hidden bg-bg-tertiary ${featured ? 'h-48' : 'h-40'} flex items-center justify-center p-4`}>
-        <IssuerLogo issuer={cert.issuer} className="w-full h-full" />
-
-        {featured && (
-          <div className="absolute top-3 right-3 px-2 py-1 rounded-md text-xs bg-violet-DEFAULT/20 text-violet-DEFAULT border border-violet-DEFAULT/30">
-            Featured
-          </div>
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="p-5 flex flex-col flex-1">
-        <h3 className="font-semibold text-slate-100 group-hover:text-violet-DEFAULT transition-colors mb-1">
-          {cert.title}
-        </h3>
-        <p className="text-sm text-slate-400 mb-3 flex-1">{cert.issuer}</p>
-
-        <div className="flex flex-wrap gap-2 mb-3">
-          {cert.skills?.slice(0, 3).map(skill => (
-            <span
-              key={skill}
-              className="px-2 py-0.5 rounded text-xs bg-slate-800 text-slate-300 font-mono"
-            >
-              {skill}
+      {/* Top + Middle Wrapper */}
+      <div className="flex flex-col space-y-4 min-h-0 flex-1">
+        {/* Top: Logo & Featured */}
+        <div className="flex items-start justify-between gap-4 shrink-0">
+          <IssuerLogo
+            issuer={cert.issuer}
+            logoMode={cert.logoMode}
+            logo={cert.logo}
+            logoAlt={cert.logoAlt}
+            className="w-16 h-16 shrink-0"
+          />
+          {cert.featured && (
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-violet-500/10 text-violet-400 border border-violet-500/25 shadow-[0_0_8px_rgba(124,58,237,0.1)] select-none shrink-0 mt-1">
+              Featured
             </span>
-          ))}
+          )}
         </div>
 
-        <div className="text-xs text-slate-500 space-y-1">
-          {cert.issueDate && <p>Issued: {cert.issueDate}</p>}
-          {cert.expiryDate && <p>Expires: {cert.expiryDate}</p>}
+        {/* Title & Issuer */}
+        <div className="space-y-1 shrink-0">
+          <h3 className="font-display font-bold text-base text-white group-hover:text-cyan-400 transition-colors leading-snug line-clamp-2" title={cert.title}>
+            {cert.title}
+          </h3>
+          <p className="text-xs font-semibold text-slate-400">
+            {cert.issuer}
+          </p>
         </div>
 
-        {(cert.credentialUrl || cert.certificateImage) && (
-          <div className="mt-4 flex flex-col gap-2">
-            {cert.credentialUrl && (
-              <a
-                href={cert.credentialUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={e => e.stopPropagation()}
-                className="px-3 py-2 rounded-lg text-xs font-medium bg-violet-DEFAULT/20 text-violet-DEFAULT border border-violet-DEFAULT/30 hover:bg-violet-DEFAULT/30 transition-colors text-center"
+        {/* Middle: Tags */}
+        {cert.tags && cert.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 overflow-hidden py-1">
+            {cert.tags.map(tag => (
+              <span
+                key={tag}
+                className="px-2 py-0.5 rounded-xl bg-slate-900/80 text-slate-300 font-mono text-xs border border-slate-800/80 shrink-0"
               >
-                View Credentials
-              </a>
-            )}
-            {cert.certificateImage && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onViewCertificate(cert)
-                }}
-                className="px-3 py-2 rounded-lg text-xs font-medium bg-cyan-DEFAULT/20 text-cyan-DEFAULT border border-cyan-DEFAULT/30 hover:bg-cyan-DEFAULT/30 transition-colors text-center"
-              >
-                View Certificate
-              </button>
-            )}
+                {tag}
+              </span>
+            ))}
           </div>
         )}
       </div>
-    </motion.div>
-  )
-}
 
-function CertModal({
-  cert,
-  onClose,
-  onViewCertificate,
-}: {
-  cert: Certification
-  onClose: () => void
-  onViewCertificate: (cert: Certification) => void
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        onClick={e => e.stopPropagation()}
-        className="glass-card rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto"
-      >
-        <div className="relative h-48 w-full bg-bg-tertiary flex items-center justify-center p-4 rounded-t-2xl">
-          <IssuerLogo issuer={cert.issuer} className="w-full h-full" />
-        </div>
-
-        <div className="p-6">
-          <div className="flex items-start justify-between mb-4">
-            <h2 className="text-xl font-bold text-slate-100 flex-1">{cert.title}</h2>
-            <button
-              onClick={onClose}
-              className="text-slate-500 hover:text-slate-200 text-2xl leading-none ml-4 flex-shrink-0"
+      {/* Bottom: CTAs */}
+      {hasCTAs && (
+        <div className="flex gap-2 pt-4 border-t border-slate-950/40 shrink-0">
+          {cert.certificateUrl && (
+            <a
+              href={cert.certificateUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 h-10 flex items-center justify-center gap-1.5 px-3 rounded-lg text-xs font-mono font-bold uppercase tracking-wider bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 transition-all duration-300 text-center"
             >
-              ×
-            </button>
-          </div>
-
-          <p className="text-violet-DEFAULT font-semibold mb-2">{cert.issuer}</p>
-
-          <div className="space-y-2 mb-4 text-sm text-slate-400">
-            {cert.issueDate && <p>Issued: {cert.issueDate}</p>}
-            {cert.expiryDate && <p>Expires: {cert.expiryDate}</p>}
-            {cert.credentialId && <p>Credential ID: {cert.credentialId}</p>}
-          </div>
-
-          {cert.skills && cert.skills.length > 0 && (
-            <div className="mb-4">
-              <h4 className="text-sm font-mono text-violet-DEFAULT mb-2 uppercase">
-                Skills Verified
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {cert.skills.map(skill => (
-                  <span
-                    key={skill}
-                    className="px-2.5 py-1 rounded text-xs bg-violet-DEFAULT/20 text-violet-DEFAULT border border-violet-DEFAULT/30"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
+              <Eye className="w-3.5 h-3.5" />
+              <span>View Certificate</span>
+            </a>
           )}
-
-          {(cert.credentialUrl || cert.certificateImage) && (
-            <div className="flex flex-col gap-2">
-              {cert.credentialUrl && (
-                <a
-                  href={cert.credentialUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full px-4 py-2 rounded-lg text-sm font-medium bg-violet-DEFAULT/20 text-violet-DEFAULT border border-violet-DEFAULT/30 hover:bg-violet-DEFAULT/30 transition-colors text-center"
-                >
-                  View Credentials
-                </a>
-              )}
-              {cert.certificateImage && (
-                <button
-                  onClick={() => onViewCertificate(cert)}
-                  className="block w-full px-4 py-2 rounded-lg text-sm font-medium bg-cyan-DEFAULT/20 text-cyan-DEFAULT border border-cyan-DEFAULT/30 hover:bg-cyan-DEFAULT/30 transition-colors text-center"
-                >
-                  View Certificate
-                </button>
-              )}
-            </div>
+          {cert.credentialUrl && (
+            <a
+              href={cert.credentialUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 h-10 flex items-center justify-center gap-1.5 px-3 rounded-lg text-xs font-mono font-bold uppercase tracking-wider bg-violet-500/10 text-violet-400 border border-violet-500/20 hover:bg-violet-500/20 transition-all duration-300 text-center"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              <span>View Credential</span>
+            </a>
           )}
         </div>
-      </motion.div>
+      )}
     </motion.div>
   )
 }
 
-function CertificateLightbox({
-  imageUrl,
-  onClose,
-}: {
-  imageUrl: string | null
-  onClose: () => void
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={onClose}
-      className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 cursor-pointer"
-    >
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        onClick={(e) => e.stopPropagation()}
-        className="glass-card rounded-2xl max-w-2xl w-full p-6 text-slate-200 border border-cyan-DEFAULT/30 shadow-[0_0_30px_rgba(0,229,255,0.2)] relative cursor-default"
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-slate-500 hover:text-slate-200 text-2xl leading-none"
-        >
-          ×
-        </button>
-
-        <div className="text-center">
-          <h3 className="font-display font-bold text-lg text-white uppercase tracking-wider mb-4">
-            Certificate Scan
-          </h3>
-
-          {imageUrl ? (
-            <div className="relative rounded-xl border border-cyan-DEFAULT/20 bg-[#020617] overflow-hidden shadow-[0_0_20px_rgba(0,229,255,0.1)] h-[450px] md:h-[550px]">
-              <iframe
-                src={imageUrl}
-                className="w-full h-full border-none scrollbar-thin"
-                title="Certificate Viewer"
-              />
-            </div>
-          ) : (
-            <div className="py-12 border border-dashed border-slate-800 rounded-xl bg-slate-950/50 flex flex-col items-center justify-center space-y-3">
-              <div className="text-4xl text-amber-500">⚠️</div>
-              <p className="font-mono text-sm text-slate-400">
-                No certificate scan available
-              </p>
-            </div>
-          )}
-        </div>
-      </motion.div>
-    </motion.div>
-  )
-}

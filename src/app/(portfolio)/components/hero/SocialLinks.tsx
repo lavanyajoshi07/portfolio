@@ -9,6 +9,7 @@ interface Props {
     twitter?: string
     instagram?: string
     website?: string
+    phone?: string
   }
 }
 
@@ -38,6 +39,11 @@ const socialIcons = {
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" />
     </svg>
   ),
+  phone: (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+    </svg>
+  ),
 }
 
 export default function SocialLinks({ links }: Props) {
@@ -49,9 +55,9 @@ export default function SocialLinks({ links }: Props) {
       {entries.map(([platform, url], i) => (
         <motion.a
           key={platform}
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={platform === 'phone' ? `tel:${url}` : url}
+          target={platform === 'phone' ? undefined : "_blank"}
+          rel={platform === 'phone' ? undefined : "noopener noreferrer"}
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.7 + i * 0.1 }}

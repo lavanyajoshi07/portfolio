@@ -3,6 +3,8 @@
 import { useRef, useEffect, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 
+import SectionHeader from './SectionHeader'
+
 interface Props {
   id: string
   title: string
@@ -41,44 +43,21 @@ export default function SectionWrapper({
     <section
       id={id}
       ref={ref}
-      className={`relative py-24 px-6 overflow-hidden ${className}`}
+      className={`relative py-24 px-6 lg:px-8 overflow-hidden ${className}`}
     >
       {/* Ambient glow at section top */}
       <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-px h-20 bg-gradient-to-b ${c.glow} to-transparent`} />
 
-      <div className="max-w-7xl mx-auto">
-        {/* Section heading */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7 }}
-          className="mb-16 flex flex-col items-center text-center"
-        >
-          <div className="flex items-center gap-4 mb-4">
-            <div className={`h-px w-12 ${c.line} opacity-50`} />
-            <span className={`font-mono text-xs tracking-widest uppercase ${c.text}`}>
-              {id.replace('-', '_')}.section
-            </span>
-            <div className={`h-px w-12 ${c.line} opacity-50`} />
-          </div>
-
-          <h2 className={`section-heading text-slate-100`}>
-            {title}
-          </h2>
-
-          {subtitle && (
-            <p className="mt-4 text-slate-400 max-w-2xl text-lg">
-              {subtitle}
-            </p>
-          )}
-        </motion.div>
+      <div className="max-w-[1280px] mx-auto">
+        {/* Unified Section Header */}
+        <SectionHeader id={id} title={title} subtitle={subtitle} accentColor={accentColor} />
 
         {/* Section content container 
             CRITICAL FIX: Adding 'min-w-0' prevents flex/grid calculations from breaking child Recharts math paths */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
           className="w-full min-w-0 relative"
         >
           {hasMounted && children}

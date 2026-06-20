@@ -2,194 +2,358 @@
 
 import { useMemo, useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import * as LucideIcons from 'lucide-react'
 import SectionWrapper from '../shared/SectionWrapper'
 import StatsCard from './StatsCard'
-import ContributionHeatmap from './ContributionHeatmap'
-import LanguageBar from './LanguageBar'
-import { CodingProfile } from '@/types'
 
-interface Props {
-  profiles: CodingProfile[]
+interface CodingActivitySettings {
+  title: string
+  subtitle: string
+
+  problemsSolved: string
+  problemsSolvedSource: string
+  contributions: string
+  contributionsSource: string
+  publicRepos: string
+  publicReposSource: string
+  followers: string
+  followersSource: string
+
+  contributionGraphImage: string
+  contributionGraphAlt: string
+  graphImageDisplayMode?: 'cover' | 'contain' | 'fill'
+
+  totalContributions: string
+  currentStreak: string
+  longestStreak: string
+  activeDays: string
+
+  profileImage: string
+  profileName: string
+  profileUsername: string
+  profileBio: string
+
+  githubFollowers: string
+  githubFollowing: string
+  githubRepos: string
+  githubContributions: string
+  githubCurrentStreak: string
+  githubProfileUrl: string
+
+  motivationalQuote: string
+  motivationalIcon: string
+  motivationalEmoji: string
+
+  showOverviewCards: boolean
+  showContributionGraph: boolean
+  showGithubProfile: boolean
+  showMotivationalBanner: boolean
 }
 
-export default function CodingDashboard({ profiles }: Props) {
+interface Props {
+  dashboardSettings?: CodingActivitySettings
+}
+
+export default function CodingDashboard({ dashboardSettings }: Props) {
   const [isMounted, setIsMounted] = useState(false)
 
-  // Wait for the client browser layout engine to stabilize before rendering charts
   useEffect(() => {
     setIsMounted(true)
   }, [])
 
-  const stats = useMemo(() => {
-    return profiles.reduce(
-      (acc, profile) => {
-        if (!profile.displayData) return acc
+  const settings = useMemo(() => {
+    if (dashboardSettings) return dashboardSettings
+    return {
+      title: 'Coding Activity',
+      subtitle: 'Real-time stats from GitHub, LeetCode, and other platforms',
+      problemsSolved: '312',
+      problemsSolvedSource: 'LeetCode • Codeforces',
+      contributions: '314',
+      contributionsSource: 'Total Contributions',
+      publicRepos: '15',
+      publicReposSource: 'GitHub',
+      followers: '128',
+      followersSource: 'GitHub',
+      contributionGraphImage: '',
+      contributionGraphAlt: 'GitHub Contribution Graph',
+      graphImageDisplayMode: 'cover',
+      totalContributions: '314',
+      currentStreak: '12 days',
+      longestStreak: '25 days',
+      activeDays: '150 days',
+      profileImage: '',
+      profileName: 'Your Name',
+      profileUsername: 'username',
+      profileBio: 'Software Engineer',
+      githubFollowers: '128',
+      githubFollowing: '45',
+      githubRepos: '15',
+      githubContributions: '314',
+      githubCurrentStreak: '12 days',
+      githubProfileUrl: 'https://github.com',
+      motivationalQuote: 'Consistency compounds faster than talent.',
+      motivationalIcon: 'Activity',
+      motivationalEmoji: '⚡',
+      showOverviewCards: true,
+      showContributionGraph: true,
+      showGithubProfile: true,
+      showMotivationalBanner: true,
+    } as CodingActivitySettings
+  }, [dashboardSettings])
 
-        return {
-          totalSolved: acc.totalSolved + (profile.displayData.totalSolved || 0),
-          contributions: acc.contributions + (profile.displayData.contributions || 0),
-          followers: acc.followers + (profile.displayData.followers || 0),
-          publicRepos: acc.publicRepos + (profile.displayData.publicRepos || 0),
-          streak: Math.max(acc.streak, profile.displayData.streak || 0),
-          ranking: profile.displayData.ranking || acc.ranking,
-        }
-      },
-      { totalSolved: 0, contributions: 0, followers: 0, publicRepos: 0, streak: 0, ranking: 0 }
-    )
-  }, [profiles])
+  const overviewCards = useMemo(() => {
+    return [
+      { id: 'solved', label: 'Problems Solved', value: settings.problemsSolved, platformSource: settings.problemsSolvedSource },
+      { id: 'contributions', label: 'Contributions', value: settings.contributions, platformSource: settings.contributionsSource },
+      { id: 'repos', label: 'Public Repos', value: settings.publicRepos, platformSource: settings.publicReposSource },
+      { id: 'followers', label: 'Followers', value: settings.followers, platformSource: settings.followersSource },
+    ]
+  }, [settings])
 
-  const platformStats = profiles.map(p => ({
-    name: p.platform,
-    username: p.username,
-    data: p.displayData,
-  }))
+  const QuoteIcon = useMemo(() => {
+    const iconName = settings.motivationalIcon || 'Activity'
+    const LucideIcon = (LucideIcons as any)[iconName]
+    return LucideIcon ? LucideIcon : LucideIcons.Activity
+  }, [settings.motivationalIcon])
 
-  const heatmapData = profiles
-    .find(p => p.displayData?.heatmapData)
-    ?.displayData?.heatmapData || []
+  if (!isMounted) return null
 
-  const languageStats = profiles
-    .find(p => p.displayData?.languageStats)
-    ?.displayData?.languageStats || []
+  const showGraph = settings.showContributionGraph
+  const showProfile = settings.showGithubProfile
 
-  if (!profiles.length) {
-    return (
-      <SectionWrapper id="coding" title="Coding Activity">
-        <p className="text-center text-slate-500">Coding profiles will appear here once synced.</p>
-      </SectionWrapper>
-    )
-  }
+  const leftColSpan = showProfile ? 'lg:col-span-7' : 'lg:col-span-10'
+  const rightColSpan = showGraph ? 'lg:col-span-3' : 'lg:col-span-10'
 
   return (
     <SectionWrapper
       id="coding"
-      title="Coding Activity"
-      subtitle="Real-time stats from GitHub, LeetCode, and other platforms"
+      title={settings.title}
+      subtitle={settings.subtitle}
       accentColor="violet"
     >
-      {/* Main stats grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-        <StatsCard label="Problems Solved" value={stats.totalSolved} icon="🎯" />
-        <StatsCard label="Contributions" value={stats.contributions} icon="📊" />
-        <StatsCard label="Public Repos" value={stats.publicRepos} icon="📚" />
-        <StatsCard label="Followers" value={stats.followers} icon="👥" />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-        {/* Contribution Heatmap - Safely guarded by client mount and dimension containment */}
-        {heatmapData.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="lg:col-span-2 min-w-0 w-full relative"
-          >
-            {isMounted ? (
-              <ContributionHeatmap data={heatmapData} />
-            ) : (
-              <div className="w-full h-[300px] bg-bg-card/40 border border-violet-DEFAULT/5 animate-pulse rounded-2xl flex items-center justify-center">
-                <span className="text-violet-DEFAULT/30 font-mono text-xs tracking-widest">LOADING HEATMAP...</span>
-              </div>
-            )}
-          </motion.div>
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        
+        {/* Row 1: Overview Stats */}
+        {settings.showOverviewCards && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {overviewCards.map((card) => (
+              <StatsCard
+                key={card.id}
+                label={card.label}
+                value={card.value}
+                platformSource={card.platformSource}
+              />
+            ))}
+          </div>
         )}
 
-        {/* Language stats */}
-        {languageStats.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            viewport={{ once: true }}
-            className="glass-card rounded-2xl p-6"
-          >
-            <h3 className="text-sm font-mono text-violet-DEFAULT mb-4 uppercase tracking-wider">
-              Languages
-            </h3>
-            <div className="space-y-4">
-              {languageStats.map((lang, i) => (
-                <LanguageBar key={i} language={lang.language} percentage={lang.percentage} color={lang.color} />
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </div>
-
-      {/* Platform profiles */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {platformStats.map((platform, i) => (
-          <motion.div
-            key={platform.name}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: i * 0.1 }}
-            viewport={{ once: true }}
-            className="glass-card rounded-2xl p-6 group hover:border-violet-DEFAULT/30 transition-all duration-300"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-slate-100 capitalize">
-                {platform.name}
-              </h3>
-              <span className="text-2xl">
-                {platform.name === 'github' ? '🐙' :
-                 platform.name === 'leetcode' ? '⚡' :
-                 platform.name === 'codeforces' ? '🏆' :
-                 platform.name === 'codechef' ? '👨‍🍳' : '💻'}
-              </span>
-            </div>
-
-            <p className="text-sm text-slate-400 mb-4">
-              <a
-                href={`https://${platform.name === 'github' ? 'github.com' :
-                  platform.name === 'leetcode' ? 'leetcode.com' :
-                  'example.com'}/${platform.username}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-violet-DEFAULT hover:text-violet-DEFAULT/80 transition-colors"
+        {/* Row 2: Main Split layout */}
+        {(showGraph || showProfile) && (
+          <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 items-stretch">
+            
+            {/* Left Panel: Contribution Heatmap */}
+            {showGraph && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className={`${leftColSpan} flex flex-col justify-between h-auto lg:h-[620px] glass-card rounded-3xl p-6 bg-[#0A1020]/70 border border-cyan-500/10 backdrop-blur-xl hover:border-cyan-400/30 hover:shadow-[0_0_30px_rgba(0,229,255,0.12)] transition-all duration-300`}
               >
-                @{platform.username}
-              </a>
-            </p>
+                {/* Header */}
+                <div>
+                  <h3 className="font-display font-bold text-lg text-white uppercase tracking-wider">
+                    GitHub Contribution Activity
+                  </h3>
+                  <p className="font-mono text-xs text-slate-500 uppercase tracking-widest mt-1">
+                    Coding consistency and contribution history
+                  </p>
+                </div>
 
-            {platform.data && (
-              <div className="grid grid-cols-2 gap-3">
-                {platform.data.totalSolved && (
-                  <div className="bg-bg-secondary/50 rounded-lg p-3">
-                    <p className="text-xs text-slate-500">Solved</p>
-                    <p className="text-lg font-bold text-violet-DEFAULT">
-                      {platform.data.totalSolved}
-                    </p>
+                {/* Mini Stats Row */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 my-4">
+                  <div className="glass-card rounded-2xl p-4 bg-[#0A1020]/50 border border-cyan-500/10 hover:border-cyan-400/30 transition-all duration-300 flex flex-col justify-between h-[90px]">
+                    <div className="flex items-center gap-1.5 text-cyan-400">
+                      <LucideIcons.GitCommit className="w-3.5 h-3.5" />
+                      <span className="font-mono text-[9px] uppercase tracking-wider text-slate-450">Contributions</span>
+                    </div>
+                    <div className="text-xl font-bold font-display text-white mt-1">
+                      {settings.totalContributions}
+                    </div>
+                  </div>
+
+                  <div className="glass-card rounded-2xl p-4 bg-[#0A1020]/50 border border-cyan-500/10 hover:border-cyan-400/30 transition-all duration-300 flex flex-col justify-between h-[90px]">
+                    <div className="flex items-center gap-1.5 text-[#FF4FD8]">
+                      <LucideIcons.Flame className="w-3.5 h-3.5" />
+                      <span className="font-mono text-[9px] uppercase tracking-wider text-slate-455">Current Streak</span>
+                    </div>
+                    <div className="text-xl font-bold font-display text-[#FF4FD8] mt-1">
+                      {settings.currentStreak}
+                    </div>
+                  </div>
+
+                  <div className="glass-card rounded-2xl p-4 bg-[#0A1020]/50 border border-cyan-500/10 hover:border-cyan-400/30 transition-all duration-300 flex flex-col justify-between h-[90px]">
+                    <div className="flex items-center gap-1.5 text-violet-400">
+                      <LucideIcons.Trophy className="w-3.5 h-3.5" />
+                      <span className="font-mono text-[9px] uppercase tracking-wider text-slate-460">Longest Streak</span>
+                    </div>
+                    <div className="text-xl font-bold font-display text-white mt-1">
+                      {settings.longestStreak}
+                    </div>
+                  </div>
+
+                  <div className="glass-card rounded-2xl p-4 bg-[#0A1020]/50 border border-cyan-500/10 hover:border-cyan-400/30 transition-all duration-300 flex flex-col justify-between h-[90px]">
+                    <div className="flex items-center gap-1.5 text-emerald-400">
+                      <LucideIcons.Calendar className="w-3.5 h-3.5" />
+                      <span className="font-mono text-[9px] uppercase tracking-wider text-slate-465">Active Days</span>
+                    </div>
+                    <div className="text-xl font-bold font-display text-white mt-1">
+                      {settings.activeDays}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Graph Image Display */}
+                {settings.contributionGraphImage ? (
+                  <div className="relative w-full min-h-[320px] h-[320px] md:h-[400px] rounded-2xl border border-cyan-500/10 bg-[#0A1020]/50 overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={settings.contributionGraphImage}
+                      alt={settings.contributionGraphAlt || 'GitHub Contribution Graph'}
+                      className={`w-full h-full ${
+                        (settings.graphImageDisplayMode || 'cover') === 'contain' ? 'object-contain' :
+                        (settings.graphImageDisplayMode || 'cover') === 'fill' ? 'object-fill' : 'object-cover'
+                      }`}
+                      style={{
+                        objectPosition: (settings.graphImageDisplayMode || 'cover') === 'cover' ? 'top center' : 'center center'
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="relative w-full min-h-[320px] h-[320px] md:h-[400px] rounded-2xl border border-cyan-500/10 bg-[#0A1020]/50 p-4 flex flex-col items-center justify-center gap-2 text-slate-500 select-none overflow-hidden">
+                    <LucideIcons.BarChart3 className="w-8 h-8 text-slate-600 animate-pulse" />
+                    <span className="text-xs font-mono uppercase tracking-widest">No Graph Image Uploaded</span>
                   </div>
                 )}
-                {platform.data.ranking && (
-                  <div className="bg-bg-secondary/50 rounded-lg p-3">
-                    <p className="text-xs text-slate-500">Ranking</p>
-                    <p className="text-lg font-bold text-cyan-DEFAULT">
-                      #{platform.data.ranking}
-                    </p>
+              </motion.div>
+            )}
+
+            {/* Right Panel: GitHub Profile Card */}
+            {showProfile && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className={`${rightColSpan} flex flex-col justify-between h-auto lg:h-[620px] glass-card rounded-3xl p-6 bg-[#0A1020]/70 border border-cyan-500/10 backdrop-blur-xl hover:border-cyan-400/30 hover:shadow-[0_0_30px_rgba(0,229,255,0.12)] transition-all duration-300`}
+              >
+                <div className="flex flex-col items-center text-center h-full justify-between">
+                  {/* Header */}
+                  <h4 className="font-mono text-[11px] text-slate-500 uppercase tracking-widest mb-4 w-full text-left border-b border-slate-900 pb-2 select-none">
+                    GitHub Profile
+                  </h4>
+
+                  {/* Avatar Glow Ring container */}
+                  <div className="relative w-[140px] h-[140px] group shrink-0">
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400 to-violet-500 animate-pulse blur-md opacity-40 group-hover:opacity-75 transition-all duration-300" />
+                    <div className="relative w-full h-full rounded-full border-2 border-cyan-400/50 p-1 bg-[#0A1020] overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={settings.profileImage || '/placeholder-avatar.png'}
+                        alt={settings.profileUsername}
+                        className="rounded-full object-cover w-full h-full"
+                        onError={(e) => {
+                          e.currentTarget.src = '/placeholder-avatar.png'
+                        }}
+                      />
+                    </div>
+                    {/* Online Indicator status dot */}
+                    <span className="absolute bottom-1 right-2 w-4.5 h-4.5 bg-emerald-500 rounded-full border-2 border-[#0A1020] shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                   </div>
-                )}
-                {platform.data.contributions && (
-                  <div className="bg-bg-secondary/50 rounded-lg p-3">
-                    <p className="text-xs text-slate-500">Contributions</p>
-                    <p className="text-lg font-bold text-pink-DEFAULT">
-                      {platform.data.contributions}
+
+                  {/* Username / Bio */}
+                  <div className="space-y-1 w-full mt-3 flex-1 flex flex-col justify-center">
+                    <h3 className="font-display font-bold text-lg text-white leading-tight uppercase tracking-wide">
+                      {settings.profileName}
+                    </h3>
+                    <p className="font-mono text-xs text-cyan-400 select-all">
+                      @{settings.profileUsername}
                     </p>
+                    {settings.profileBio && (
+                      <p className="text-xs text-slate-400 font-sans mt-2 px-1 leading-relaxed line-clamp-2">
+                        {settings.profileBio}
+                      </p>
+                    )}
                   </div>
-                )}
-                {platform.data.streak && (
-                  <div className="bg-bg-secondary/50 rounded-lg p-3">
-                    <p className="text-xs text-slate-500">Streak</p>
-                    <p className="text-lg font-bold text-emerald-400">
-                      {platform.data.streak}d 🔥
-                    </p>
+
+                  {/* Stats Layout */}
+                  <div className="w-full grid grid-cols-2 gap-3 mt-4 text-xs font-mono text-slate-400 border-t border-slate-900/60 pt-4 text-left">
+                    <div className="border border-cyan-500/5 bg-[#101827]/30 p-2 rounded-xl">
+                      <span className="text-[9px] text-slate-500 uppercase block tracking-wider">Followers</span>
+                      <span className="text-sm font-bold text-white mt-0.5 block">{settings.githubFollowers}</span>
+                    </div>
+                    <div className="border border-cyan-500/5 bg-[#101827]/30 p-2 rounded-xl">
+                      <span className="text-[9px] text-slate-500 uppercase block tracking-wider">Following</span>
+                      <span className="text-sm font-bold text-white mt-0.5 block">{settings.githubFollowing}</span>
+                    </div>
+                    <div className="border border-cyan-500/5 bg-[#101827]/30 p-2 rounded-xl">
+                      <span className="text-[9px] text-slate-500 uppercase block tracking-wider">Repos</span>
+                      <span className="text-sm font-bold text-white mt-0.5 block">{settings.githubRepos}</span>
+                    </div>
+                    <div className="border border-cyan-500/5 bg-[#101827]/30 p-2 rounded-xl">
+                      <span className="text-[9px] text-slate-500 uppercase block tracking-wider">Contributions</span>
+                      <span className="text-sm font-bold text-cyan-400 mt-0.5 block">{settings.githubContributions}</span>
+                    </div>
+                    <div className="border border-[#FF4FD8]/5 bg-[#101827]/30 p-2 rounded-xl col-span-2 flex justify-between items-center">
+                      <div>
+                        <span className="text-[9px] text-slate-500 uppercase block tracking-wider">Current Streak</span>
+                        <span className="text-sm font-bold text-[#FF4FD8] mt-0.5 block">{settings.githubCurrentStreak}</span>
+                      </div>
+                      <LucideIcons.Flame className="w-4 h-4 text-[#FF4FD8]" />
+                    </div>
                   </div>
-                )}
+
+                  {/* CTA button */}
+                  {settings.githubProfileUrl && (
+                    <a
+                      href={settings.githubProfileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full h-10 mt-4 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/25 flex items-center justify-center gap-2 font-mono text-xs font-bold uppercase tracking-wider hover:bg-cyan-500/20 hover:shadow-[0_0_15px_rgba(0,229,255,0.15)] transition-all duration-300 select-none shrink-0"
+                    >
+                      <LucideIcons.Github className="w-4 h-4" />
+                      <span>View GitHub Profile</span>
+                    </a>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+          </div>
+        )}
+
+        {/* Motivational Banner */}
+        {settings.showMotivationalBanner && settings.motivationalQuote && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="glass-card rounded-3xl px-6 py-4 bg-[#0A1020]/70 border border-cyan-500/10 backdrop-blur-xl hover:border-cyan-400/30 hover:shadow-[0_0_30px_rgba(0,229,255,0.12)] transition-all duration-300 flex items-center justify-between h-auto lg:h-[90px]"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                <QuoteIcon className="w-5 h-5 animate-pulse" />
               </div>
+              <p className="font-sans font-medium text-sm text-slate-200 leading-normal italic line-clamp-2">
+                "{settings.motivationalQuote}"
+              </p>
+            </div>
+            {settings.motivationalEmoji && (
+              <span className="text-2xl shrink-0 select-none ml-4 animate-bounce">
+                {settings.motivationalEmoji}
+              </span>
             )}
           </motion.div>
-        ))}
+        )}
+
       </div>
     </SectionWrapper>
   )

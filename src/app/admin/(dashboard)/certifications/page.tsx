@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { certificationSchema } from '@/lib/validation'
-import { Plus, Edit, Trash2, Award, RefreshCw, Calendar } from 'lucide-react'
+import { Plus, Edit, Trash2, Award, RefreshCw, X, ArrowUp, ArrowDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -19,12 +19,16 @@ interface Certification {
   _id: string
   title: string
   issuer: string
-  issueDate: string
-  expiryDate?: string
+  logoMode: 'auto' | 'custom'
+  logo?: string
+  logoAlt?: string
+  thumbnail?: string
+  tags?: string[]
+  certificateUrl?: string
   credentialUrl?: string
-  certificateImage?: string
-  skills?: string[]
   featured: boolean
+  sortOrder: number
+  isPublished: boolean
 }
 
 export default function CertificationsPage() {
@@ -34,7 +38,8 @@ export default function CertificationsPage() {
   const [editingCert, setEditingCert] = useState<Certification | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [actionLoading, setActionLoading] = useState(false)
-  const [skillsString, setSkillsString] = useState('')
+  const [tags, setTags] = useState<string[]>([])
+  const [uploadingLogo, setUploadingLogo] = useState(false)
   const { toast } = useToast()
 
   const {
@@ -49,24 +54,29 @@ export default function CertificationsPage() {
     defaultValues: {
       title: '',
       issuer: '',
-      issueDate: '',
-      expiryDate: '',
+      logoMode: 'auto' as 'auto' | 'custom',
+      logo: '',
+      logoAlt: '',
+      thumbnail: '',
+      tags: [] as string[],
+      certificateUrl: '',
       credentialUrl: '',
-      certificateImage: '',
-      skills: [] as string[],
       featured: false,
+      sortOrder: 0,
+      isPublished: true,
     },
   })
 
   const featuredValue = watch('featured')
-  const certImageValue = watch('certificateImage')
+  const isPublishedValue = watch('isPublished')
+  const logoModeValue = watch('logoMode')
+  const logoValue = watch('logo')
   const issuerValue = watch('issuer')
-  const [uploadingCertImg, setUploadingCertImg] = useState(false)
 
-  const handleUploadCertImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUploadLogo = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    setUploadingCertImg(true)
+    setUploadingLogo(true)
     try {
       const formData = new FormData()
       formData.append('file', file)
@@ -76,10 +86,10 @@ export default function CertificationsPage() {
       })
       const result = await res.json()
       if (result.success && result.data?.url) {
-        setValue('certificateImage', result.data.url, { shouldDirty: true })
+        setValue('logo', result.data.url, { shouldDirty: true })
         toast({
           title: 'Success',
-          description: 'Certificate scan uploaded successfully.',
+          description: 'Custom badge logo scan uploaded successfully.',
         })
       } else {
         toast({
@@ -96,7 +106,7 @@ export default function CertificationsPage() {
         variant: 'destructive',
       })
     } finally {
-      setUploadingCertImg(false)
+      setUploadingLogo(false)
     }
   }
 
@@ -112,7 +122,7 @@ export default function CertificationsPage() {
       console.error(err)
       toast({
         title: 'Query Error',
-        description: 'Failed to retrieve certifications logs.',
+        description: 'Failed to retrieve certifications list.',
         variant: 'destructive',
       })
     } finally {
@@ -126,32 +136,40 @@ export default function CertificationsPage() {
 
   const handleOpenCreate = () => {
     setEditingCert(null)
-    setSkillsString('')
+    setTags([])
     reset({
       title: '',
       issuer: '',
-      issueDate: '',
-      expiryDate: '',
+      logoMode: 'auto',
+      logo: '',
+      logoAlt: '',
+      thumbnail: '',
+      tags: [],
+      certificateUrl: '',
       credentialUrl: '',
-      certificateImage: '',
-      skills: [],
       featured: false,
+      sortOrder: 0,
+      isPublished: true,
     })
     setDialogOpen(true)
   }
 
   const handleOpenEdit = (cert: Certification) => {
     setEditingCert(cert)
-    setSkillsString((cert.skills || []).join(', '))
+    setTags(cert.tags || [])
     reset({
       title: cert.title,
       issuer: cert.issuer,
-      issueDate: cert.issueDate,
-      expiryDate: cert.expiryDate || '',
+      logoMode: cert.logoMode || 'auto',
+      logo: cert.logo || '',
+      logoAlt: cert.logoAlt || '',
+      thumbnail: cert.thumbnail || '',
+      tags: cert.tags || [],
+      certificateUrl: cert.certificateUrl || '',
       credentialUrl: cert.credentialUrl || '',
-      certificateImage: cert.certificateImage || '',
-      skills: cert.skills || [],
       featured: cert.featured,
+      sortOrder: cert.sortOrder || 0,
+      isPublished: cert.isPublished ?? true,
     })
     setDialogOpen(true)
   }
@@ -159,12 +177,9 @@ export default function CertificationsPage() {
   const onSubmit = async (data: any) => {
     setActionLoading(true)
     
-    // Parse skills
-    const parsedSkills = skillsString
-      .split(',')
-      .map(s => s.trim())
-      .filter(s => s.length > 0)
-    data.skills = parsedSkills
+    // Filter empty tags
+    const filteredTags = tags.map(t => t.trim()).filter(t => t.length > 0)
+    data.tags = filteredTags
 
     const url = editingCert ? `/api/certifications/${editingCert._id}` : '/api/certifications'
     const method = editingCert ? 'PUT' : 'POST'
@@ -253,38 +268,33 @@ export default function CertificationsPage() {
       ),
     },
     {
-      header: 'Issue Date',
-      accessor: (item: Certification) => (
-        <div className="flex items-center gap-1 font-mono text-xs text-slate-400">
-          <Calendar className="w-3 h-3" />
-          <span>{item.issueDate}</span>
-        </div>
-      ),
-    },
-    {
-      header: 'Associated Skills',
+      header: 'Tags / Skills',
       accessor: (item: Certification) => (
         <div className="flex flex-wrap gap-1 max-w-[200px]">
-          {(item.skills || []).slice(0, 3).map((s, i) => (
+          {(item.tags || []).slice(0, 3).map((t, i) => (
             <span key={i} className="font-mono text-[9px] bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded border border-slate-800">
-              {s}
+              {t}
             </span>
           ))}
-          {(item.skills || []).length > 3 && <span className="text-[9px] text-slate-500 font-mono">+{(item.skills || []).length - 3}</span>}
+          {(item.tags || []).length > 3 && <span className="text-[9px] text-slate-500 font-mono">+{(item.tags || []).length - 3}</span>}
         </div>
       ),
     },
     {
-      header: 'Featured',
+      header: 'Visibility',
       accessor: (item: Certification) => (
         <span className={`font-mono text-[10px] uppercase px-2 py-0.5 rounded-full ${
-          item.featured 
+          (item.isPublished ?? true)
             ? 'bg-[#00E5FF]/15 text-[#00E5FF] border border-[#00E5FF]/30' 
             : 'bg-slate-900 text-slate-500 border border-slate-800'
         }`}>
-          {item.featured ? 'Yes' : 'No'}
+          {(item.isPublished ?? true) ? 'Published' : 'Draft'}
         </span>
       ),
+    },
+    {
+      header: 'Sort Order',
+      accessor: (item: Certification) => <span className="font-mono text-slate-400">{item.sortOrder}</span>,
     },
   ]
 
@@ -362,7 +372,7 @@ export default function CertificationsPage() {
               <Label className="font-mono text-[10px] text-slate-500 uppercase">Certification Title</Label>
               <Input
                 {...register('title')}
-                placeholder="e.g. AWS Cloud Practitioner"
+                placeholder="e.g. AWS Certified Cloud Practitioner"
                 className="bg-[#101827]/70 border-slate-800 text-white"
               />
               {errors.title && <p className="text-xs text-red-500 font-mono">{errors.title.message as string}</p>}
@@ -392,6 +402,9 @@ export default function CertificationsPage() {
                 <option value="">-- Choose Common Issuer --</option>
                 <option value="AWS">AWS</option>
                 <option value="Google">Google</option>
+                <option value="Microsoft">Microsoft</option>
+                <option value="Coursera">Coursera</option>
+                <option value="Meta">Meta</option>
                 <option value="NPTEL">NPTEL</option>
                 <option value="Amazon">Amazon</option>
               </select>
@@ -399,99 +412,225 @@ export default function CertificationsPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="font-mono text-[10px] text-slate-500 uppercase">Issue Date</Label>
+                <Label className="font-mono text-[10px] text-slate-500 uppercase">Sort Order</Label>
                 <Input
-                  {...register('issueDate')}
-                  placeholder="e.g. May 2026"
-                  className="bg-[#101827]/70 border-slate-800 text-white"
+                  type="number"
+                  {...register('sortOrder', { valueAsNumber: true })}
+                  className="bg-[#101827]/70 border-slate-800 text-white font-mono"
                 />
-                {errors.issueDate && <p className="text-xs text-red-500 font-mono">{errors.issueDate.message as string}</p>}
+              </div>
+              <div className="space-y-1.5">
+                <Label className="font-mono text-[10px] text-slate-500 uppercase">Thumbnail Banner (Optional)</Label>
+                <Input
+                  {...register('thumbnail')}
+                  placeholder="e.g. /placeholders/placeholder-cert.png"
+                  className="bg-[#101827]/70 border-slate-800 text-white font-mono"
+                />
+              </div>
+            </div>
+
+            {/* Logo Manager */}
+            <div className="border border-slate-900 p-3 rounded-lg bg-[#0F172A]/30 space-y-3">
+              <Label className="font-mono text-[10px] text-slate-400 uppercase block border-b border-slate-900 pb-1.5">Logo Manager</Label>
+              <div className="flex gap-4 py-1">
+                <label className="flex items-center gap-2 cursor-pointer font-mono text-[11px] text-slate-350 select-none">
+                  <input
+                    type="radio"
+                    value="auto"
+                    checked={logoModeValue === 'auto'}
+                    onChange={() => setValue('logoMode', 'auto', { shouldDirty: true })}
+                    className="accent-cyan-400"
+                  />
+                  Auto Mapped Logo
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer font-mono text-[11px] text-slate-350 select-none">
+                  <input
+                    type="radio"
+                    value="custom"
+                    checked={logoModeValue === 'custom'}
+                    onChange={() => setValue('logoMode', 'custom', { shouldDirty: true })}
+                    className="accent-cyan-400"
+                  />
+                  Custom Logo Badge
+                </label>
+              </div>
+
+              {logoModeValue === 'auto' ? (
+                <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-[#0F172A]/50 border border-slate-900/60 space-y-2">
+                  <span className="font-mono text-[9px] text-slate-500 uppercase">Auto Logo Mapping Preview</span>
+                  <IssuerLogo issuer={issuerValue} logoMode="auto" className="w-16 h-16" />
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  <div className="flex gap-2">
+                    <Input
+                      {...register('logo')}
+                      placeholder="Custom Logo URL (or upload below)"
+                      className="bg-[#101827]/70 border-slate-800 text-white text-xs flex-1 font-mono"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="relative overflow-hidden border-slate-800 bg-[#101827]/70 hover:bg-slate-900/60 font-mono text-[10px] px-3 py-2 cursor-pointer"
+                      disabled={uploadingLogo}
+                    >
+                      {uploadingLogo ? 'Uploading...' : 'Upload Logo'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleUploadLogo}
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
+                    </Button>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="font-mono text-[9px] text-slate-500 uppercase">Logo Alt Text</Label>
+                    <Input
+                      {...register('logoAlt')}
+                      placeholder="e.g. AWS Badge logo"
+                      className="bg-[#101827]/70 border-slate-800 text-white text-xs"
+                    />
+                  </div>
+                  <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-[#0F172A]/50 border border-slate-900/60 space-y-2">
+                    <span className="font-mono text-[9px] text-slate-500 uppercase">Custom Badge Preview</span>
+                    {logoValue ? (
+                      <IssuerLogo issuer={issuerValue} logoMode="custom" logo={logoValue} logoAlt={watch('logoAlt')} className="w-16 h-16" />
+                    ) : (
+                      <div className="w-16 h-16 rounded-xl bg-slate-950 border border-slate-900 flex items-center justify-center text-slate-600 text-[10px] font-mono uppercase text-center p-1">
+                        No logo uploaded
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Links Manager */}
+            <div className="border border-slate-900 p-3 rounded-lg bg-[#0F172A]/30 space-y-3">
+              <Label className="font-mono text-[10px] text-slate-400 uppercase block border-b border-slate-900 pb-1.5">Links Manager</Label>
+              <div className="space-y-1.5">
+                <Label className="font-mono text-[9px] text-slate-500 uppercase">Certificate URL</Label>
+                <Input
+                  {...register('certificateUrl')}
+                  placeholder="URL to Certificate PDF/Document"
+                  className="bg-[#101827]/70 border-slate-800 text-white text-xs"
+                />
+                {errors.certificateUrl && <p className="text-xs text-red-500 font-mono">{errors.certificateUrl.message as string}</p>}
               </div>
 
               <div className="space-y-1.5">
-                <Label className="font-mono text-[10px] text-slate-500 uppercase">Expiry Date (Optional)</Label>
+                <Label className="font-mono text-[9px] text-slate-500 uppercase">Credential URL</Label>
                 <Input
-                  {...register('expiryDate')}
-                  placeholder="e.g. May 2029"
-                  className="bg-[#101827]/70 border-slate-800 text-white"
+                  {...register('credentialUrl')}
+                  placeholder="URL to Verifiable Badge/Link"
+                  className="bg-[#101827]/70 border-slate-800 text-white text-xs"
                 />
+                {errors.credentialUrl && <p className="text-xs text-red-500 font-mono">{errors.credentialUrl.message as string}</p>}
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <Label className="font-mono text-[10px] text-slate-500 uppercase">Credential URI</Label>
-              <Input
-                {...register('credentialUrl')}
-                placeholder="Verifiable validation URL"
-                className="bg-[#101827]/70 border-slate-800 text-white text-xs"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 border border-slate-900 p-3 rounded-lg bg-[#0F172A]/50">
-              <div className="flex flex-col items-center justify-center space-y-2">
-                <span className="font-mono text-[9px] text-slate-500 uppercase">Issuer Logo Preview</span>
-                <IssuerLogo issuer={issuerValue} className="w-16 h-16" />
-              </div>
-              <div className="flex flex-col items-center justify-center space-y-2">
-                <span className="font-mono text-[9px] text-slate-500 uppercase">Certificate Scan Preview</span>
-                {certImageValue ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={certImageValue}
-                    alt="Certificate Scan"
-                    className="w-16 h-16 object-cover rounded-lg border border-slate-800"
-                  />
-                ) : (
-                  <div className="w-16 h-16 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-600 text-[10px] font-mono uppercase text-center p-1">
-                    No image uploaded
+            {/* Tags Manager Repeater */}
+            <div className="border border-slate-900 p-3 rounded-lg bg-[#0F172A]/30 space-y-3">
+              <Label className="font-mono text-[10px] text-slate-400 uppercase block border-b border-slate-900 pb-1.5">Tags Manager</Label>
+              <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
+                {tags.map((tag, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <Input
+                      value={tag}
+                      onChange={(e) => {
+                        const updated = [...tags]
+                        updated[index] = e.target.value
+                        setTags(updated)
+                        setValue('tags', updated, { shouldDirty: true })
+                      }}
+                      placeholder="e.g. Cloud Computing"
+                      className="bg-[#101827]/70 border-slate-800 text-white font-mono text-xs flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const updated = tags.filter((_, idx) => idx !== index)
+                        setTags(updated)
+                        setValue('tags', updated, { shouldDirty: true })
+                      }}
+                      className="border-slate-800 text-slate-400 hover:text-red-400 hover:border-red-500/30 shrink-0 h-8"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </Button>
+                    <div className="flex flex-col gap-0.5 shrink-0">
+                      <button
+                        type="button"
+                        disabled={index === 0}
+                        onClick={() => {
+                          if (index === 0) return
+                          const updated = [...tags]
+                          const temp = updated[index]
+                          updated[index] = updated[index - 1]
+                          updated[index - 1] = temp
+                          setTags(updated)
+                          setValue('tags', updated, { shouldDirty: true })
+                        }}
+                        className="text-slate-500 hover:text-cyan-400 disabled:opacity-30 text-[10px]"
+                      >
+                        <ArrowUp className="w-3 h-3" />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={index === tags.length - 1}
+                        onClick={() => {
+                          if (index === tags.length - 1) return
+                          const updated = [...tags]
+                          const temp = updated[index]
+                          updated[index] = updated[index + 1]
+                          updated[index + 1] = temp
+                          setTags(updated)
+                          setValue('tags', updated, { shouldDirty: true })
+                        }}
+                        className="text-slate-500 hover:text-cyan-400 disabled:opacity-30 text-[10px]"
+                      >
+                        <ArrowDown className="w-3 h-3" />
+                      </button>
+                    </div>
                   </div>
-                )}
+                ))}
               </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  const updated = [...tags, '']
+                  setTags(updated)
+                  setValue('tags', updated, { shouldDirty: true })
+                }}
+                className="w-full border-dashed border-slate-800 hover:border-[#00E5FF]/30 hover:bg-[#00E5FF]/5 text-slate-400 hover:text-white font-mono text-xs uppercase"
+              >
+                + Add Tag
+              </Button>
             </div>
 
-            <div className="space-y-1.5">
-              <Label className="font-mono text-[10px] text-slate-500 uppercase">Certificate Scan Image</Label>
-              <div className="flex gap-2">
-                <Input
-                  {...register('certificateImage')}
-                  placeholder="Scan Image URL (or upload via button)"
-                  className="bg-[#101827]/70 border-slate-800 text-white text-xs flex-1"
+            <div className="grid grid-cols-2 gap-4 py-2 border-t border-slate-900 mt-2">
+              <div className="flex items-center gap-3">
+                <Switch
+                  checked={featuredValue}
+                  onCheckedChange={(checked) => setValue('featured', checked)}
                 />
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="relative overflow-hidden border-slate-800 bg-[#101827]/70 hover:bg-slate-900/60 font-mono text-[10px] px-3 py-2 cursor-pointer"
-                  disabled={uploadingCertImg}
-                >
-                  {uploadingCertImg ? 'Uploading...' : 'Upload File'}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleUploadCertImage}
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
-                </Button>
+                <div>
+                  <Label className="font-mono text-[10px] text-slate-300 uppercase">Featured Element</Label>
+                  <p className="text-[9px] font-mono text-slate-500 uppercase">Showcase on top of credentials view</p>
+                </div>
               </div>
-            </div>
 
-            <div className="space-y-1.5">
-              <Label className="font-mono text-[10px] text-slate-500 uppercase">Skills Linked (Comma Separated)</Label>
-              <Input
-                value={skillsString}
-                onChange={(e) => setSkillsString(e.target.value)}
-                placeholder="AWS, Cloud, Security"
-                className="bg-[#101827]/70 border-slate-800 text-white font-mono text-xs"
-              />
-            </div>
-
-            <div className="flex items-center gap-3 py-2 border-t border-slate-900 mt-2">
-              <Switch
-                checked={featuredValue}
-                onCheckedChange={(checked) => setValue('featured', checked)}
-              />
-              <div>
-                <Label className="font-mono text-[10px] text-slate-300 uppercase">Featured Element</Label>
-                <p className="text-[9px] font-mono text-slate-500 uppercase">Showcase on top of credentials view</p>
+              <div className="flex items-center gap-3">
+                <Switch
+                  checked={isPublishedValue}
+                  onCheckedChange={(checked) => setValue('isPublished', checked)}
+                />
+                <div>
+                  <Label className="font-mono text-[10px] text-slate-300 uppercase">Published</Label>
+                  <p className="text-[9px] font-mono text-slate-500 uppercase">Showcase in certifications listing</p>
+                </div>
               </div>
             </div>
 

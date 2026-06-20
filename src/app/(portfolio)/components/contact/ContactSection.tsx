@@ -62,7 +62,7 @@ export default function ContactSection({ profile }: Props) {
       subtitle="Have a project in mind or just want to chat? Feel free to reach out!"
       accentColor="pink"
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-[1280px] mx-auto">
         {/* Left: Info */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
@@ -129,11 +129,19 @@ export default function ContactSection({ profile }: Props) {
                 href={profile.socialLinks.website}
               />
             )}
+            {profile?.socialLinks?.phone && (
+              <ContactMethod
+                icon="📞"
+                label="Phone"
+                value={profile.socialLinks.phone}
+                href={`tel:${profile.socialLinks.phone}`}
+              />
+            )}
           </div>
 
           {/* Response time */}
-          <div className="glass-card rounded-xl p-4 border-emerald-400/30 bg-emerald-400/5 mt-6">
-            <p className="text-sm text-slate-300">
+          <div className="glass-card rounded-3xl p-4 border-emerald-500/20 bg-emerald-950/20 mt-6">
+            <p className="text-sm text-slate-350">
               <span className="text-emerald-400 font-semibold">⚡ Response time:</span> Usually within 24 hours
             </p>
           </div>
@@ -146,7 +154,7 @@ export default function ContactSection({ profile }: Props) {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-8 space-y-5">
+          <form onSubmit={handleSubmit} className="glass-card rounded-3xl p-8 space-y-5">
             {/* Name */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-2">
@@ -256,12 +264,12 @@ function ContactMethod({
   value: string
   href: string
 }) {
+  const isExternal = href.startsWith('http')
   return (
-    
-      <a href={href}
-         target="_blank"
-         rel="noopener noreferrer"
-         className="flex items-start gap-4 p-4 rounded-lg glass-card hover:border-pink-DEFAULT/30 transition-all duration-300 group">
+    <a href={href}
+       target={isExternal ? "_blank" : undefined}
+       rel={isExternal ? "noopener noreferrer" : undefined}
+       className="flex items-start gap-4 p-4 rounded-3xl glass-card hover:border-pink-DEFAULT/30 transition-all duration-300 group">
 
       <span className="text-2xl">{icon}</span>
       <div className="flex-1">

@@ -2,210 +2,269 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Eye, EyeOff, ExternalLink, GraduationCap } from 'lucide-react'
 import SectionWrapper from '../shared/SectionWrapper'
 import { Profile } from '@/types'
 
 interface Props {
   profile: Profile | null
+  education?: {
+    degree: string
+    institution: string
+    duration?: string
+    coursework?: string
+    description?: string
+    bullets?: string[]
+  }[]
 }
 
-export default function AboutSection({ profile }: Props) {
+export default function AboutSection({ profile, education = [] }: Props) {
   const [showResume, setShowResume] = useState(false)
 
-  if (!profile) {
-    return (
-      <SectionWrapper id="about" title="About Me">
-        <p className="text-center text-slate-500">
-          Profile information not available yet.
-        </p>
-      </SectionWrapper>
-    )
-  }
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2, delayChildren: 0.1 },
+  const valueCards = [
+    {
+      title: 'Curiosity',
+      description: 'Constantly exploring emerging technologies and new ways of solving problems.',
+      color: 'border-cyan-500/20 text-cyan-400 glow-cyan',
+      glowBg: 'bg-cyan-500/5',
+      icon: '🧠',
     },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: 'easeOut' },
+    {
+      title: 'Innovation',
+      description: 'Combining creativity and engineering to build intelligent solutions.',
+      color: 'border-violet-500/20 text-violet-400 glow-violet',
+      glowBg: 'bg-violet-500/5',
+      icon: '⚡',
     },
-  }
+    {
+      title: 'Impact',
+      description: 'Creating technology that delivers real value and meaningful outcomes.',
+      color: 'border-pink-500/20 text-pink-400 glow-pink',
+      glowBg: 'bg-pink-500/5',
+      icon: '🎯',
+    },
+    {
+      title: 'Growth',
+      description: 'Embracing continuous learning, experimentation, and self-improvement.',
+      color: 'border-emerald-500/20 text-emerald-400 glow-emerald',
+      glowBg: 'bg-emerald-500/5',
+      icon: '🚀',
+    },
+  ]
 
   return (
     <SectionWrapper
       id="about"
-      title="About Me"
-      subtitle="My journey, education, and what drives my passion"
+      title="Human Behind The Models"
+      subtitle="The mindset, curiosity, and purpose behind the systems I build."
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Left: Bio, Career Goals, Learning Journey */}
+      <div className="grid grid-cols-1 lg:grid-cols-[65fr_35fr] gap-8 max-w-[1280px] mx-auto items-start mt-12">
+        
+        {/* Left Column: Narrative Card */}
         <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-          variants={containerVariants}
-          className="space-y-6"
+          initial={{ opacity: 0, x: -25 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="w-full flex"
         >
-          {profile.bio && (
-            <motion.div variants={itemVariants} className="glass-card rounded-2xl p-6">
-              <h3 className="text-sm font-mono text-cyan-DEFAULT mb-3 uppercase tracking-wider">
-                Who I Am
-              </h3>
-              <div 
-                className="text-slate-300 leading-relaxed text-lg prose prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: profile.bio }}
-              />
-            </motion.div>
-          )}
+          <div className="glass-card rounded-3xl border border-cyan-500/10 p-8 flex flex-col gap-8 w-full relative overflow-hidden bg-[#0A1020]/70 group">
+            {/* Ambient background glow */}
+            <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl -z-10 pointer-events-none group-hover:bg-cyan-500/10 transition-colors duration-500" />
+            
+            {/* Body Text */}
+            <div className="space-y-6 text-slate-300 text-sm md:text-base leading-relaxed font-sans max-w-2xl">
+              <p className="text-slate-200 text-lg font-medium leading-relaxed">
+                While AI can automate tasks and generate insights, meaningful products still require human creativity, critical thinking, and empathy.
+              </p>
+              <p>
+                My passion lies in bridging that gap—building intelligent systems that empower people rather than replace them.
+              </p>
+              <p>
+                I enjoy exploring how autonomous agents, modern software architecture, and human-centered design can work together to create impactful solutions.
+              </p>
+              <p>
+                I approach every project with curiosity, experimentation, and a desire to create technology that solves real problems.
+              </p>
+            </div>
 
-          {profile.careerGoals && (
-            <motion.div variants={itemVariants} className="glass-card rounded-2xl p-6">
-              <h3 className="text-sm font-mono text-violet-DEFAULT mb-3 uppercase tracking-wider">
-                Career Goals
-              </h3>
-              <div 
-                className="text-slate-300 leading-relaxed prose prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: profile.careerGoals }}
-              />
-            </motion.div>
-          )}
-
-          {profile.learningJourney && (
-            <motion.div variants={itemVariants} className="glass-card rounded-2xl p-6">
-              <h3 className="text-sm font-mono text-pink-DEFAULT mb-3 uppercase tracking-wider">
-                Learning Journey
-              </h3>
-              <div 
-                className="text-slate-300 leading-relaxed prose prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: profile.learningJourney }}
-              />
-            </motion.div>
-          )}
-        </motion.div>
-
-        {/* Right: Education Timeline */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-          variants={containerVariants}
-          className="space-y-4"
-        >
-          <h3 className="text-sm font-mono text-cyan-DEFAULT mb-6 uppercase tracking-wider">
-            Education
-          </h3>
-
-          {profile.education?.length > 0 ? (
-            profile.education.map((edu, i) => (
-              <motion.div
-                key={i}
-                variants={itemVariants}
-                className="glass-card rounded-2xl p-6 relative pl-8 border-l-2 border-cyan-DEFAULT/30 hover:border-cyan-DEFAULT/60 transition-all duration-300"
+            {/* Integrated Card Action Buttons */}
+            <div className="flex flex-wrap gap-4 items-center">
+              {/* View/Hide Resume Action */}
+              <button
+                id="about-view-resume-btn"
+                onClick={() => setShowResume(!showResume)}
+                className="relative p-[1.5px] rounded-xl overflow-hidden group transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
               >
-                <div className="absolute -left-2 top-8 w-3 h-3 rounded-full bg-cyan-DEFAULT border-2 border-bg-primary shadow-lg shadow-cyan-DEFAULT/50" />
+                <span className="absolute inset-0 bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500" />
+                <span className={`relative flex items-center gap-2 px-5 py-2.5 rounded-[10px] font-mono text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+                  showResume
+                    ? 'bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500 text-slate-950 shadow-[0_0_20px_rgba(6,182,212,0.4)]'
+                    : 'bg-slate-950 text-blue-400 group-hover:text-cyan-300'
+                }`}>
+                  {showResume ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
+                  <span>{showResume ? 'Hide Resume' : 'View Resume'}</span>
+                </span>
+              </button>
 
-                <div className="mb-2">
-                  <h4 className="font-semibold text-slate-100">
-                    {edu.degree}{edu.field && ` in ${edu.field}`}
-                  </h4>
-                  <p className="text-sm text-cyan-DEFAULT/80 font-mono">{edu.institution}</p>
-                </div>
-
-                <div className="flex items-center gap-3 text-xs text-slate-400 mb-2">
-                  <span>
-                    {edu.startYear}
-                    {edu.endYear ? ` — ${edu.endYear}` : edu.current ? ' — Present' : ''}
-                  </span>
-                  {edu.gpa && <span className="text-violet-DEFAULT">GPA: {edu.gpa}</span>}
-                </div>
-
-                {edu.description && (
-                  <p className="text-sm text-slate-300 leading-relaxed">{edu.description}</p>
-                )}
-              </motion.div>
-            ))
-          ) : (
-            <p className="text-slate-500 text-sm">Education information not added yet.</p>
-          )}
-
-          {profile.yearsOfExperience != null && (
-            <motion.div
-              variants={itemVariants}
-              className="glass-card rounded-2xl p-6 mt-6 bg-gradient-to-br from-violet-DEFAULT/10 to-pink-DEFAULT/10 border-violet-DEFAULT/20"
-            >
-              <div className="flex items-center gap-4">
-                <div className="text-4xl font-display gradient-text-pink">
-                  {profile.yearsOfExperience}+
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-slate-200">Years of Experience</p>
-                  <p className="text-xs text-slate-400">Continuously learning & growing</p>
-                </div>
-              </div>
-            </motion.div>
-          )}
+              {/* View in Full Tab Link */}
+              <a
+                href="/resume.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative p-[1.5px] rounded-xl overflow-hidden group transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-400 to-purple-500" />
+                <span className="relative flex items-center gap-2 px-5 py-2.5 rounded-[10px] bg-slate-950 text-purple-400 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-300 group-hover:text-pink-300">
+                  <ExternalLink className="w-4.5 h-4.5" />
+                  <span>View in Full Tab</span>
+                </span>
+              </a>
+            </div>
+          </div>
         </motion.div>
-      </div>
 
-      {/* Sleek full-width Resume Reader block with toggle button */}
-      <div className="mt-16 flex flex-col items-center justify-center gap-6">
-        <div className="flex flex-wrap gap-5 items-center justify-center">
-          {/* View Resume Button (Blue Gradient Border / Background) */}
-          <button
-            onClick={() => setShowResume(!showResume)}
-            className="relative p-[1.5px] rounded-xl overflow-hidden group transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <span className="absolute inset-0 bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500" />
-            <span className={`relative block px-6 py-2.5 rounded-[10px] font-mono text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
-              showResume
-                ? 'bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500 text-slate-950 shadow-[0_0_20px_rgba(6,182,212,0.4)]'
-                : 'bg-slate-950 text-blue-400 group-hover:text-cyan-300'
-            }`}>
-              {showResume ? 'Hide Resume' : 'View Resume'}
-            </span>
-          </button>
-
-          {/* View in Full Tab Button (Purple Gradient Border) */}
-          <a
-            href="/resume.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="relative p-[1.5px] rounded-xl overflow-hidden group transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-400 to-purple-500" />
-            <span className="relative block px-6 py-2.5 rounded-[10px] bg-slate-950 text-purple-400 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-300 group-hover:text-pink-300">
-              View in Full Tab
-            </span>
-          </a>
-        </div>
-
-        {/* Embedded styled iframe inside a light background container for original styling */}
-        <AnimatePresence>
-          {showResume && (
+        {/* Right Column: Values Stack */}
+        <div className="w-full flex flex-col gap-4">
+          <h3 className="font-mono text-[10px] tracking-[0.2em] uppercase text-slate-500 mb-2 ml-1 select-none">
+            What Drives Me
+          </h3>
+          {valueCards.map((card, idx) => (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: '550px' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.4, ease: 'easeInOut' }}
-              className="w-full relative rounded-xl border border-slate-300 bg-white overflow-hidden shadow-2xl flex flex-col"
+              key={card.title}
+              initial={{ opacity: 0, x: 25 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              whileHover={{ y: -8 }}
+              className={`glass-card rounded-3xl p-5 border ${card.color} bg-[#0A1020]/70 hover:-translate-y-2 hover:border-cyan-400/30 hover:shadow-[0_0_30px_rgba(0,229,255,0.12)] relative overflow-hidden transition-all duration-300 group`}
             >
-              <iframe 
-                src="/resume.html" 
-                className="w-full h-full border-none"
-                title="Resume Document Viewer"
-              />
+              {/* Pulsing card ambient background glow */}
+              <div className={`absolute top-0 right-0 w-24 h-24 ${card.glowBg} rounded-full blur-xl -z-10 group-hover:scale-125 transition-transform duration-500`} />
+              
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <span className="text-base select-none leading-none">{card.icon}</span>
+                <h4 className="font-display font-bold text-sm tracking-wide uppercase text-white">
+                  {card.title}
+                </h4>
+              </div>
+              <p className="text-xs text-slate-400 font-sans leading-relaxed">
+                {card.description}
+              </p>
             </motion.div>
-          )}
-        </AnimatePresence>
+          ))}
+        </div>
       </div>
+
+      {/* Embedded Collapsible Resume Iframe Container */}
+      <AnimatePresence>
+        {showResume && (
+          <motion.div
+            initial={{ opacity: 0, height: 0, marginTop: 0 }}
+            animate={{ opacity: 1, height: '600px', marginTop: '24px' }}
+            exit={{ opacity: 0, height: 0, marginTop: 0 }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+            className="w-full max-w-7xl mx-auto relative rounded-2xl border border-slate-300 bg-white overflow-hidden shadow-2xl flex flex-col z-20"
+          >
+            <iframe
+              src="/resume.html"
+              className="w-full h-full border-none"
+              title="Resume Document Viewer"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Education Timeline */}
+      {education.length > 0 && (
+        <div className="max-w-[1280px] mx-auto mt-16 pt-16 border-t border-slate-900/60">
+          <h3 className="font-mono text-[10px] tracking-[0.2em] uppercase text-slate-500 mb-8 ml-1 select-none">
+            Academic Pathway
+          </h3>
+          
+          <div className="relative pl-6 sm:pl-8 space-y-12">
+            {/* Timeline vertical connector line */}
+            <div className="absolute left-[23px] sm:left-[27px] top-3 bottom-3 w-[1px] bg-gradient-to-b from-cyan-500/30 via-violet-500/30 to-transparent" />
+            
+            {education.map((edu, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                className="relative"
+              >
+                {/* Timeline Node circular icon container */}
+                <div className="absolute -left-[45px] sm:-left-[49px] top-1.5 w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500 to-violet-600 p-0.5 flex items-center justify-center shadow-lg shadow-cyan-500/10 z-10">
+                  <div className="w-full h-full rounded-[10px] bg-[#0A1020] flex items-center justify-center">
+                    <GraduationCap className="w-5 h-5 text-cyan-400" />
+                  </div>
+                </div>
+                
+                {/* Timeline card */}
+                <div className="glass-card rounded-3xl border border-cyan-500/10 p-6 sm:p-8 bg-[#0A1020]/60 backdrop-blur-xl hover:border-cyan-400/30 hover:shadow-[0_0_30px_rgba(0,229,255,0.12)] transition-all duration-300 relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl -z-10 pointer-events-none group-hover:bg-cyan-500/10 transition-colors duration-500" />
+                  
+                  {/* Card Header */}
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                    <div className="space-y-1">
+                      <h4 className="font-display font-bold text-base sm:text-lg text-white leading-snug uppercase tracking-wide">
+                        {edu.degree}
+                      </h4>
+                      <p className="text-sm text-slate-405 font-sans">
+                        {edu.institution}
+                      </p>
+                    </div>
+                    {edu.duration && (
+                      <span className="px-3 py-1 rounded-full border border-slate-800 bg-slate-950/60 font-mono text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider shrink-0 self-start">
+                        {edu.duration}
+                      </span>
+                    )}
+                  </div>
+                  
+                  {/* Card Description */}
+                  {edu.description && (
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans mt-4 max-w-3xl">
+                      {edu.description}
+                    </p>
+                  )}
+                  
+                  {/* Core Outcomes bullets block */}
+                  {edu.bullets && edu.bullets.filter(Boolean).length > 0 && (
+                    <div className="mt-5 space-y-2">
+                      <span className="font-mono text-[9px] text-slate-500 uppercase tracking-widest font-semibold block mb-2 select-none">
+                        Core Outcomes
+                      </span>
+                      <ul className="space-y-2.5">
+                        {edu.bullets.filter(Boolean).map((bullet, bulletIdx) => (
+                          <li key={bulletIdx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-300">
+                            <span className="w-1.5 h-1.5 rounded-full bg-violet-400 shrink-0 mt-2 shadow-[0_0_8px_rgba(196,181,253,0.8)]" />
+                            <span>{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Coursework listing */}
+                  {edu.coursework && (
+                    <div className="mt-4 pt-4 border-t border-slate-900/60">
+                      <span className="font-mono text-[9px] text-slate-500 uppercase tracking-widest font-semibold block mb-1">
+                        Relevant Coursework
+                      </span>
+                      <p className="text-xs text-slate-400 leading-relaxed">
+                        {edu.coursework}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
+
     </SectionWrapper>
   )
 }

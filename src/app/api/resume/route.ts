@@ -86,6 +86,10 @@ const defaultResume = {
       degree: 'Bachelor of Technology (B.Tech) in Computer Science Engineering – AI Full Stack Focus',
       institution: 'Graphic Era Hill University | Dehradun, Uttarakhand',
       duration: 'Expected Graduation: 05/2028',
+      description: 'Specializing in the AI Full Stack program. Laying a solid foundation in low-level system design and algorithms.',
+      bullets: [
+        'Academic Performance / Grade: 9.2 GPA Equivalent (Specialist Focus)'
+      ],
       coursework: 'Data Structures & Algorithms, Object-Oriented Programming (OOP), Database Management Systems (DBMS), Operating Systems, Computer Networks, Software Engineering, Machine Learning, Artificial Intelligence, Web Applications'
     }
   ],
@@ -159,17 +163,21 @@ ${bulletsList}
   }).join('\n')
 
   // Map education to HTML
-  const educationHtml = (data.education || []).map((edu: any) => `
+  const educationHtml = (data.education || []).map((edu: any) => {
+    const bulletsList = (edu.bullets || []).map((bullet: string) => `      <li>${bullet}</li>`).join('\n')
+    return `
   <div class="education-item">
     <span class="institution">${edu.institution || ''}</span>
     <span class="grad-date">${edu.duration || ''}</span>
   </div>
-  <div class="degree" style="font-weight: 500; font-size: 9.5pt; color: #334155; margin-top: 1pt;">
+  <div class="degree" style="font-weight: 500; font-size: 9.5pt; color: #0f172a; margin-top: 1pt;">
     ${edu.degree || ''}
   </div>
-  ${edu.coursework ? `<div class="coursework"><strong>Relevant Coursework:</strong> ${edu.coursework}</div>` : ''}
-  <div style="height: 6pt;"></div>
-  `).join('\n')
+  ${edu.description ? `<p style="font-size: 9pt; color: #334155; margin-top: 2pt; text-align: left;">${edu.description}</p>` : ''}
+  ${bulletsList ? `<ul style="margin-top: 2.5pt; font-size: 9pt; margin-left: 12pt; list-style-type: disc;">\n${bulletsList}\n    </ul>` : ''}
+  ${edu.coursework ? `<div class="coursework" style="margin-top: 2.5pt;"><strong>Relevant Coursework:</strong> ${edu.coursework}</div>` : ''}
+  <div style="height: 8pt;"></div>`
+  }).join('\n')
 
   // Map certifications to HTML
   const certsHtml = (data.certifications || []).map((cert: string) => `• ${cert}`).join(' ')

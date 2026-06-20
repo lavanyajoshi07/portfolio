@@ -7,7 +7,7 @@ import { safeParse, certificationSchema } from '@/lib/validation';
 export async function GET() {
   try {
     await connectDB();
-    const certifications = await Certification.find().sort({ order: 1 }).lean();
+    const certifications = await Certification.find().sort({ sortOrder: 1 }).lean();
     return successResponse(certifications);
   } catch (error) {
     console.error('Error fetching certifications:', error);

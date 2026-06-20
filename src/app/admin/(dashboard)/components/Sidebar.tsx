@@ -17,7 +17,12 @@ import {
   Settings, 
   LogOut,
   Cpu,
-  FileText
+  FileText,
+  Globe,
+  Clock,
+  Target,
+  HelpCircle,
+  Users
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -25,14 +30,18 @@ const menuItems = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/admin/dashboard' },
   { label: 'Profile Info', icon: User, href: '/admin/profile' },
   { label: 'Resume', icon: FileText, href: '/admin/resume' },
-  { label: 'Skills', icon: Code2, href: '/admin/skills' },
+  { label: 'Tech Stack', icon: Code2, href: '/admin/tech-stack' },
   { label: 'Projects', icon: Briefcase, href: '/admin/projects' },
   { label: 'Certifications', icon: Award, href: '/admin/certifications' },
   { label: 'Achievements', icon: Trophy, href: '/admin/achievements' },
-  { label: 'Timeline', icon: Calendar, href: '/admin/timeline' },
-  { label: 'Coding Profiles', icon: Terminal, href: '/admin/coding-profiles' },
+  { label: 'Coding Activity', icon: Terminal, href: '/admin/coding-activity' },
   { label: 'Messages', icon: MessageSquare, href: '/admin/messages' },
   { label: 'Media Library', icon: Image, href: '/admin/media' },
+  { label: 'SEO Settings', icon: Globe, href: '/admin/seo' },
+  { label: 'Activity Logs', icon: Clock, href: '/admin/activity-logs' },
+  { label: 'Future Goals', icon: Target, href: '/admin/future-goals' },
+  { label: 'FAQs', icon: HelpCircle, href: '/admin/faqs' },
+  { label: 'Community', icon: Users, href: '/admin/community' },
   { label: 'Site Settings', icon: Settings, href: '/admin/settings' },
 ]
 
