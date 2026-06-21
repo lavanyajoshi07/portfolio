@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Eye, EyeOff, ExternalLink, GraduationCap } from 'lucide-react'
 import SectionWrapper from '../shared/SectionWrapper'
 import { Profile } from '@/types'
+import { useResponsive } from '@/hooks/useResponsive'
+import { cn } from '@/lib/utils'
 
 interface Props {
   profile: Profile | null
@@ -20,6 +22,7 @@ interface Props {
 
 export default function AboutSection({ profile, education = [] }: Props) {
   const [showResume, setShowResume] = useState(false)
+  const { isMobile, isTablet, mounted } = useResponsive()
 
   const valueCards = [
     {
@@ -89,7 +92,10 @@ export default function AboutSection({ profile, education = [] }: Props) {
             </div>
 
             {/* Integrated Card Action Buttons */}
-            <div className="hidden md:flex flex-wrap gap-4 items-center">
+            <div className={cn(
+              "flex-wrap gap-4 items-center",
+              mounted ? (isMobile ? "hidden" : "flex") : "hidden md:flex"
+            )}>
               {/* View/Hide Resume Action */}
               <button
                 id="about-view-resume-btn"
@@ -125,8 +131,18 @@ export default function AboutSection({ profile, education = [] }: Props) {
         </motion.div>
 
         {/* Right Column: Values Stack */}
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
-          <h3 className="font-mono text-[10px] tracking-[0.2em] uppercase text-slate-500 mb-2 ml-1 select-none col-span-1 md:col-span-2 lg:col-span-1">
+        <div className={cn(
+          "w-full grid gap-4",
+          mounted 
+            ? (isMobile ? "grid-cols-1" : (isTablet ? "grid-cols-2" : "grid-cols-1"))
+            : "grid-cols-1 md:grid-cols-2 lg:grid-cols-1"
+        )}>
+          <h3 className={cn(
+            "font-mono text-[10px] tracking-[0.2em] uppercase text-slate-500 mb-2 ml-1 select-none",
+            mounted 
+              ? (isMobile ? "col-span-1" : (isTablet ? "col-span-2" : "col-span-1"))
+              : "col-span-1 md:col-span-2 lg:col-span-1"
+          )}>
             What Drives Me
           </h3>
           {valueCards.map((card, idx) => (
@@ -148,7 +164,7 @@ export default function AboutSection({ profile, education = [] }: Props) {
                   {card.title}
                 </h4>
               </div>
-              <p className="text-xs text-slate-400 font-sans leading-relaxed">
+              <p className="text-xs text-slate-405 font-sans leading-relaxed">
                 {card.description}
               </p>
             </motion.div>
@@ -156,8 +172,11 @@ export default function AboutSection({ profile, education = [] }: Props) {
         </div>
       </div>
 
-      {/* Mobile Resume Card (< 768px) */}
-      <div className="block md:hidden mt-8 w-full max-w-sm mx-auto px-4">
+      {/* Mobile Resume Card */}
+      <div className={cn(
+        "mt-8 w-full max-w-sm mx-auto px-4",
+        mounted ? (isMobile ? "block" : "hidden") : "block md:hidden"
+      )}>
         <div className="glass-card rounded-3xl border border-cyan-500/10 p-6 flex flex-col items-center text-center gap-4 w-full relative overflow-hidden bg-[#0A1020]/70 group">
           {/* Ambient background glow */}
           <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl -z-10 pointer-events-none group-hover:bg-cyan-500/10 transition-colors duration-500" />
@@ -186,8 +205,10 @@ export default function AboutSection({ profile, education = [] }: Props) {
         </div>
       </div>
 
-      {/* Embedded Collapsible Resume Iframe Container (>= 768px only) */}
-      <div className="hidden md:block">
+      {/* Embedded Collapsible Resume Iframe Container */}
+      <div className={cn(
+        mounted ? (isMobile ? "hidden" : "block") : "hidden md:block"
+      )}>
         <AnimatePresence>
           {showResume && (
             <motion.div

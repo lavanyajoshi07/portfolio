@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { Profile } from '@/types'
+import { useResponsive } from '@/hooks/useResponsive'
+import { cn } from '@/lib/utils'
 
 interface Props {
   profile: Profile | null
@@ -13,6 +15,7 @@ export default function Navbar({ profile }: Props) {
   const [activeSection, setActiveSection] = useState('')
   const [mobileOpen, setMobileOpen] = useState(false)
   const [hoveredLink, setHoveredLink] = useState<string | null>(null)
+  const { isMobile, isTablet, mounted } = useResponsive()
 
   // Unified menu links for all sections
   const navLinks = [
@@ -61,7 +64,10 @@ export default function Navbar({ profile }: Props) {
             </Link>
           </motion.div>
           {profile?.isAvailableForWork && (
-            <div className="md:hidden absolute top-[100%] left-0 mt-1 glass-card px-2.5 py-0.5 rounded-full flex items-center gap-1.5 border border-emerald-500/20 bg-emerald-950/20 backdrop-blur-md">
+            <div className={cn(
+              "absolute top-[100%] left-0 mt-1 glass-card px-2.5 py-0.5 rounded-full flex items-center gap-1.5 border border-emerald-500/20 bg-emerald-950/20 backdrop-blur-md transition-all",
+              mounted ? ((isMobile || isTablet) ? "flex" : "hidden") : "md:hidden flex"
+            )}>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-[9px] font-mono font-medium text-emerald-400 tracking-wider uppercase whitespace-nowrap">
                 Available for Work
@@ -72,7 +78,10 @@ export default function Navbar({ profile }: Props) {
 
         {/* Desktop nav */}
         <nav 
-          className="hidden md:flex items-center gap-1 relative"
+          className={cn(
+            "items-center gap-1 relative",
+            mounted ? (isMobile ? "hidden" : "flex") : "hidden md:flex"
+          )}
           onMouseLeave={() => setHoveredLink(null)}
         >
           {navLinks.map(link => (
@@ -116,7 +125,10 @@ export default function Navbar({ profile }: Props) {
 
         {/* Mobile menu toggle */}
         <button
-          className="md:hidden w-11 h-11 flex items-center justify-center text-slate-400 hover:text-white rounded-lg transition-colors focus:outline-none"
+          className={cn(
+            "w-11 h-11 flex items-center justify-center text-slate-400 hover:text-white rounded-lg transition-colors focus:outline-none",
+            mounted ? (isMobile ? "flex" : "hidden") : "md:hidden flex"
+          )}
           onClick={() => setMobileOpen(v => !v)}
           aria-label="Toggle menu"
         >
@@ -135,7 +147,10 @@ export default function Navbar({ profile }: Props) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-b"
+            className={cn(
+              "border-b",
+              mounted ? (isMobile ? "block" : "hidden") : "md:hidden block"
+            )}
             style={{
               background: 'rgba(5, 8, 22, 0.85)',
               backdropFilter: 'blur(16px)',

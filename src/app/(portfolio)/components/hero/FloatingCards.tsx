@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Profile } from '@/types'
+import { useResponsive } from '@/hooks/useResponsive'
 
 interface Props {
   profile: Profile | null
@@ -113,7 +114,7 @@ const circuitLines = [
   { id: 'mongodb-line', d: 'M 338,270 C 370,270 395,280 410,290', color: '#00E5FF', duration: 4.8 },
   { id: 'postgresql-line', d: 'M 211,331 C 185,345 180,385 175,419', color: '#38BDF8', duration: 6.2 },
   { id: 'ai-line', d: 'M 289,331 C 315,345 320,385 325,419', color: '#FF007F', duration: 4.2 },
-
+ 
   // Secondary network connections flowing to the right (glowing neural trails aligned to right cards)
   { id: 'network-trail-1', d: 'M 460,118 C 485,118 500,130 550,130', color: '#00E5FF', duration: 8, delay: 0.5 },
   { id: 'network-trail-2', d: 'M 480,290 C 505,290 520,300 550,300', color: '#7C3AED', duration: 7, delay: 1.2 },
@@ -136,16 +137,10 @@ export default function FloatingCards({ profile }: Props) {
   const [consoleIndex, setConsoleIndex] = useState(0)
   const [mounted, setMounted] = useState(false)
   const [clientParticles, setClientParticles] = useState<any[]>([])
-  const [isMobile, setIsMobile] = useState(false)
+  const { isMobile } = useResponsive()
 
   useEffect(() => {
     setMounted(true)
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-
     const isMob = window.innerWidth < 768
     const count = isMob ? 6 : 12
     const generated = Array.from({ length: count }).map((_, i) => ({
@@ -164,12 +159,11 @@ export default function FloatingCards({ profile }: Props) {
     }, 2800)
     return () => {
       clearInterval(interval)
-      window.removeEventListener('resize', checkMobile)
     }
   }, [])
 
   return (
-    <div className="relative w-full max-w-[280px] sm:max-w-[430px] aspect-square flex items-center justify-center select-none z-10 hero-floating-cards transition-transform duration-300 origin-center">
+    <div className="relative w-full max-w-[280px] md:max-w-[340px] lg:max-w-[360px] xl:max-w-[430px] aspect-square flex items-center justify-center select-none z-10 hero-floating-cards transition-transform duration-300 origin-center">
       
       {/* Soft glowing ambient backgrounds - set to low opacity to protect portrait clarity */}
       <div className="absolute top-1/4 left-1/4 w-[160px] h-[160px] rounded-full bg-violet-600/[0.03] blur-[60px] animate-pulse pointer-events-none" />

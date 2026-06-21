@@ -3,9 +3,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Profile } from '@/types'
-import { getOptimizedVideoUrls } from '@/lib/utils'
+import { getOptimizedVideoUrls, cn } from '@/lib/utils'
 import SocialLinks from './SocialLinks'
 import FloatingCards from './FloatingCards'
+import { useResponsive } from '@/hooks/useResponsive'
 
 interface Props {
   profile: Profile | null
@@ -16,16 +17,7 @@ export default function HeroSection({ profile }: Props) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   
   const [isPlaying, setIsPlaying] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+  const { isMobile, isTablet, isLandscapeMobile, mounted } = useResponsive()
   
   const scrollToElement = (id: string, block: ScrollIntoViewOptions['block'] = 'center') => {
     const element = document.getElementById(id)
@@ -61,6 +53,9 @@ export default function HeroSection({ profile }: Props) {
   const hasAudio = !!profile?.introAudio
   const videoUrls = getOptimizedVideoUrls(profile?.heroVideo)
 
+  const isSameSource = videoUrls.mp4Mobile === videoUrls.mp4 && videoUrls.webmMobile === videoUrls.webm
+  const videoKey = isSameSource ? 'video-same' : (mounted && isMobile ? 'video-mobile' : 'video-desktop')
+
   return (
     <section 
       id="hero" 
@@ -80,6 +75,7 @@ export default function HeroSection({ profile }: Props) {
       {/* ================= PREMIUM CINEMATIC BACKGROUND LAYER ================= */}
       <div className="absolute inset-0 w-full h-full pointer-events-none select-none z-0 overflow-hidden">
         <video
+          key={videoKey}
           autoPlay
           muted
           loop
@@ -90,7 +86,7 @@ export default function HeroSection({ profile }: Props) {
           }`}
           style={{
             willChange: 'transform',
-            objectPosition: isMobile ? 'center 10%' : 'center top',
+            objectPosition: mounted && isMobile ? 'center 10%' : 'center top',
             transform: 'translateZ(0)',
             backfaceVisibility: 'hidden',
           }}
@@ -123,10 +119,22 @@ export default function HeroSection({ profile }: Props) {
         style={{ y, opacity }}
         className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-8 sm:pt-16 md:pt-24 pb-8 w-full min-w-0"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start min-h-[60vh] lg:min-h-[65vh]">
+        <div className={cn(
+          "grid gap-8 items-center min-h-[60vh] lg:min-h-[65vh]",
+          mounted && (isMobile || isTablet)
+            ? "grid-cols-1"
+            : "grid-cols-1 md:grid-cols-12"
+        )}>
 
-          <div className="flex flex-col justify-end min-h-[75vh] lg:min-h-0 lg:col-span-6 lg:-translate-x-4 xl:-translate-x-12 lg:-translate-y-12 transition-transform duration-300 relative z-20">
-            {!isMobile && profile?.isAvailableForWork && (
+          <div className={cn(
+            "flex flex-col justify-end transition-transform duration-300 relative z-20",
+            mounted && isLandscapeMobile
+              ? "pt-[90vh] w-full items-center text-center px-4"
+              : (mounted && (isMobile || isTablet)
+                  ? "min-h-[75vh] md:min-h-[75vh] w-full items-center text-center px-4"
+                  : "min-h-[75vh] lg:min-h-0 md:col-span-6 lg:col-span-6 lg:-translate-x-4 xl:-translate-x-12 lg:-translate-y-12")
+          )}>
+            {(!mounted || (!isMobile && !isTablet)) && profile?.isAvailableForWork && (
               <div className="glass-card px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-emerald-500/20 bg-emerald-950/20 backdrop-blur-md mx-auto lg:mx-0 mb-4 lg:mb-6">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-[11px] font-mono font-medium text-emerald-400 tracking-wider uppercase">
@@ -135,7 +143,7 @@ export default function HeroSection({ profile }: Props) {
               </div>
             )}
 
-            <h1 className="font-display text-center lg:text-left text-3xl sm:text-4xl lg:text-6xl font-bold leading-none text-white tracking-tight">
+            <h1 className="font-display text-center lg:text-left text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold leading-none text-white tracking-tight">
               Lavanya{' '}
               <span className="gradient-text-cyan drop-shadow-[0_2px_10px_rgba(6,182,212,0.15)]">
                 Joshi
@@ -202,15 +210,15 @@ export default function HeroSection({ profile }: Props) {
               )}
             </div>
 
-            {!isMobile && profile?.socialLinks && (
+            {(!mounted || (!isMobile && !isTablet)) && profile?.socialLinks && (
               <div className="mt-4 lg:mt-6">
                 <SocialLinks links={profile.socialLinks} />
               </div>
             )}
           </div>
 
-          {!isMobile && (
-            <div className="relative flex items-start justify-center min-h-[350px] lg:col-span-6 lg:translate-x-20 xl:translate-x-24 lg:-translate-y-12 transition-transform duration-300 z-20">
+          {(!mounted || (!isMobile && !isTablet)) && (
+            <div className="relative flex items-start justify-center min-h-[350px] transition-transform duration-300 z-20 lg:col-span-6 lg:translate-x-6 xl:translate-x-24 lg:-translate-y-6 xl:-translate-y-12">
               <FloatingCards profile={profile} />
             </div>
           )}

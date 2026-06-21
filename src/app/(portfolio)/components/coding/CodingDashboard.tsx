@@ -5,6 +5,8 @@ import { motion } from 'framer-motion'
 import * as LucideIcons from 'lucide-react'
 import SectionWrapper from '../shared/SectionWrapper'
 import StatsCard from './StatsCard'
+import { useResponsive } from '@/hooks/useResponsive'
+import { cn } from '@/lib/utils'
 
 interface CodingActivitySettings {
   title: string
@@ -56,6 +58,7 @@ interface Props {
 
 export default function CodingDashboard({ dashboardSettings }: Props) {
   const [isMounted, setIsMounted] = useState(false)
+  const { isMobile, isTablet, mounted } = useResponsive()
 
   useEffect(() => {
     setIsMounted(true)
@@ -150,8 +153,11 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
         {/* Row 2: Main Split layout */}
         {(showGraph || showProfile) && (
           <>
-            {/* Mobile Layout (< 768px) */}
-            <div className="block md:hidden space-y-6">
+            {/* Mobile Layout */}
+            <div className={cn(
+              "space-y-6",
+              mounted ? (isMobile ? "block" : "hidden") : "block md:hidden"
+            )}>
               
               {/* Mobile Graph Card & Stats */}
               {showGraph && (
@@ -316,8 +322,11 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
               )}
             </div>
 
-            {/* Desktop Layout (>= 768px) */}
-            <div className="hidden md:grid grid-cols-1 lg:grid-cols-10 gap-6 items-stretch">
+            {/* Desktop Layout */}
+            <div className={cn(
+              "grid-cols-1 lg:grid-cols-10 gap-6 items-stretch",
+              mounted ? (isMobile ? "hidden" : "grid") : "hidden md:grid"
+            )}>
               
               {/* Left Panel: Contribution Heatmap */}
               {showGraph && (
@@ -382,22 +391,35 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
 
                   {/* Graph Image Display */}
                   {settings.contributionGraphImage ? (
-                    <div className="relative w-full min-h-[320px] h-[320px] md:h-[400px] rounded-2xl border border-cyan-500/10 bg-[#0A1020]/50 overflow-hidden">
+                    <div className={cn(
+                      "relative w-full rounded-2xl border border-cyan-500/10 bg-[#0A1020]/50 overflow-hidden",
+                      mounted && isTablet
+                        ? "h-auto aspect-[8/3]"
+                        : "min-h-[320px] h-[320px] md:h-[400px]"
+                    )}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={settings.contributionGraphImage}
                         alt={settings.contributionGraphAlt || 'GitHub Contribution Graph'}
-                        className={`w-full h-full ${
-                          (settings.graphImageDisplayMode || 'cover') === 'contain' ? 'object-contain' :
-                          (settings.graphImageDisplayMode || 'cover') === 'fill' ? 'object-fill' : 'object-cover'
-                        }`}
+                        className={cn(
+                          "w-full h-full",
+                          mounted && isTablet
+                            ? "object-contain"
+                            : ((settings.graphImageDisplayMode || 'cover') === 'contain' ? 'object-contain' :
+                               (settings.graphImageDisplayMode || 'cover') === 'fill' ? 'object-fill' : 'object-cover')
+                        )}
                         style={{
                           objectPosition: (settings.graphImageDisplayMode || 'cover') === 'cover' ? 'top center' : 'center center'
                         }}
                       />
                     </div>
                   ) : (
-                    <div className="relative w-full min-h-[320px] h-[320px] md:h-[400px] rounded-2xl border border-cyan-500/10 bg-[#0A1020]/50 p-4 flex flex-col items-center justify-center gap-2 text-slate-500 select-none overflow-hidden">
+                    <div className={cn(
+                      "relative w-full rounded-2xl border border-cyan-500/10 bg-[#0A1020]/50 p-4 flex flex-col items-center justify-center gap-2 text-slate-500 select-none overflow-hidden",
+                      mounted && isTablet
+                        ? "h-auto aspect-[8/3]"
+                        : "min-h-[320px] h-[320px] md:h-[400px]"
+                    )}>
                       <LucideIcons.BarChart3 className="w-8 h-8 text-slate-600 animate-pulse" />
                       <span className="text-xs font-mono uppercase tracking-widest">No Graph Image Uploaded</span>
                     </div>
