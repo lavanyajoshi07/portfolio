@@ -132,12 +132,16 @@ export const sleep = (ms: number): Promise<void> => {
 export function getOptimizedVideoUrls(url: string | undefined): {
   webm: string
   mp4: string
+  webmMobile: string
+  mp4Mobile: string
   isCloudinary: boolean
 } {
   if (!url) {
     return {
       webm: '',
       mp4: '/videos/avatar.mp4',
+      webmMobile: '',
+      mp4Mobile: '/videos/avatar-mobile.mp4',
       isCloudinary: false,
     }
   }
@@ -160,9 +164,15 @@ export function getOptimizedVideoUrls(url: string | undefined): {
       const transformationsWebm = 'f_webm,q_auto:eco,w_1280,c_limit,e_brightness:10,e_contrast:5,e_saturation:10'
       const transformationsMp4 = 'f_mp4,q_auto:eco,w_1280,c_limit,e_brightness:10,e_contrast:5,e_saturation:10'
 
+      // Mobile video: 720p maximum, no real-time filters (brightness, contrast, saturation) to preserve GPU fillrate
+      const transformationsWebmMobile = 'f_webm,q_auto:eco,w_720,c_limit'
+      const transformationsMp4Mobile = 'f_mp4,q_auto:eco,w_720,c_limit'
+
       return {
         webm: `${prefix}/${transformationsWebm}/${pathWithoutExtension}.webm`,
         mp4: `${prefix}/${transformationsMp4}/${pathWithoutExtension}.mp4`,
+        webmMobile: `${prefix}/${transformationsWebmMobile}/${pathWithoutExtension}.webm`,
+        mp4Mobile: `${prefix}/${transformationsMp4Mobile}/${pathWithoutExtension}.mp4`,
         isCloudinary: true,
       }
     }
@@ -172,6 +182,8 @@ export function getOptimizedVideoUrls(url: string | undefined): {
   return {
     webm: '',
     mp4: url,
+    webmMobile: '',
+    mp4Mobile: url,
     isCloudinary: false,
   }
 }

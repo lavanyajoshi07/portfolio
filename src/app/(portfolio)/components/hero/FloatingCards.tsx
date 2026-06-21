@@ -50,6 +50,7 @@ const cards = [
     subtitle: 'LANGUAGE',
     theme: 'magenta' as const,
     pos: { left: '50%', top: '5%' },
+    mobilePos: { left: '50%', top: '10%' },
     delay: 0.1,
   },
   {
@@ -57,6 +58,7 @@ const cards = [
     subtitle: 'LANGUAGE',
     theme: 'cyan' as const,
     pos: { left: '17%', top: '20%' },
+    mobilePos: { left: '20%', top: '23%' },
     delay: 0.2,
   },
   {
@@ -64,6 +66,7 @@ const cards = [
     subtitle: 'LANGUAGE',
     theme: 'blue' as const,
     pos: { left: '83%', top: '20%' },
+    mobilePos: { left: '80%', top: '23%' },
     delay: 0.3,
   },
   {
@@ -71,6 +74,7 @@ const cards = [
     subtitle: 'CORE',
     theme: 'violet' as const,
     pos: { left: '8%', top: '58%' },
+    mobilePos: { left: '16%', top: '56%' },
     delay: 0.4,
   },
   {
@@ -78,6 +82,7 @@ const cards = [
     subtitle: 'DATABASE',
     theme: 'cyan' as const,
     pos: { left: '92%', top: '58%' },
+    mobilePos: { left: '84%', top: '56%' },
     delay: 0.5,
   },
   {
@@ -85,6 +90,7 @@ const cards = [
     subtitle: 'DATABASE',
     theme: 'blue' as const,
     pos: { left: '27%', top: '89%' },
+    mobilePos: { left: '30%', top: '85%' },
     delay: 0.6,
   },
   {
@@ -92,6 +98,7 @@ const cards = [
     subtitle: 'INTELLIGENCE',
     theme: 'magenta' as const,
     pos: { left: '73%', top: '89%' },
+    mobilePos: { left: '70%', top: '85%' },
     delay: 0.7,
   },
 ]
@@ -129,15 +136,24 @@ export default function FloatingCards({ profile }: Props) {
   const [consoleIndex, setConsoleIndex] = useState(0)
   const [mounted, setMounted] = useState(false)
   const [clientParticles, setClientParticles] = useState<any[]>([])
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-    const generated = Array.from({ length: 12 }).map((_, i) => ({
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+
+    const isMob = window.innerWidth < 768
+    const count = isMob ? 6 : 12
+    const generated = Array.from({ length: count }).map((_, i) => ({
       id: i,
       size: Math.random() * 2.5 + 1.5, // 1.5px to 4px
       x: Math.random() * 80 + 10, // keep inside center region
       y: Math.random() * 80 + 10,
-      duration: Math.random() * 6 + 5, // 5s to 11s
+      duration: isMob ? Math.random() * 9 + 8 : Math.random() * 6 + 5, // Slower on mobile to reduce GPU thread workload
       delay: Math.random() * 3,
       color: ['#00E5FF', '#FF007F', '#7C3AED', '#38BDF8'][i % 4],
     }))
@@ -148,6 +164,7 @@ export default function FloatingCards({ profile }: Props) {
     }, 2800)
     return () => {
       clearInterval(interval)
+      window.removeEventListener('resize', checkMobile)
     }
   }, [])
 
@@ -162,7 +179,7 @@ export default function FloatingCards({ profile }: Props) {
       {mounted && clientParticles.map((p) => (
         <motion.div
           key={p.id}
-          className="absolute rounded-full pointer-events-none z-10"
+          className="absolute rounded-full pointer-events-none z-10 transform-gpu"
           style={{
             width: p.size,
             height: p.size,
@@ -171,6 +188,7 @@ export default function FloatingCards({ profile }: Props) {
             top: `${p.y}%`,
             filter: 'blur(0.5px)',
             boxShadow: `0 0 8px ${p.color}`,
+            willChange: 'transform',
           }}
           animate={{
             y: [0, -40, 0],
@@ -230,6 +248,7 @@ export default function FloatingCards({ profile }: Props) {
           cy="250"
           r="115"
           fill="url(#jellyfish-radial)"
+          className="transform-gpu"
           animate={{
             scale: [1, 1.06, 0.95, 1.03, 1],
             opacity: [0.55, 0.72, 0.48, 0.68, 0.55],
@@ -239,7 +258,7 @@ export default function FloatingCards({ profile }: Props) {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          style={{ originX: '250px', originY: '250px' }}
+          style={{ originX: '250px', originY: '250px', willChange: 'transform, opacity' }}
         />
 
         {/* Jellyfish inner bell - pulsating glow */}
@@ -251,6 +270,7 @@ export default function FloatingCards({ profile }: Props) {
           stroke="url(#jelly-grad-1)"
           strokeWidth="1.5"
           filter="url(#jellyfish-glow-filter)"
+          className="transform-gpu"
           animate={{
             scale: [1, 1.05, 0.96, 1.03, 1],
             opacity: [0.44, 0.64, 0.36, 0.56, 0.44],
@@ -261,7 +281,7 @@ export default function FloatingCards({ profile }: Props) {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          style={{ originX: '250px', originY: '250px' }}
+          style={{ originX: '250px', originY: '250px', willChange: 'transform, opacity' }}
         />
 
         {/* Jellyfish middle ring - dashes and counter-rotation */}
@@ -274,6 +294,7 @@ export default function FloatingCards({ profile }: Props) {
           strokeWidth="1.2"
           strokeDasharray="25 15 5 15"
           filter="url(#jellyfish-glow-filter)"
+          className="transform-gpu"
           animate={{
             scale: [1, 0.96, 1.04, 0.98, 1],
             rotate: [360, 270, 180, 90, 0],
@@ -284,7 +305,7 @@ export default function FloatingCards({ profile }: Props) {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          style={{ originX: '250px', originY: '250px' }}
+          style={{ originX: '250px', originY: '250px', willChange: 'transform, opacity' }}
         />
 
         {/* Jellyfish outer halo */}
@@ -296,6 +317,7 @@ export default function FloatingCards({ profile }: Props) {
           stroke="url(#jelly-grad-1)"
           strokeWidth="0.8"
           strokeDasharray="10 20"
+          className="transform-gpu"
           animate={{
             scale: [1, 1.03, 0.97, 1.02, 1],
             rotate: [0, -360],
@@ -305,7 +327,7 @@ export default function FloatingCards({ profile }: Props) {
             repeat: Infinity,
             ease: 'linear',
           }}
-          style={{ originX: '250px', originY: '250px' }}
+          style={{ originX: '250px', originY: '250px', willChange: 'transform' }}
           opacity="0.32"
         />
 
@@ -334,8 +356,10 @@ export default function FloatingCards({ profile }: Props) {
             strokeWidth="2.5"
             fill="none"
             strokeDasharray="15 90"
+            className="transform-gpu"
             style={{
               filter: `drop-shadow(0 0 3px ${line.color}) drop-shadow(0 0 8px ${line.color})`,
+              willChange: 'transform',
             }}
             animate={{ strokeDashoffset: [0, -105] }}
             transition={{
@@ -427,20 +451,23 @@ export default function FloatingCards({ profile }: Props) {
               type: 'spring',
               stiffness: 100,
             }}
-            className="absolute z-20 group"
+            className="absolute z-20 group transform-gpu left-[var(--card-left-mobile)] top-[var(--card-top-mobile)] sm:left-[var(--card-left-desktop)] sm:top-[var(--card-top-desktop)]"
             style={{
-              left: card.pos.left,
-              top: card.pos.top,
-              transform: 'translate(-50%, -50%)',
-            }}
+              '--card-left-desktop': card.pos.left,
+              '--card-top-desktop': card.pos.top,
+              '--card-left-mobile': card.mobilePos.left,
+              '--card-top-mobile': card.mobilePos.top,
+              transform: 'translate(-50%, -50%) translateZ(0)',
+              willChange: 'transform',
+            } as React.CSSProperties}
           >
             {/* Bobbing movement animation combined with smooth hover scaling */}
             <motion.div
               animate={{
-                y: [0, idx % 2 === 0 ? -5 : 5, 0],
+                y: [0, idx % 2 === 0 ? (isMobile ? -3 : -5) : (isMobile ? 3 : 5), 0],
               }}
               transition={{
-                duration: 5 + idx * 0.4,
+                duration: isMobile ? 8 + idx * 0.6 : 5 + idx * 0.4,
                 repeat: Infinity,
                 ease: 'easeInOut',
               }}
@@ -450,35 +477,37 @@ export default function FloatingCards({ profile }: Props) {
                 transition: { duration: 0.2 },
               }}
               className={`
-                w-[96px] sm:w-[115px] h-[38px] sm:h-[46px]
-                flex flex-col justify-center px-2 sm:px-3
+                w-[78px] sm:w-[115px] h-[32px] sm:h-[46px]
+                flex flex-col justify-center px-1.5 sm:px-3
                 bg-slate-950/30 backdrop-blur-md
-                border rounded-xl transition-all duration-300 cursor-pointer
+                border rounded-lg sm:rounded-xl transition-all duration-300 cursor-pointer
                 ${theme.border} ${theme.glow}
               `}
+              style={{ willChange: 'transform' }}
             >
               {/* Card Title */}
-              <div className={`font-sans font-extrabold text-[10px] sm:text-xs tracking-wide ${theme.text}`}>
+              <div className={`font-sans font-extrabold text-[8px] sm:text-xs tracking-wide ${theme.text}`}>
                 {card.name}
               </div>
               
               {/* Card Subtitle - styled in all-small-caps */}
               <div 
-                className={`font-mono text-[7px] sm:text-[8px] tracking-widest font-bold ${theme.subtitle}`}
+                className={`font-mono text-[6px] sm:text-[8px] tracking-widest font-bold ${theme.subtitle}`}
                 style={{ fontVariant: 'all-small-caps' }}
               >
                 {card.subtitle}
               </div>
 
               {/* Glowing micro pulse light dot inside each card */}
-              <div className="absolute top-1.5 right-1.5 flex items-center justify-center">
-                <span className={`w-1 h-1 rounded-full ${theme.pulse} opacity-70`} />
-                <span className={`absolute w-2 h-2 rounded-full ${theme.pulse} opacity-30 animate-ping`} />
+              <div className="absolute top-1 sm:top-1.5 right-1 sm:right-1.5 flex items-center justify-center">
+                <span className={`w-0.5 sm:w-1 h-0.5 sm:h-1 rounded-full ${theme.pulse} opacity-70`} />
+                <span className={`absolute w-1 sm:w-2 h-1 sm:h-2 rounded-full ${theme.pulse} opacity-30 animate-ping`} />
               </div>
             </motion.div>
           </motion.div>
         )
       })}
+
     </div>
   )
 }

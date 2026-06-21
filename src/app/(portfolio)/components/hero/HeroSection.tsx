@@ -16,7 +16,6 @@ export default function HeroSection({ profile }: Props) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   
   const [isPlaying, setIsPlaying] = useState(false)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   
   const scrollToElement = (id: string, block: ScrollIntoViewOptions['block'] = 'center') => {
     const element = document.getElementById(id)
@@ -28,18 +27,6 @@ export default function HeroSection({ profile }: Props) {
   const { scrollYProgress } = useScroll()
   const y = useTransform(scrollYProgress, [0, 0.5], [0, -100])
   const opacity = useTransform(scrollYProgress, [0, 0.4], [1, 0])
-
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      const { innerWidth: w, innerHeight: h } = window
-      setMousePos({
-        x: (e.clientX / w - 0.5) * 20,
-        y: (e.clientY / h - 0.5) * 20,
-      })
-    }
-    window.addEventListener('mousemove', onMove)
-    return () => window.removeEventListener('mousemove', onMove)
-  }, [])
 
   const toggleAudio = () => {
     if (!audioRef.current) return
@@ -87,17 +74,22 @@ export default function HeroSection({ profile }: Props) {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           className={`w-full h-full object-cover object-top origin-top lg:scale-110 lg:translate-x-8 xl:translate-x-16 opacity-60 transition-transform duration-500 transform-gpu ${
-            !videoUrls.isCloudinary ? 'brightness-110 contrast-105 saturate-110' : ''
+            !videoUrls.isCloudinary ? 'brightness-100 contrast-100 saturate-100 md:brightness-110 md:contrast-105 md:saturate-110' : ''
           }`}
           style={{
             willChange: 'transform',
             objectPosition: 'center top',
           }}
         >
-          {videoUrls.webm && <source src={videoUrls.webm} type="video/webm" />}
-          <source src={videoUrls.mp4} type="video/mp4" />
+          {/* Mobile breakpoint sources */}
+          {videoUrls.webmMobile && <source src={videoUrls.webmMobile} type="video/webm" media="(max-width: 767px)" />}
+          <source src={videoUrls.mp4Mobile} type="video/mp4" media="(max-width: 767px)" />
+
+          {/* Desktop breakpoint sources */}
+          {videoUrls.webm && <source src={videoUrls.webm} type="video/webm" media="(min-width: 768px)" />}
+          <source src={videoUrls.mp4} type="video/mp4" media="(min-width: 768px)" />
         </video>
 
         <div className="absolute inset-y-0 left-0 w-[50%] bg-gradient-to-r from-cyan-500/20 via-transparent to-transparent mix-blend-screen" />
@@ -148,10 +140,10 @@ export default function HeroSection({ profile }: Props) {
               Building autonomous AI agents, scalable backend systems, and production-ready intelligent workflows.
             </p>
 
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
               <button
                 onClick={() => scrollToElement('about-view-resume-btn', 'center')}
-                className="btn-gradient text-white px-5 py-2.5 rounded-xl font-semibold text-xs flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/20"
+                className="btn-gradient text-white px-5 py-2.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/20"
               >
                 <span>View Resume</span>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
@@ -161,7 +153,7 @@ export default function HeroSection({ profile }: Props) {
 
               <button
                 onClick={() => scrollToElement('contact', 'start')}
-                className="btn-neon-cyan px-5 py-2.5 rounded-xl font-semibold text-xs flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+                className="btn-neon-cyan px-5 py-2.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
               >
                 <span>Get in Touch</span>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
@@ -172,7 +164,7 @@ export default function HeroSection({ profile }: Props) {
               {hasAudio && (
                 <button
                   onClick={toggleAudio}
-                  className={`px-5 py-2.5 rounded-xl font-semibold text-xs flex items-center gap-2 transition-all duration-300 transform active:scale-95 shadow-lg ${
+                  className={`px-5 py-2.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 transition-all duration-300 transform active:scale-95 shadow-lg ${
                     isPlaying 
                       ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-emerald-500/20 border border-emerald-400/20' 
                       : 'btn-gradient text-white shadow-cyan-500/10 hover:shadow-cyan-500/20 hover:scale-[1.02]'
