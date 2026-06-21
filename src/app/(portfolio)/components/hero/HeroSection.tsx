@@ -16,6 +16,16 @@ export default function HeroSection({ profile }: Props) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   
   const [isPlaying, setIsPlaying] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
   
   const scrollToElement = (id: string, block: ScrollIntoViewOptions['block'] = 'center') => {
     const element = document.getElementById(id)
@@ -80,7 +90,9 @@ export default function HeroSection({ profile }: Props) {
           }`}
           style={{
             willChange: 'transform',
-            objectPosition: 'center top',
+            objectPosition: isMobile ? 'center 10%' : 'center top',
+            transform: 'translateZ(0)',
+            backfaceVisibility: 'hidden',
           }}
         >
           {/* Mobile breakpoint sources */}
@@ -94,6 +106,7 @@ export default function HeroSection({ profile }: Props) {
 
         <div className="absolute inset-y-0 left-0 w-[50%] bg-gradient-to-r from-cyan-500/20 via-transparent to-transparent mix-blend-screen" />
         <div className="absolute inset-y-0 right-0 w-[50%] bg-gradient-to-l from-purple-500/20 via-transparent to-transparent mix-blend-screen" />
+        <div className="absolute inset-x-0 bottom-0 h-[40vh] bg-gradient-to-t from-[#020617] via-[#020617]/50 to-transparent pointer-events-none lg:hidden" />
 
         <div 
           className="absolute inset-0"
@@ -112,9 +125,9 @@ export default function HeroSection({ profile }: Props) {
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start min-h-[60vh] lg:min-h-[65vh]">
 
-          <div className="flex flex-col lg:col-span-6 lg:-translate-x-4 xl:-translate-x-12 lg:-translate-y-12 transition-transform duration-300 relative z-20">
-            {profile?.isAvailableForWork && (
-              <div className="glass-card px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-emerald-500/20 bg-emerald-950/20 backdrop-blur-md mb-6">
+          <div className="flex flex-col justify-end min-h-[75vh] lg:min-h-0 lg:col-span-6 lg:-translate-x-4 xl:-translate-x-12 lg:-translate-y-12 transition-transform duration-300 relative z-20">
+            {!isMobile && profile?.isAvailableForWork && (
+              <div className="glass-card px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-emerald-500/20 bg-emerald-950/20 backdrop-blur-md mx-auto lg:mx-0 mb-4 lg:mb-6">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-[11px] font-mono font-medium text-emerald-400 tracking-wider uppercase">
                   Available for Work
@@ -122,25 +135,25 @@ export default function HeroSection({ profile }: Props) {
               </div>
             )}
 
-            <h1 className="font-display text-3xl sm:text-5xl lg:text-7xl font-bold leading-none text-white tracking-tight">
+            <h1 className="font-display text-center lg:text-left text-3xl sm:text-4xl lg:text-6xl font-bold leading-none text-white tracking-tight">
               Lavanya{' '}
               <span className="gradient-text-cyan drop-shadow-[0_2px_10px_rgba(6,182,212,0.15)]">
                 Joshi
               </span>
             </h1>
 
-            <div className="flex items-center gap-3 mt-4 mb-5">
-              <span className="w-6 h-px bg-cyan-500/50" />
+            <div className="flex items-center justify-center lg:justify-start gap-2 lg:gap-3 mt-2 lg:mt-4 mb-3 lg:mb-5">
+              <span className="hidden lg:block w-6 h-px bg-cyan-500/50" />
               <span className="font-mono text-cyan-400 text-xs tracking-widest uppercase font-semibold">
                 AI Engineer
               </span>
             </div>
 
-            <p className="text-slate-300 text-base md:text-lg leading-relaxed max-w-[650px] mb-6">
+            <p className="text-slate-300 text-base md:text-lg leading-relaxed max-w-[85%] lg:max-w-[650px] mx-auto lg:mx-0 text-center lg:text-left mb-4 lg:mb-6">
               Building autonomous AI agents, scalable backend systems, and production-ready intelligent workflows.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+            <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 lg:gap-4 w-full lg:w-auto">
               <button
                 onClick={() => scrollToElement('about-view-resume-btn', 'center')}
                 className="btn-gradient text-white px-5 py-2.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/20"
@@ -189,12 +202,18 @@ export default function HeroSection({ profile }: Props) {
               )}
             </div>
 
-            {profile?.socialLinks && <div className="mt-6"><SocialLinks links={profile.socialLinks} /></div>}
+            {!isMobile && profile?.socialLinks && (
+              <div className="mt-4 lg:mt-6">
+                <SocialLinks links={profile.socialLinks} />
+              </div>
+            )}
           </div>
 
-          <div className="relative flex items-start justify-center min-h-[350px] lg:col-span-6 lg:translate-x-20 xl:translate-x-24 lg:-translate-y-12 transition-transform duration-300 z-20">
-            <FloatingCards profile={profile} />
-          </div>
+          {!isMobile && (
+            <div className="relative flex items-start justify-center min-h-[350px] lg:col-span-6 lg:translate-x-20 xl:translate-x-24 lg:-translate-y-12 transition-transform duration-300 z-20">
+              <FloatingCards profile={profile} />
+            </div>
+          )}
 
         </div>
       </motion.div>

@@ -3,8 +3,13 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import { Profile } from '@/types'
 
-export default function Navbar() {
+interface Props {
+  profile: Profile | null
+}
+
+export default function Navbar({ profile }: Props) {
   const [activeSection, setActiveSection] = useState('')
   const [mobileOpen, setMobileOpen] = useState(false)
   const [hoveredLink, setHoveredLink] = useState<string | null>(null)
@@ -17,7 +22,8 @@ export default function Navbar() {
     { href: '#certifications', label: 'Certs' },
     { href: '#achievements', label: 'Achievements' },
     { href: '#contact', label: 'Contact' },
-  ]
+    { href: '#page-top', label: '' }, // placeholder to satisfy last item rule if needed, but let's keep it clean
+  ].slice(0, 6)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -44,15 +50,25 @@ export default function Navbar() {
       }}
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <motion.div whileHover={{ scale: 1.05 }}>
-          <Link
-            href="/"
-            className="font-display text-lg font-bold gradient-text-cyan select-none"
-          >
-            &lt;Portfolio &gt;
-          </Link>
-        </motion.div>
+        {/* Logo and Available Badge */}
+        <div className="flex flex-col items-start justify-center relative">
+          <motion.div whileHover={{ scale: 1.05 }}>
+            <Link
+              href="/"
+              className="font-display text-lg font-bold gradient-text-cyan select-none"
+            >
+              &lt;Portfolio &gt;
+            </Link>
+          </motion.div>
+          {profile?.isAvailableForWork && (
+            <div className="md:hidden absolute top-[100%] left-0 mt-1 glass-card px-2.5 py-0.5 rounded-full flex items-center gap-1.5 border border-emerald-500/20 bg-emerald-950/20 backdrop-blur-md">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[9px] font-mono font-medium text-emerald-400 tracking-wider uppercase whitespace-nowrap">
+                Available for Work
+              </span>
+            </div>
+          )}
+        </div>
 
         {/* Desktop nav */}
         <nav 

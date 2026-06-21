@@ -2,11 +2,16 @@ import ParticleCanvas from './components/shared/ParticleCanvas'
 import Navbar from './components/shared/Navbar'
 import SplashScreen from './components/shared/SplashScreen'
 import AudioPlayer from './components/shared/AudioPlayer'
-import { getSiteSettings } from '@/lib/site-settings' // adjust import if needed
+import { getSiteSettings, getProfile } from '@/lib/site-settings' // adjust import if needed
 
 export default async function PortfolioLayout({ children }: { children: React.ReactNode }) {
-  // Load settings from DB
-  const siteSettings = await getSiteSettings()
+  // Load settings and profile from DB
+  const [siteSettings, rawProfile] = await Promise.all([
+    getSiteSettings(),
+    getProfile()
+  ])
+
+  const profile = rawProfile ? JSON.parse(JSON.stringify(rawProfile)) : null
 
   // Splash is on by default; only disabled when explicitly turned off in settings.
   const splashEnabled = siteSettings?.splashEnabled !== false
@@ -20,7 +25,7 @@ export default async function PortfolioLayout({ children }: { children: React.Re
       {siteSettings?.animatedBgEnabled && <ParticleCanvas />}
 
       <div className="relative z-10">
-        <Navbar />
+        <Navbar profile={profile} />
 
 
         <main>{children}</main>

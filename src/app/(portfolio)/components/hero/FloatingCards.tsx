@@ -50,7 +50,7 @@ const cards = [
     subtitle: 'LANGUAGE',
     theme: 'magenta' as const,
     pos: { left: '50%', top: '5%' },
-    mobilePos: { left: '50%', top: '10%' },
+    mobilePos: { left: '50%', top: '12%' },
     delay: 0.1,
   },
   {
@@ -58,7 +58,7 @@ const cards = [
     subtitle: 'LANGUAGE',
     theme: 'cyan' as const,
     pos: { left: '17%', top: '20%' },
-    mobilePos: { left: '20%', top: '23%' },
+    mobilePos: { left: '20%', top: '25%' },
     delay: 0.2,
   },
   {
@@ -66,7 +66,7 @@ const cards = [
     subtitle: 'LANGUAGE',
     theme: 'blue' as const,
     pos: { left: '83%', top: '20%' },
-    mobilePos: { left: '80%', top: '23%' },
+    mobilePos: { left: '80%', top: '25%' },
     delay: 0.3,
   },
   {
@@ -74,7 +74,7 @@ const cards = [
     subtitle: 'CORE',
     theme: 'violet' as const,
     pos: { left: '8%', top: '58%' },
-    mobilePos: { left: '16%', top: '56%' },
+    mobilePos: { left: '16%', top: '54%' },
     delay: 0.4,
   },
   {
@@ -82,7 +82,7 @@ const cards = [
     subtitle: 'DATABASE',
     theme: 'cyan' as const,
     pos: { left: '92%', top: '58%' },
-    mobilePos: { left: '84%', top: '56%' },
+    mobilePos: { left: '84%', top: '54%' },
     delay: 0.5,
   },
   {
@@ -90,7 +90,7 @@ const cards = [
     subtitle: 'DATABASE',
     theme: 'blue' as const,
     pos: { left: '27%', top: '89%' },
-    mobilePos: { left: '30%', top: '85%' },
+    mobilePos: { left: '30%', top: '78%' },
     delay: 0.6,
   },
   {
@@ -98,7 +98,7 @@ const cards = [
     subtitle: 'INTELLIGENCE',
     theme: 'magenta' as const,
     pos: { left: '73%', top: '89%' },
-    mobilePos: { left: '70%', top: '85%' },
+    mobilePos: { left: '70%', top: '78%' },
     delay: 0.7,
   },
 ]
@@ -169,7 +169,7 @@ export default function FloatingCards({ profile }: Props) {
   }, [])
 
   return (
-    <div className="relative w-full max-w-[340px] sm:max-w-[430px] aspect-square flex items-center justify-center select-none z-10 hero-floating-cards transition-transform duration-300 origin-center">
+    <div className="relative w-full max-w-[280px] sm:max-w-[430px] aspect-square flex items-center justify-center select-none z-10 hero-floating-cards transition-transform duration-300 origin-center">
       
       {/* Soft glowing ambient backgrounds - set to low opacity to protect portrait clarity */}
       <div className="absolute top-1/4 left-1/4 w-[160px] h-[160px] rounded-full bg-violet-600/[0.03] blur-[60px] animate-pulse pointer-events-none" />
