@@ -81,12 +81,12 @@ export default function HeroSection({ profile }: Props) {
           loop
           playsInline
           preload="metadata"
-          className={`w-full h-full object-cover object-top origin-top lg:scale-110 lg:translate-x-8 xl:translate-x-16 opacity-85 lg:opacity-60 transition-transform duration-500 transform-gpu ${
+          className={`w-full h-full object-cover object-top origin-top lg:scale-110 opacity-85 lg:opacity-60 transition-transform duration-500 transform-gpu ${
             !videoUrls.isCloudinary ? 'brightness-100 contrast-100 saturate-100 md:brightness-110 md:contrast-105 md:saturate-110' : ''
           }`}
           style={{
             willChange: 'transform',
-            objectPosition: mounted && isMobile ? 'center 10%' : 'center top',
+            objectPosition: 'center 10%',
             transform: 'translateZ(0)',
             backfaceVisibility: 'hidden',
           }}
@@ -132,7 +132,7 @@ export default function HeroSection({ profile }: Props) {
               ? "pt-[90vh] w-full items-center text-center px-4"
               : (mounted && (isMobile || isTablet)
                   ? "min-h-[75vh] md:min-h-[75vh] w-full items-center text-center px-4"
-                  : "min-h-[75vh] lg:min-h-0 md:col-span-6 lg:col-span-6 lg:-translate-x-4 xl:-translate-x-12 lg:-translate-y-12")
+                  : "min-h-[75vh] lg:min-h-0 md:col-span-6 lg:col-span-6 lg:-translate-x-2 xl:-translate-x-12 2xl:-translate-x-28 lg:-translate-y-12")
           )}>
             {(!mounted || (!isMobile && !isTablet)) && profile?.isAvailableForWork && (
               <div className="glass-card px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-emerald-500/20 bg-emerald-950/20 backdrop-blur-md mx-auto lg:mx-0 mb-4 lg:mb-6">
@@ -143,7 +143,7 @@ export default function HeroSection({ profile }: Props) {
               </div>
             )}
 
-            <h1 className="font-display text-center lg:text-left text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold leading-none text-white tracking-tight">
+            <h1 className="font-display text-center lg:text-left text-3xl sm:text-4xl lg:text-5xl xl:text-5xl font-bold leading-none text-white tracking-tight">
               Lavanya{' '}
               <span className="gradient-text-cyan drop-shadow-[0_2px_10px_rgba(6,182,212,0.15)]">
                 Joshi
@@ -218,7 +218,7 @@ export default function HeroSection({ profile }: Props) {
           </div>
 
           {(!mounted || (!isMobile && !isTablet)) && (
-            <div className="relative flex items-start justify-center min-h-[350px] transition-transform duration-300 z-20 lg:col-span-6 lg:translate-x-6 xl:translate-x-24 lg:-translate-y-6 xl:-translate-y-12">
+            <div className="relative flex items-start justify-center min-h-[350px] transition-transform duration-300 z-20 lg:col-span-6 lg:translate-x-2 xl:translate-x-12 2xl:translate-x-28 lg:-translate-y-16 xl:-translate-y-24">
               <FloatingCards profile={profile} />
             </div>
           )}

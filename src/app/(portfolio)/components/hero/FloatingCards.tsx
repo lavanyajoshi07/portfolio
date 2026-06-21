@@ -114,7 +114,7 @@ const circuitLines = [
   { id: 'mongodb-line', d: 'M 338,270 C 370,270 395,280 410,290', color: '#00E5FF', duration: 4.8 },
   { id: 'postgresql-line', d: 'M 211,331 C 185,345 180,385 175,419', color: '#38BDF8', duration: 6.2 },
   { id: 'ai-line', d: 'M 289,331 C 315,345 320,385 325,419', color: '#FF007F', duration: 4.2 },
- 
+
   // Secondary network connections flowing to the right (glowing neural trails aligned to right cards)
   { id: 'network-trail-1', d: 'M 460,118 C 485,118 500,130 550,130', color: '#00E5FF', duration: 8, delay: 0.5 },
   { id: 'network-trail-2', d: 'M 480,290 C 505,290 520,300 550,300', color: '#7C3AED', duration: 7, delay: 1.2 },
@@ -164,11 +164,11 @@ export default function FloatingCards({ profile }: Props) {
 
   return (
     <div className="relative w-full max-w-[280px] md:max-w-[340px] lg:max-w-[360px] xl:max-w-[430px] aspect-square flex items-center justify-center select-none z-10 hero-floating-cards transition-transform duration-300 origin-center">
-      
+
       {/* Soft glowing ambient backgrounds - set to low opacity to protect portrait clarity */}
       <div className="absolute top-1/4 left-1/4 w-[160px] h-[160px] rounded-full bg-violet-600/[0.03] blur-[60px] animate-pulse pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-[180px] h-[180px] rounded-full bg-cyan-600/[0.03] blur-[70px] animate-pulse pointer-events-none" />
-      
+
       {/* Floating Particle Lights for depth & elegance */}
       {mounted && clientParticles.map((p) => (
         <motion.div
@@ -222,7 +222,7 @@ export default function FloatingCards({ profile }: Props) {
             <stop offset="85%" stopColor="#FF007F" stopOpacity="0.03" />
             <stop offset="100%" stopColor="#000000" stopOpacity="0" />
           </radialGradient>
-          
+
           <linearGradient id="jelly-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#00E5FF" />
             <stop offset="50%" stopColor="#7C3AED" />
@@ -368,7 +368,7 @@ export default function FloatingCards({ profile }: Props) {
       </svg>
 
       {/* Faint matrix-style code console overlay in center - extremely transparent to keep face focal */}
-      <div 
+      <div
         className="absolute w-[150px] h-[150px] rounded-full overflow-hidden flex flex-col justify-center items-center text-[7px] font-mono text-[#00E5FF] leading-relaxed pointer-events-none select-none z-0"
         style={{
           maskImage: 'radial-gradient(circle, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 70%)',
@@ -483,9 +483,9 @@ export default function FloatingCards({ profile }: Props) {
               <div className={`font-sans font-extrabold text-[8px] sm:text-xs tracking-wide ${theme.text}`}>
                 {card.name}
               </div>
-              
+
               {/* Card Subtitle - styled in all-small-caps */}
-              <div 
+              <div
                 className={`font-mono text-[6px] sm:text-[8px] tracking-widest font-bold ${theme.subtitle}`}
                 style={{ fontVariant: 'all-small-caps' }}
               >
