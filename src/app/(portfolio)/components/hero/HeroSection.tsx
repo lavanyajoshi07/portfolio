@@ -85,7 +85,7 @@ export default function HeroSection({ profile }: Props) {
           loop
           playsInline
           preload="metadata"
-          className={`w-full h-full object-cover object-top origin-top lg:scale-110 lg:translate-x-8 xl:translate-x-16 opacity-60 transition-transform duration-500 transform-gpu ${
+          className={`w-full h-full object-cover object-top origin-top lg:scale-110 lg:translate-x-8 xl:translate-x-16 opacity-85 lg:opacity-60 transition-transform duration-500 transform-gpu ${
             !videoUrls.isCloudinary ? 'brightness-100 contrast-100 saturate-100 md:brightness-110 md:contrast-105 md:saturate-110' : ''
           }`}
           style={{
