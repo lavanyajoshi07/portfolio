@@ -48,6 +48,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/resume.pdf',
+        destination: '/resume',
+        permanent: false,
+      },
+      {
         source: '/about',
         destination: '/#about',
         permanent: true,

@@ -11,7 +11,10 @@ export async function GET(request: NextRequest) {
     
     if (profile?.resumeUrl) {
       // Redirect to the configured resume URL (typically a Cloudinary or PDF link)
-      return NextResponse.redirect(profile.resumeUrl, 307)
+      const redirectUrl = profile.resumeUrl.startsWith('/')
+        ? `${request.nextUrl.origin}${profile.resumeUrl}`
+        : profile.resumeUrl
+      return NextResponse.redirect(redirectUrl, 307)
     }
   } catch (error) {
     console.error('Error retrieving resume URL:', error)

@@ -89,7 +89,7 @@ export default function AboutSection({ profile, education = [] }: Props) {
             </div>
 
             {/* Integrated Card Action Buttons */}
-            <div className="flex flex-wrap gap-4 items-center">
+            <div className="hidden md:flex flex-wrap gap-4 items-center">
               {/* View/Hide Resume Action */}
               <button
                 id="about-view-resume-btn"
@@ -156,24 +156,56 @@ export default function AboutSection({ profile, education = [] }: Props) {
         </div>
       </div>
 
-      {/* Embedded Collapsible Resume Iframe Container */}
-      <AnimatePresence>
-        {showResume && (
-          <motion.div
-            initial={{ opacity: 0, height: 0, marginTop: 0 }}
-            animate={{ opacity: 1, height: '600px', marginTop: '24px' }}
-            exit={{ opacity: 0, height: 0, marginTop: 0 }}
-            transition={{ duration: 0.4, ease: 'easeInOut' }}
-            className="w-full max-w-7xl mx-auto relative rounded-2xl border border-slate-300 bg-white overflow-hidden shadow-2xl flex flex-col z-20"
+      {/* Mobile Resume Card (< 768px) */}
+      <div className="block md:hidden mt-8 w-full max-w-sm mx-auto px-4">
+        <div className="glass-card rounded-3xl border border-cyan-500/10 p-6 flex flex-col items-center text-center gap-4 w-full relative overflow-hidden bg-[#0A1020]/70 group">
+          {/* Ambient background glow */}
+          <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl -z-10 pointer-events-none group-hover:bg-cyan-500/10 transition-colors duration-500" />
+          
+          <div className="text-3xl mt-2 select-none">📄</div>
+          
+          <h4 className="font-display font-bold text-base tracking-widest text-white uppercase">
+            Resume
+          </h4>
+          
+          <p className="text-xs text-slate-400 leading-relaxed font-sans max-w-xs px-2">
+            View my complete resume, projects, skills, and experience.
+          </p>
+
+          <a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative w-full sm:w-auto p-[1.5px] rounded-xl overflow-hidden group transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] inline-block mt-2"
           >
-            <iframe
-              src="/resume.html"
-              className="w-full h-full border-none"
-              title="Resume Document Viewer"
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <span className="absolute inset-0 bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500" />
+            <span className="relative flex items-center justify-center gap-2 px-5 py-2.5 rounded-[10px] bg-slate-950 text-blue-400 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-300 group-hover:text-cyan-300 w-full">
+              Resume
+            </span>
+          </a>
+        </div>
+      </div>
+
+      {/* Embedded Collapsible Resume Iframe Container (>= 768px only) */}
+      <div className="hidden md:block">
+        <AnimatePresence>
+          {showResume && (
+            <motion.div
+              initial={{ opacity: 0, height: 0, marginTop: 0 }}
+              animate={{ opacity: 1, height: '600px', marginTop: '24px' }}
+              exit={{ opacity: 0, height: 0, marginTop: 0 }}
+              transition={{ duration: 0.4, ease: 'easeInOut' }}
+              className="w-full max-w-7xl mx-auto relative rounded-2xl border border-slate-300 bg-white overflow-hidden shadow-2xl flex flex-col z-20"
+            >
+              <iframe
+                src="/resume.html"
+                className="w-full h-full border-none"
+                title="Resume Document Viewer"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Education Timeline */}
       {education.length > 0 && (
