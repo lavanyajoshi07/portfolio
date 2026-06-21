@@ -80,7 +80,7 @@ export default function ContactSection({ profile }: Props) {
           </p>
 
           {/* Contact methods */}
-          <div className="space-y-4 pt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 pt-4">
             {profile?.email && (
               <ContactMethod
                 icon="✉️"
@@ -274,7 +274,7 @@ function ContactMethod({
       <span className="text-2xl">{icon}</span>
       <div className="flex-1">
         <p className="text-sm text-slate-500 font-mono uppercase">{label}</p>
-        <p className="text-slate-200 group-hover:text-pink-DEFAULT transition-colors">
+        <p className="text-slate-200 group-hover:text-pink-DEFAULT transition-colors break-all">
           {value}
         </p>
       </div>

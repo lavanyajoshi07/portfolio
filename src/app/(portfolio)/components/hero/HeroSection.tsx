@@ -67,7 +67,7 @@ export default function HeroSection({ profile }: Props) {
   return (
     <section 
       id="hero" 
-      className="relative min-h-screen flex items-center overflow-hidden bg-[#020617] pt-24 md:pt-28"
+      className="relative min-h-screen flex items-center overflow-hidden bg-[#020617] pt-16 sm:pt-24 md:pt-28"
     >
       
       {hasAudio && (
@@ -116,7 +116,7 @@ export default function HeroSection({ profile }: Props) {
       <motion.div
         ref={containerRef}
         style={{ y, opacity }}
-        className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-8 pt-20 md:pt-24 pb-8 w-full"
+        className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-8 sm:pt-16 md:pt-24 pb-8 w-full min-w-0"
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start min-h-[60vh] lg:min-h-[65vh]">
 
@@ -130,7 +130,7 @@ export default function HeroSection({ profile }: Props) {
               </div>
             )}
 
-            <h1 className="font-display text-4xl md:text-5xl lg:text-7xl font-bold leading-none text-white tracking-tight">
+            <h1 className="font-display text-3xl sm:text-5xl lg:text-7xl font-bold leading-none text-white tracking-tight">
               Lavanya{' '}
               <span className="gradient-text-cyan drop-shadow-[0_2px_10px_rgba(6,182,212,0.15)]">
                 Joshi

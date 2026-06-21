@@ -392,7 +392,7 @@ export default function SkillsSection({ settings, categories, technologies, stat
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-5 gap-4 pt-14 border-t border-[#00E5FF]/5"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 pt-14 border-t border-[#00E5FF]/5"
           >
             {stats.map((stat) => (
               <motion.div

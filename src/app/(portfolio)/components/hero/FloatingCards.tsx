@@ -152,7 +152,7 @@ export default function FloatingCards({ profile }: Props) {
   }, [])
 
   return (
-    <div className="relative w-full max-w-[340px] sm:max-w-[430px] aspect-square flex items-center justify-center select-none z-10">
+    <div className="relative w-full max-w-[340px] sm:max-w-[430px] aspect-square flex items-center justify-center select-none z-10 hero-floating-cards transition-transform duration-300 origin-center">
       
       {/* Soft glowing ambient backgrounds - set to low opacity to protect portrait clarity */}
       <div className="absolute top-1/4 left-1/4 w-[160px] h-[160px] rounded-full bg-violet-600/[0.03] blur-[60px] animate-pulse pointer-events-none" />

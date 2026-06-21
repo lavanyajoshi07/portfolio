@@ -128,11 +128,11 @@ export default function DataTable<T>({
 
         {/* Pagination Footer */}
         {!loading && totalPages > 1 && (
-          <div className="p-4 border-t border-[#00E5FF]/10 bg-[#101827]/20 flex items-center justify-between font-mono text-[10px] uppercase tracking-wider text-slate-500">
+          <div className="p-4 border-t border-[#00E5FF]/10 bg-[#101827]/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left font-mono text-[10px] uppercase tracking-wider text-slate-500">
             <span>
               Showing Page {currentPage} of {totalPages} ({filteredData.length} records total)
             </span>
-            <div className="flex gap-2">
+            <div className="flex gap-2 shrink-0">
               <Button
                 variant="outline"
                 size="sm"

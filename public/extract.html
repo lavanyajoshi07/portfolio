@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Extract Frame</title>
+</head>
+<body>
+  <video id="vid" src="/videos/avatar.mp4" muted autoplay playsinline width="400" height="300"></video>
+  <canvas id="canvas" width="1920" height="1080" style="display:none;"></canvas>
+  <div id="output" style="word-break: break-all; font-family: monospace; font-size: 10px;">Loading video...</div>
+  <script>
+    const video = document.getElementById('vid');
+    const canvas = document.getElementById('canvas');
+    const output = document.getElementById('output');
+
+    video.addEventListener('loadeddata', () => {
+      // Seek to 0.1s to get a valid frame
+      video.currentTime = 0.1;
+    });
+
+    video.addEventListener('seeked', () => {
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      try {
+        // Export frame as data URL
+        const dataUrl = canvas.toDataURL('image/webp');
+        output.innerText = dataUrl;
+      } catch (err) {
+        output.innerText = "Error: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>

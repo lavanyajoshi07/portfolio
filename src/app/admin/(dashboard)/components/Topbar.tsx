@@ -2,9 +2,13 @@
 
 import { useSession } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
-import { Activity, Shield, User } from 'lucide-react'
+import { Activity, Shield, User, Menu } from 'lucide-react'
 
-export default function Topbar() {
+interface TopbarProps {
+  onMenuClick: () => void
+}
+
+export default function Topbar({ onMenuClick }: TopbarProps) {
   const { data: session } = useSession()
   const pathname = usePathname()
 
@@ -20,24 +24,33 @@ export default function Topbar() {
   }
 
   return (
-    <header className="h-20 border-b border-[#00E5FF]/15 bg-[#0A1020]/80 backdrop-blur-md flex items-center justify-between px-8 shrink-0 relative z-10">
+    <header className="h-20 border-b border-[#00E5FF]/15 bg-[#0A1020]/80 backdrop-blur-md flex items-center justify-between px-4 sm:px-8 shrink-0 relative z-10">
       {/* Title */}
-      <div>
-        <h2 className="font-display font-bold text-lg text-white uppercase tracking-wider">
-          {getPageTitle()}
-        </h2>
-        <div className="flex items-center gap-1.5 mt-1">
-          <Activity className="w-3 h-3 text-[#00E5FF] animate-pulse" />
-          <span className="font-mono text-[9px] text-slate-500 uppercase tracking-widest">
-            Diagnostics: Nominal / Online
-          </span>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={onMenuClick}
+          className="lg:hidden p-2 text-slate-400 hover:text-white rounded-lg focus:outline-none shrink-0"
+          aria-label="Toggle Menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        <div>
+          <h2 className="font-display font-bold text-sm md:text-lg text-white uppercase tracking-wider">
+            {getPageTitle()}
+          </h2>
+          <div className="hidden sm:flex items-center gap-1.5 mt-1">
+            <Activity className="w-3 h-3 text-[#00E5FF] animate-pulse" />
+            <span className="font-mono text-[9px] text-slate-500 uppercase tracking-widest">
+              Diagnostics: Nominal / Online
+            </span>
+          </div>
         </div>
       </div>
 
       {/* User Status Card */}
       <div className="flex items-center gap-4">
         {/* Connection status dot */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#101827] border border-[#00E5FF]/10">
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#101827] border border-[#00E5FF]/10">
           <Shield className="w-3.5 h-3.5 text-[#00E5FF]" />
           <span className="font-mono text-[10px] text-[#00E5FF] uppercase tracking-wider">
             Role: {(session?.user as any)?.role || 'operator'}
@@ -50,7 +63,7 @@ export default function Topbar() {
             <p className="text-xs font-mono font-semibold text-slate-200">
               {session?.user?.name || 'Admin Operator'}
             </p>
-            <p className="text-[10px] font-mono text-slate-500">
+            <p className="hidden sm:block text-[10px] font-mono text-slate-500">
               {session?.user?.email}
             </p>
           </div>

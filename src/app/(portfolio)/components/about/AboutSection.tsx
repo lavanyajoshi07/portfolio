@@ -125,8 +125,8 @@ export default function AboutSection({ profile, education = [] }: Props) {
         </motion.div>
 
         {/* Right Column: Values Stack */}
-        <div className="w-full flex flex-col gap-4">
-          <h3 className="font-mono text-[10px] tracking-[0.2em] uppercase text-slate-500 mb-2 ml-1 select-none">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
+          <h3 className="font-mono text-[10px] tracking-[0.2em] uppercase text-slate-500 mb-2 ml-1 select-none col-span-1 md:col-span-2 lg:col-span-1">
             What Drives Me
           </h3>
           {valueCards.map((card, idx) => (
@@ -182,9 +182,9 @@ export default function AboutSection({ profile, education = [] }: Props) {
             Academic Pathway
           </h3>
           
-          <div className="relative pl-6 sm:pl-8 space-y-12">
+          <div className="relative pl-10 sm:pl-12 space-y-12">
             {/* Timeline vertical connector line */}
-            <div className="absolute left-[23px] sm:left-[27px] top-3 bottom-3 w-[1px] bg-gradient-to-b from-cyan-500/30 via-violet-500/30 to-transparent" />
+            <div className="absolute left-[20px] sm:left-[22px] top-3 bottom-3 w-[1px] bg-gradient-to-b from-cyan-500/30 via-violet-500/30 to-transparent" />
             
             {education.map((edu, idx) => (
               <motion.div
@@ -196,9 +196,9 @@ export default function AboutSection({ profile, education = [] }: Props) {
                 className="relative"
               >
                 {/* Timeline Node circular icon container */}
-                <div className="absolute -left-[45px] sm:-left-[49px] top-1.5 w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500 to-violet-600 p-0.5 flex items-center justify-center shadow-lg shadow-cyan-500/10 z-10">
+                <div className="absolute -left-[38px] sm:-left-[49px] top-1 sm:top-1.5 w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-cyan-500 to-violet-600 p-0.5 flex items-center justify-center shadow-lg shadow-cyan-500/10 z-10">
                   <div className="w-full h-full rounded-[10px] bg-[#0A1020] flex items-center justify-center">
-                    <GraduationCap className="w-5 h-5 text-cyan-400" />
+                    <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400" />
                   </div>
                 </div>
                 

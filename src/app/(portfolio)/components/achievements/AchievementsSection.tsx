@@ -170,12 +170,12 @@ export default function AchievementsSection({ achievements, categories, settings
                                   {item.icon || '🏆'}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <div className="flex justify-between items-start gap-1">
+                                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
                                     <div>
                                       <h6 className="font-bold text-xs text-white leading-tight">{item.title}</h6>
                                       <span className="text-[9px] text-slate-400 font-mono">{item.organization}</span>
                                     </div>
-                                    <span className="font-mono text-[9px] text-slate-500 shrink-0">{item.date}</span>
+                                    <span className="font-mono text-[9px] text-slate-500 shrink-0 mt-1 sm:mt-0">{item.date}</span>
                                   </div>
                                   
                                   {item.description && (

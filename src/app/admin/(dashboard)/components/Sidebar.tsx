@@ -22,7 +22,8 @@ import {
   Clock,
   Target,
   HelpCircle,
-  Users
+  Users,
+  X
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -45,29 +46,55 @@ const menuItems = [
   { label: 'Site Settings', icon: Settings, href: '/admin/settings' },
 ]
 
-export default function Sidebar() {
+interface SidebarProps {
+  open: boolean
+  setOpen: (open: boolean) => void
+}
+
+export default function Sidebar({ open, setOpen }: SidebarProps) {
   const pathname = usePathname()
 
   return (
-    <aside className="w-64 border-r border-[#00E5FF]/15 bg-[#0A1020]/90 backdrop-blur-md flex flex-col h-screen shrink-0 relative z-20">
+    <>
+      {/* Mobile Backdrop overlay */}
+      {open && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-30 lg:hidden"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
+      <aside className={cn(
+        "w-64 border-r border-[#00E5FF]/15 bg-[#0A1020]/90 backdrop-blur-md flex flex-col h-screen shrink-0 fixed lg:static inset-y-0 left-0 z-40 transition-transform duration-300 ease-in-out lg:translate-x-0",
+        open ? "translate-x-0" : "-translate-x-full"
+      )}>
       {/* Top Border line */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#00E5FF]/40 to-transparent" />
       
       {/* Header/Logo */}
-      <div className="p-6 flex items-center gap-3 border-b border-[#00E5FF]/10 shrink-0">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00E5FF] to-[#7C3AED] p-0.5 flex items-center justify-center">
-          <div className="w-full h-full rounded-[6px] bg-[#0A1020] flex items-center justify-center">
-            <Cpu className="w-4 h-4 text-[#00E5FF]" />
+      <div className="p-6 flex items-center justify-between border-b border-[#00E5FF]/10 shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00E5FF] to-[#7C3AED] p-0.5 flex items-center justify-center">
+            <div className="w-full h-full rounded-[6px] bg-[#0A1020] flex items-center justify-center">
+              <Cpu className="w-4 h-4 text-[#00E5FF]" />
+            </div>
+          </div>
+          <div>
+            <h1 className="font-display font-bold text-sm tracking-widest text-white uppercase">
+              Core CMS
+            </h1>
+            <p className="font-mono text-[9px] text-[#00E5FF] tracking-wider uppercase">
+              V1.0 Operational
+            </p>
           </div>
         </div>
-        <div>
-          <h1 className="font-display font-bold text-sm tracking-widest text-white uppercase">
-            Core CMS
-          </h1>
-          <p className="font-mono text-[9px] text-[#00E5FF] tracking-wider uppercase">
-            V1.0 Operational
-          </p>
-        </div>
+        <button
+          onClick={() => setOpen(false)}
+          className="lg:hidden p-1 text-slate-400 hover:text-white"
+          aria-label="Close sidebar"
+        >
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Menu Items */}
@@ -78,6 +105,7 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => setOpen(false)}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-mono transition-all duration-300 relative group uppercase tracking-wider",
                 isActive 
@@ -110,6 +138,7 @@ export default function Sidebar() {
           <span className="text-xs">Power Down</span>
         </button>
       </div>
-    </aside>
+      </aside>
+    </>
   )
 }

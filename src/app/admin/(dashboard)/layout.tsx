@@ -20,6 +20,7 @@ export default function DashboardLayout({
   // cross-origin preview iframe), don't hang on the loading screen forever.
   // After a few seconds we treat it as "not signed in" and send the user to login.
   const [loadingTimedOut, setLoadingTimedOut] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
     if (status !== 'loading') {
@@ -72,11 +73,11 @@ export default function DashboardLayout({
   return (
     <div className="flex h-screen bg-[#050816] overflow-hidden text-slate-200 font-sans">
       {/* Responsive Dashboard Sidebar */}
-      <Sidebar />
+      <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
 
       {/* Main Panel Content Area */}
       <div className="flex flex-col flex-1 overflow-hidden relative">
-        <Topbar />
+        <Topbar onMenuClick={() => setSidebarOpen(true)} />
 
         <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-[#050816] relative scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
           {/* Dashboard specific background mesh */}

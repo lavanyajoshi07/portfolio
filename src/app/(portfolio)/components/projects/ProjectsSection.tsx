@@ -86,10 +86,10 @@ export default function ProjectsSection({ projects }: Props) {
           </div>
         )}
 
-        {/* 2-Column Responsive Showcase Grid */}
+        {/* 2-Column Showcase Grid */}
         <motion.div 
           layout
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto"
         >
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, i) => (
@@ -193,7 +193,7 @@ function ProjectCard({
 
           {/* Key Metrics block */}
           {project.keyMetrics && project.keyMetrics.length > 0 && (
-            <div className="grid grid-cols-3 gap-2.5 pt-3 border-t border-slate-950/40">
+            <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 pt-3 border-t border-slate-950/40 min-w-0">
               {project.keyMetrics.slice(0, 3).map((metric, idx) => (
                 <div key={idx} className="bg-[#0A1020]/45 border border-slate-900/60 rounded-lg p-2 text-center">
                   <span className="block text-sm md:text-base font-display font-extrabold text-[#00E5FF]">
@@ -296,10 +296,10 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.96, opacity: 0 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-[#030712] border border-[#00E5FF]/20 rounded-2xl max-w-4xl w-full my-8 text-slate-200 overflow-hidden relative shadow-2xl shadow-[#00E5FF]/10 flex flex-col max-h-[90vh]"
+        className="bg-[#030712] border border-[#00E5FF]/20 rounded-2xl w-[95vw] max-w-4xl my-8 text-slate-200 overflow-hidden relative shadow-2xl shadow-[#00E5FF]/10 flex flex-col max-h-[90vh]"
       >
         {/* Cover Thumbnail Image with Fallback and Error Handling */}
-        <div className="relative h-56 md:h-64 w-full bg-[#0A0F1E] shrink-0 border-b border-slate-950 overflow-hidden">
+        <div className="relative h-32 sm:h-48 md:h-64 w-full bg-[#0A0F1E] shrink-0 border-b border-slate-950 overflow-hidden">
           <img
             src={project.thumbnail?.image || "/placeholders/placeholder-project.png"}
             alt={project.thumbnail?.alt || project.title}

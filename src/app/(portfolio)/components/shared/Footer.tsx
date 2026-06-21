@@ -314,9 +314,9 @@ export default function Footer({ profile, copyrightText }: Props) {
           </div>
 
           {/* Right built-with stack list */}
-          <div className="flex items-center gap-3 order-2 md:order-3">
+          <div className="flex flex-wrap items-center justify-center gap-3 order-2 md:order-3">
             <span className="font-mono text-[10px] text-slate-500 uppercase tracking-wider">Built with</span>
-            <div className="flex items-center gap-1.5">
+            <div className="flex flex-wrap items-center justify-center gap-1.5">
               <span className="px-2 py-0.5 rounded-md font-mono text-[9px] bg-slate-950 border border-slate-900 text-slate-400">Next.js</span>
               <span className="px-2 py-0.5 rounded-md font-mono text-[9px] bg-slate-950 border border-slate-900 text-slate-400">TypeScript</span>
               <span className="px-2 py-0.5 rounded-md font-mono text-[9px] bg-slate-950 border border-slate-900 text-slate-400">MongoDB</span>

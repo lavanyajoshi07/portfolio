@@ -100,14 +100,14 @@ export default function Navbar() {
 
         {/* Mobile menu toggle */}
         <button
-          className="md:hidden p-2 text-slate-400"
+          className="md:hidden w-11 h-11 flex items-center justify-center text-slate-400 hover:text-white rounded-lg transition-colors focus:outline-none"
           onClick={() => setMobileOpen(v => !v)}
           aria-label="Toggle menu"
         >
           <div className="w-5 h-4 flex flex-col justify-between">
-            <span className={`h-0.5 bg-current transition-all duration-300 ${mobileOpen ? 'rotate-45 translate-y-1.5' : ''}`} />
-            <span className={`h-0.5 bg-current transition-opacity duration-300 ${mobileOpen ? 'opacity-0' : ''}`} />
-            <span className={`h-0.5 bg-current transition-all duration-300 ${mobileOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+            <span className={`h-0.5 w-full bg-current transition-all duration-300 ${mobileOpen ? 'rotate-45 translate-y-1.5' : ''}`} />
+            <span className={`h-0.5 w-full bg-current transition-opacity duration-300 ${mobileOpen ? 'opacity-0' : ''}`} />
+            <span className={`h-0.5 w-full bg-current transition-all duration-300 ${mobileOpen ? '-rotate-45 -translate-y-2' : ''}`} />
           </div>
         </button>
       </div>
@@ -132,7 +132,7 @@ export default function Navbar() {
                 <a
                   key={link.href}
                   href={link.href}
-                  className={`py-3 text-sm font-medium transition-colors border-b border-white/5 last:border-0 uppercase tracking-wider ${
+                  className={`py-4 text-sm font-medium transition-colors border-b border-white/5 last:border-0 uppercase tracking-wider ${
                     activeSection === link.href.slice(1)
                       ? 'text-cyan-DEFAULT font-bold'
                       : 'text-slate-300 hover:text-cyan-DEFAULT'
