@@ -173,10 +173,13 @@ export default function AboutSection({ profile, education = [] }: Props) {
       </div>
 
       {/* Mobile Resume Card */}
-      <div className={cn(
-        "mt-8 w-full max-w-sm mx-auto px-4",
-        mounted ? (isMobile ? "block" : "hidden") : "block md:hidden"
-      )}>
+      <div 
+        id="mobile-resume-card"
+        className={cn(
+          "mt-8 w-full max-w-sm mx-auto px-4",
+          mounted ? (isMobile ? "block" : "hidden") : "block md:hidden"
+        )}
+      >
         <div className="glass-card rounded-3xl border border-cyan-500/10 p-6 flex flex-col items-center text-center gap-4 w-full relative overflow-hidden bg-[#0A1020]/70 group">
           {/* Ambient background glow */}
           <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl -z-10 pointer-events-none group-hover:bg-cyan-500/10 transition-colors duration-500" />

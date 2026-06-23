@@ -163,7 +163,18 @@ export default function HeroSection({ profile }: Props) {
 
             <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 lg:gap-4 w-full lg:w-auto">
               <button
-                onClick={() => scrollToElement('about-view-resume-btn', 'center')}
+                onClick={() => {
+                  const mobileCard = document.getElementById('mobile-resume-card')
+                  const desktopBtn = document.getElementById('about-view-resume-btn')
+                  
+                  if (mobileCard && window.getComputedStyle(mobileCard).display !== 'none') {
+                    mobileCard.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                  } else if (desktopBtn && window.getComputedStyle(desktopBtn).display !== 'none') {
+                    desktopBtn.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                  } else {
+                    scrollToElement('about', 'start')
+                  }
+                }}
                 className="btn-gradient text-white px-5 py-2.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/20"
               >
                 <span>View Resume</span>
