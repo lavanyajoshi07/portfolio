@@ -6,7 +6,7 @@ import nodemailer from 'nodemailer'
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, message, source = 'contact_form' } = await req.json()
+    const { name, email, message, replyText, source = 'contact_form' } = await req.json()
 
     // Validation
     if (!name || !email || !message) {
@@ -67,6 +67,48 @@ export async function POST(req: NextRequest) {
       })
     } catch (mailError) {
       console.error('Email notification error:', mailError)
+    }
+
+    // Send auto-reply via Brevo
+    try {
+      const brevoApiKey = process.env.BREVO_API_KEY
+      const brevoTemplateIdVal = process.env.BREVO_TEMPLATE_ID_REPLY
+      const brevoSenderEmail = process.env.BREVO_SENDER_EMAIL || 'support@lavanyajoshi.in'
+
+      if (brevoApiKey && brevoTemplateIdVal) {
+        const templateId = /^\d+$/.test(brevoTemplateIdVal)
+          ? parseInt(brevoTemplateIdVal, 10)
+          : brevoTemplateIdVal
+
+        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'api-key': brevoApiKey,
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            sender: { email: brevoSenderEmail },
+            to: [{ email, name }],
+            templateId,
+            params: {
+              name,
+              replyText: replyText || message,
+            },
+          }),
+        })
+
+        if (!response.ok) {
+          const errorText = await response.text()
+          console.error(`Brevo email sending failed: ${response.status} - ${errorText}`)
+        } else {
+          console.log(`Brevo auto-reply email sent successfully to ${email}`)
+        }
+      } else {
+        console.warn('Brevo API key or template ID not configured')
+      }
+    } catch (brevoError) {
+      console.error('Error sending email via Brevo:', brevoError)
     }
 
     return successResponse(
