@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Profile } from '@/types'
 import { getOptimizedVideoUrls, cn } from '@/lib/utils'
-import SocialLinks from './SocialLinks'
 import FloatingCards from './FloatingCards'
 import { useResponsive } from '@/hooks/useResponsive'
 
@@ -162,26 +161,17 @@ export default function HeroSection({ profile }: Props) {
             </p>
 
             <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 lg:gap-4 w-full lg:w-auto">
-              <button
-                onClick={() => {
-                  const mobileCard = document.getElementById('mobile-resume-card')
-                  const desktopBtn = document.getElementById('about-view-resume-btn')
-                  
-                  if (mobileCard && window.getComputedStyle(mobileCard).display !== 'none') {
-                    mobileCard.scrollIntoView({ behavior: 'smooth', block: 'center' })
-                  } else if (desktopBtn && window.getComputedStyle(desktopBtn).display !== 'none') {
-                    desktopBtn.scrollIntoView({ behavior: 'smooth', block: 'center' })
-                  } else {
-                    scrollToElement('about', 'start')
-                  }
-                }}
+              <a
+                href="/resume"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="btn-gradient text-white px-5 py-2.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/20"
               >
                 <span>View Resume</span>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
                 </svg>
-              </button>
+              </a>
 
               <button
                 onClick={() => scrollToElement('contact', 'start')}
@@ -221,11 +211,7 @@ export default function HeroSection({ profile }: Props) {
               )}
             </div>
 
-            {(!mounted || (!isMobile && !isTablet)) && profile?.socialLinks && (
-              <div className="mt-4 lg:mt-6">
-                <SocialLinks links={profile.socialLinks} />
-              </div>
-            )}
+
           </div>
 
           {(!mounted || (!isMobile && !isTablet)) && (

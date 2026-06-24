@@ -275,7 +275,7 @@ export default function SkillsSection({ settings, categories, technologies, stat
               <button
                 key={cat._id}
                 type="button"
-                onClick={() => setActiveSlug(cat.slug)}
+                onClick={() => setActiveSlug(activeSlug === cat.slug ? 'all' : cat.slug)}
                 className="relative px-4 py-1.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider transition-colors duration-300 outline-none"
               >
                 {activeSlug === cat.slug && (
@@ -309,6 +309,9 @@ export default function SkillsSection({ settings, categories, technologies, stat
                 <motion.div
                   key={tech._id || tech.name}
                   variants={cardVariants}
+                  initial="hidden"
+                  animate="show"
+                  exit="hidden"
                   layout
                   className="group relative bg-[#0A1020]/70 border border-cyan-500/10 backdrop-blur-md transition-all duration-300 rounded-3xl p-5 flex flex-col justify-between min-h-[190px] select-none cursor-pointer hover:-translate-y-2 hover:border-cyan-400/30 hover:shadow-[0_0_30px_rgba(0,229,255,0.12)]"
                 >

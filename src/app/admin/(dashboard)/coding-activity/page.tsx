@@ -18,7 +18,6 @@ export default function CodingActivityPage() {
   const [settingsLoading, setSettingsLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
   const [uploaderOpen, setUploaderOpen] = useState(false)
-  const [uploadTarget, setUploadTarget] = useState<'profile' | 'graph'>('profile')
   const { toast } = useToast()
 
   const {
@@ -69,7 +68,6 @@ export default function CodingActivityPage() {
   })
 
   const watchProfileImage = watch('profileImage')
-  const watchGraphImage = watch('contributionGraphImage')
 
   const fetchSettings = async () => {
     setSettingsLoading(true)
@@ -112,11 +110,6 @@ export default function CodingActivityPage() {
     } finally {
       setActionLoading(false)
     }
-  }
-
-  const handleOpenUploader = (target: 'profile' | 'graph') => {
-    setUploadTarget(target)
-    setUploaderOpen(true)
   }
 
   return (
@@ -234,88 +227,31 @@ export default function CodingActivityPage() {
               </div>
             </div>
 
-            {/* Contribution Graph Upload */}
+            {/* Contribution Graph Mini Stats */}
             <div className="glass-card bg-[#0A1020]/40 border border-[#00E5FF]/10 rounded-xl p-6 space-y-4">
               <div className="flex items-center gap-2 border-b border-slate-900/60 pb-3">
                 <BarChart3 className="w-4.5 h-4.5 text-[#00E5FF]" />
                 <h2 className="font-mono text-xs font-semibold text-white uppercase tracking-wider">
-                  3. Contribution Graph Image & Mini Stats
+                  3. Contribution Graph Mini Stats
                 </h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Left side: Upload & Alt Text */}
-                <div className="md:col-span-2 space-y-3 flex flex-col justify-between">
-                  <div className="space-y-1.5">
-                    <Label className="font-mono text-[10px] text-slate-500 uppercase">Contribution Graph Image</Label>
-                    <div className="flex gap-2">
-                      <Input {...register('contributionGraphImage')} placeholder="/uploads/graph.png" className="bg-[#101827]/70 border-slate-800 text-white" />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => handleOpenUploader('graph')}
-                        className="border-slate-800 bg-[#101827]/30 hover:bg-[#101827]/60 text-slate-300 font-mono text-xs h-10 px-4 shrink-0"
-                      >
-                        <Upload className="w-4 h-4 mr-2" />
-                        <span>Upload</span>
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <Label className="font-mono text-[10px] text-slate-500 uppercase">Graph Image Alt Text</Label>
-                    <Input {...register('contributionGraphAlt')} className="bg-[#101827]/70 border-slate-800 text-white" />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <Label className="font-mono text-[10px] text-slate-500 uppercase">Graph Image Display Mode</Label>
-                    <select
-                      {...register('graphImageDisplayMode')}
-                      className="w-full bg-[#101827]/70 border border-slate-800 rounded-lg text-slate-300 p-2.5 text-xs font-mono uppercase focus:border-[#00E5FF]/40 focus:ring-0 focus-visible:ring-0 outline-none"
-                    >
-                      <option value="cover" className="bg-[#0A1020]">Cover (Default)</option>
-                      <option value="contain" className="bg-[#0A1020]">Contain</option>
-                      <option value="fill" className="bg-[#0A1020]">Fill</option>
-                    </select>
-                  </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="space-y-1.5">
+                  <Label className="font-mono text-[9px] text-slate-500 uppercase">Total Contributions</Label>
+                  <Input {...register('totalContributions')} className="bg-[#101827]/70 border-slate-800 text-white h-9" />
                 </div>
-
-                {/* Right side: Image Preview */}
-                <div className="flex flex-col items-center justify-center border border-slate-900/80 rounded-xl p-3 bg-[#101827]/10 min-h-[140px]">
-                  <Label className="font-mono text-[9px] text-slate-500 uppercase mb-2">Graph Preview</Label>
-                  {watchGraphImage ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={watchGraphImage}
-                      alt="Graph Preview"
-                      className="max-h-24 object-contain border border-slate-800 rounded"
-                    />
-                  ) : (
-                    <span className="text-[10px] font-mono text-slate-600 uppercase">No image uploaded</span>
-                  )}
+                <div className="space-y-1.5">
+                  <Label className="font-mono text-[9px] text-slate-500 uppercase">Current Streak</Label>
+                  <Input {...register('currentStreak')} className="bg-[#101827]/70 border-slate-800 text-white h-9" />
                 </div>
-              </div>
-
-              {/* 4 Mini Stats */}
-              <div className="border-t border-slate-900 pt-4 space-y-3">
-                <h4 className="font-mono text-xs text-white uppercase tracking-wider">Graph Mini Stats</h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="space-y-1.5">
-                    <Label className="font-mono text-[9px] text-slate-500 uppercase">Total Contributions</Label>
-                    <Input {...register('totalContributions')} className="bg-[#101827]/70 border-slate-800 text-white h-9" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="font-mono text-[9px] text-slate-500 uppercase">Current Streak</Label>
-                    <Input {...register('currentStreak')} className="bg-[#101827]/70 border-slate-800 text-white h-9" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="font-mono text-[9px] text-slate-500 uppercase">Longest Streak</Label>
-                    <Input {...register('longestStreak')} className="bg-[#101827]/70 border-slate-800 text-white h-9" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="font-mono text-[9px] text-slate-500 uppercase">Active Days</Label>
-                    <Input {...register('activeDays')} className="bg-[#101827]/70 border-slate-800 text-white h-9" />
-                  </div>
+                <div className="space-y-1.5">
+                  <Label className="font-mono text-[9px] text-slate-500 uppercase">Longest Streak</Label>
+                  <Input {...register('longestStreak')} className="bg-[#101827]/70 border-slate-800 text-white h-9" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="font-mono text-[9px] text-slate-500 uppercase">Active Days</Label>
+                  <Input {...register('activeDays')} className="bg-[#101827]/70 border-slate-800 text-white h-9" />
                 </div>
               </div>
             </div>
@@ -345,7 +281,7 @@ export default function CodingActivityPage() {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => handleOpenUploader('profile')}
+                    onClick={() => setUploaderOpen(true)}
                     className="w-full border-slate-800 bg-[#101827]/30 hover:bg-[#101827]/60 font-mono text-[10px] h-8"
                   >
                     <Upload className="w-3.5 h-3.5 mr-1" />
@@ -514,20 +450,15 @@ export default function CodingActivityPage() {
         <DialogContent className="bg-[#0A1020] border border-[#00E5FF]/20 text-slate-200 rounded-xl max-w-md backdrop-blur-xl">
           <DialogHeader>
             <DialogTitle className="font-display font-bold text-lg text-white uppercase tracking-wider">
-              {uploadTarget === 'profile' ? 'Upload Avatar Image File' : 'Upload Contribution Graph Image'}
+              Upload Avatar Image File
             </DialogTitle>
           </DialogHeader>
           <div className="py-3">
             <MediaUploader
               allowedTypes={['image/*']}
               onUploadSuccess={(asset) => {
-                if (uploadTarget === 'profile') {
-                  setValue('profileImage', asset.url)
-                  toast({ title: 'Success', description: 'Avatar uploaded to media assets.' })
-                } else {
-                  setValue('contributionGraphImage', asset.url)
-                  toast({ title: 'Success', description: 'Contribution graph uploaded to media assets.' })
-                }
+                setValue('profileImage', asset.url)
+                toast({ title: 'Success', description: 'Avatar uploaded to media assets.' })
                 setUploaderOpen(false)
               }}
               onClose={() => setUploaderOpen(false)}

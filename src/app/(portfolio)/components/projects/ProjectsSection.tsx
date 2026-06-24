@@ -222,10 +222,27 @@ function ProjectCard({
           )}
         </div>
 
-        {/* View Details Link */}
-        <div className="flex items-center text-[10px] font-mono text-[#00E5FF] uppercase tracking-wider group-hover:gap-1.5 transition-all select-none pt-3 border-t border-slate-950/40">
-          <span>View Details</span>
-          <ArrowRight className="w-3.5 h-3.5 ml-1 transition-transform group-hover:translate-x-0.5" />
+        {/* Actions Row */}
+        <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider pt-3 border-t border-slate-950/40 select-none">
+          {/* View Details Link */}
+          <div className="flex items-center text-[#00E5FF] group-hover:gap-1.5 transition-all">
+            <span>View Details</span>
+            <ArrowRight className="w-3.5 h-3.5 ml-1 transition-transform group-hover:translate-x-0.5" />
+          </div>
+
+          {/* Live Demo Link */}
+          {project.demoUrl && project.showDemo !== false && (
+            <a
+              href={project.demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1.5 text-slate-300 hover:text-[#00E5FF] hover:bg-[#00E5FF]/10 transition-all bg-[#00E5FF]/5 border border-[#00E5FF]/20 px-2.5 py-1 rounded-md font-bold tracking-wider"
+            >
+              <span>Live Demo</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          )}
         </div>
       </div>
     </motion.div>

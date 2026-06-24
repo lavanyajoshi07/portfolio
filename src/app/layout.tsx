@@ -23,10 +23,10 @@ const orbitron = Orbitron({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Premium Portfolio | AI Engineer',
-    template: '%s | Portfolio',
+    default: 'Lavanya Joshi | Full Stack Developer',
+    template: '%s | Lavanya Joshi',
   },
-  description: 'Futuristic portfolio of an AI-powered software engineer.',
+  description: 'Futuristic portfolio of Lavanya Joshi, Full Stack Developer.',
 }
 
 export const viewport: Viewport = {
@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="dark" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" type="image/png" />
       </head>
       
       {/* 3. Variables ab yahan safely accessible hain */}

@@ -59,10 +59,9 @@ interface Props {
 export default function CodingDashboard({ dashboardSettings }: Props) {
   const [isMounted, setIsMounted] = useState(false)
   const { isMobile, isTablet, mounted } = useResponsive()
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
+  const [svgHtml, setSvgHtml] = useState<string>('')
+  const [svgLoading, setSvgLoading] = useState<boolean>(true)
+  const [viewBoxWidth, setViewBoxWidth] = useState<number>(663)
 
   const settings = useMemo(() => {
     if (dashboardSettings) return dashboardSettings
@@ -103,6 +102,116 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
       showMotivationalBanner: true,
     } as CodingActivitySettings
   }, [dashboardSettings])
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!settings.profileUsername || settings.profileUsername === 'username') {
+      setSvgLoading(false)
+      return
+    }
+
+    let isCancelled = false
+    setSvgLoading(true)
+
+    fetch(`/api/github-chart?username=${settings.profileUsername}`)
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch contribution graph')
+        return res.text()
+      })
+      .then((svgText) => {
+        if (isCancelled) return
+        
+        try {
+          const parser = new DOMParser()
+          const doc = parser.parseFromString(svgText, 'image/svg+xml')
+          const svgElement = doc.querySelector('svg')
+          
+          if (svgElement) {
+            const rects = Array.from(doc.querySelectorAll('rect'))
+            let minX = Infinity
+            
+            rects.forEach((rect) => {
+              const score = parseInt(rect.getAttribute('data-score') || '0', 10)
+              const x = parseInt(rect.getAttribute('x') || '0', 10)
+              if (score > 0 && x < minX) {
+                minX = x
+              }
+              
+              // Formatting to rounded corners
+              rect.setAttribute('rx', '2.5')
+              rect.setAttribute('ry', '2.5')
+              
+              let style = rect.getAttribute('style') || ''
+              // Remove shape-rendering: crispedges so rounded corners are smooth and anti-aliased
+              style = style.replace(/shape-rendering:\s*crispedges;?/gi, '')
+              
+              if (style.includes('fill:#EEEEEE') || style.includes('fill:#eeeeee') || score === 0) {
+                style = style.replace(/fill:#EEEEEE/gi, 'fill:#20243c')
+              }
+              rect.setAttribute('style', style)
+            })
+
+            const viewBoxX = minX === Infinity ? 0 : Math.max(0, minX - 27)
+            const calculatedWidth = 663 - viewBoxX
+            setViewBoxWidth(calculatedWidth)
+
+            svgElement.setAttribute('width', '100%')
+            svgElement.setAttribute('height', 'auto')
+            svgElement.setAttribute('viewBox', `${viewBoxX} 0 ${calculatedWidth} 104`)
+
+            const texts = Array.from(doc.querySelectorAll('text'))
+            texts.forEach((text) => {
+              const xAttr = text.getAttribute('x')
+              if (xAttr === '0') {
+                text.setAttribute('x', String(viewBoxX))
+                const style = text.getAttribute('style') || ''
+                text.setAttribute('style', style.replace(/display:\s*none;?/g, ''))
+              } else if (xAttr) {
+                const xVal = parseInt(xAttr, 10)
+                if (xVal < viewBoxX) {
+                  text.remove()
+                }
+              }
+            })
+
+            const serializer = new XMLSerializer()
+            const processedSvg = serializer.serializeToString(doc)
+            setSvgHtml(processedSvg)
+          } else {
+            setSvgHtml('')
+          }
+        } catch (e) {
+          console.error('Error parsing contribution graph SVG:', e)
+          setSvgHtml('')
+        }
+        setSvgLoading(false)
+      })
+      .catch((err) => {
+        console.error('Error fetching contribution graph:', err)
+        if (!isCancelled) {
+          setSvgHtml('')
+          setSvgLoading(false)
+        }
+      })
+
+    return () => {
+      isCancelled = true
+    }
+  }, [settings.profileUsername])
+
+  const renderGraphPlaceholder = (message: string, showPulse = false) => (
+    <div className={cn(
+      "relative w-full rounded-2xl border border-cyan-500/10 bg-[#0A1020]/50 p-4 flex flex-col items-center justify-center gap-2 text-slate-500 select-none overflow-hidden",
+      mounted && isTablet ? "h-auto aspect-[8/3]" : "min-h-[220px] h-[220px] md:h-[320px]"
+    )}>
+      <LucideIcons.BarChart3 className={cn("w-8 h-8 text-slate-600", showPulse && "animate-pulse")} />
+      <span className="text-xs font-mono uppercase tracking-widest">{message}</span>
+    </div>
+  )
+
 
   const overviewCards = useMemo(() => {
     return [
@@ -207,32 +316,74 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
 
                   {/* Graph Card */}
                   <div className="glass-card rounded-3xl p-6 bg-[#0A1020]/70 border border-cyan-500/10 backdrop-blur-xl hover:border-cyan-400/30 hover:shadow-[0_0_30px_rgba(0,229,255,0.12)] transition-all duration-300">
-                    <h3 className="font-display font-bold text-base text-white uppercase tracking-wider mb-4">
-                      Contribution Graph
-                    </h3>
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="font-display font-bold text-base text-white uppercase tracking-wider">
+                          Contributions Graph
+                        </h3>
+                        <p className="font-mono text-[10px] text-slate-500 mt-0.5">
+                          {settings.profileUsername} activity in {new Date().getFullYear()}
+                        </p>
+                      </div>
+                      <a 
+                        href={settings.githubProfileUrl || `https://github.com/${settings.profileUsername}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-mono text-xs text-[#5568FE] hover:underline"
+                      >
+                        @{settings.profileUsername}
+                      </a>
+                    </div>
                     
                     {/* Horizontally scrollable heatmap container */}
                     <div className="p-4 overflow-x-auto scrollbar-hide touch-pan-x bg-[#0A1020]/50 border border-cyan-500/10 rounded-2xl">
-                      <div className="min-w-[700px]">
-                        {settings.contributionGraphImage ? (
-                          /* eslint-disable-next-line @next/next/no-img-element */
-                          <img
-                            src={settings.contributionGraphImage}
-                            alt={settings.contributionGraphAlt || 'GitHub Contribution Graph'}
-                            className={`w-full h-[220px] ${
-                              (settings.graphImageDisplayMode || 'cover') === 'contain' ? 'object-contain' :
-                              (settings.graphImageDisplayMode || 'cover') === 'fill' ? 'object-fill' : 'object-cover'
-                            }`}
-                            style={{
-                              objectPosition: (settings.graphImageDisplayMode || 'cover') === 'cover' ? 'top center' : 'center center'
-                            }}
+                      <div 
+                        className="mx-auto flex items-center justify-center"
+                        style={{
+                          width: `${viewBoxWidth * 1.25}px`,
+                          maxWidth: '100%',
+                          minWidth: `${Math.min(viewBoxWidth * 1.25, 280)}px`
+                        }}
+                      >
+                        {svgLoading ? (
+                          <div className="w-full h-[120px] flex flex-col items-center justify-center gap-2 text-slate-500 select-none">
+                            <LucideIcons.BarChart3 className="w-8 h-8 text-slate-600 animate-pulse" />
+                            <span className="text-xs font-mono uppercase tracking-widest">Syncing Live GitHub Graph...</span>
+                          </div>
+                        ) : svgHtml ? (
+                          <div 
+                            className="w-full [&>svg]:w-full [&>svg]:h-auto flex items-center justify-center" 
+                            dangerouslySetInnerHTML={{ __html: svgHtml }} 
                           />
                         ) : (
-                          <div className="w-full h-[220px] flex flex-col items-center justify-center gap-2 text-slate-500 select-none">
-                            <LucideIcons.BarChart3 className="w-8 h-8 text-slate-600 animate-pulse" />
-                            <span className="text-xs font-mono uppercase tracking-widest">No Graph Image Uploaded</span>
+                          <div className="w-full h-[120px] flex flex-col items-center justify-center gap-2 text-slate-500 select-none">
+                            <LucideIcons.BarChart3 className="w-8 h-8 text-slate-600" />
+                            <span className="text-xs font-mono uppercase tracking-widest">
+                              {!settings.profileUsername || settings.profileUsername === 'username'
+                                ? 'GitHub username not configured'
+                                : 'Failed to load GitHub Graph'}
+                            </span>
                           </div>
                         )}
+                      </div>
+                    </div>
+
+                    {/* Legend & Stats Footer for Mobile */}
+                    <div 
+                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[10px] text-slate-500 font-mono mt-4 pt-4 border-t border-slate-900/60 select-none w-full mx-auto"
+                      style={{ maxWidth: `${viewBoxWidth * 1.25}px` }}
+                    >
+                      <div>
+                        <span>{settings.totalContributions || '0'} contributions in the last year</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span>Less</span>
+                        <span className="w-2.5 h-2.5 rounded-[3px] bg-[#20243c]" />
+                        <span className="w-2.5 h-2.5 rounded-[3px] bg-[#5568fe]/30" />
+                        <span className="w-2.5 h-2.5 rounded-[3px] bg-[#5568fe]/55" />
+                        <span className="w-2.5 h-2.5 rounded-[3px] bg-[#5568fe]/80" />
+                        <span className="w-2.5 h-2.5 rounded-[3px] bg-[#5568fe]" />
+                        <span>More</span>
                       </div>
                     </div>
                   </div>
@@ -337,13 +488,23 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
                   className={`${leftColSpan} flex flex-col justify-between h-auto lg:h-[620px] glass-card rounded-3xl p-6 bg-[#0A1020]/70 border border-cyan-500/10 backdrop-blur-xl hover:border-cyan-400/30 hover:shadow-[0_0_30px_rgba(0,229,255,0.12)] transition-all duration-300`}
                 >
                   {/* Header */}
-                  <div>
-                    <h3 className="font-display font-bold text-lg text-white uppercase tracking-wider">
-                      GitHub Contribution Activity
-                    </h3>
-                    <p className="font-mono text-xs text-slate-500 uppercase tracking-widest mt-1">
-                      Coding consistency and contribution history
-                    </p>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-display font-bold text-lg text-white uppercase tracking-wider">
+                        Contributions Graph
+                      </h3>
+                      <p className="font-mono text-xs text-slate-500 mt-1">
+                        {settings.profileUsername} activity in {new Date().getFullYear()}
+                      </p>
+                    </div>
+                    <a 
+                      href={settings.githubProfileUrl || `https://github.com/${settings.profileUsername}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-mono text-xs text-[#5568FE] hover:underline hover:text-[#5568FE]/80 transition-colors"
+                    >
+                      @{settings.profileUsername}
+                    </a>
                   </div>
 
                   {/* Mini Stats Row */}
@@ -390,39 +551,48 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
                   </div>
 
                   {/* Graph Image Display */}
-                  {settings.contributionGraphImage ? (
-                    <div className={cn(
-                      "relative w-full rounded-2xl border border-cyan-500/10 bg-[#0A1020]/50 overflow-hidden",
-                      mounted && isTablet
-                        ? "h-auto aspect-[8/3]"
-                        : "min-h-[320px] h-[320px] md:h-[400px]"
-                    )}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={settings.contributionGraphImage}
-                        alt={settings.contributionGraphAlt || 'GitHub Contribution Graph'}
-                        className={cn(
-                          "w-full h-full",
-                          mounted && isTablet
-                            ? "object-contain"
-                            : ((settings.graphImageDisplayMode || 'cover') === 'contain' ? 'object-contain' :
-                               (settings.graphImageDisplayMode || 'cover') === 'fill' ? 'object-fill' : 'object-cover')
-                        )}
-                        style={{
-                          objectPosition: (settings.graphImageDisplayMode || 'cover') === 'cover' ? 'top center' : 'center center'
-                        }}
-                      />
+                  {svgLoading ? (
+                    renderGraphPlaceholder('Syncing Live GitHub Graph...', true)
+                  ) : svgHtml ? (
+                    <div className="space-y-4">
+                      <div className={cn(
+                        "relative w-full rounded-2xl border border-cyan-500/10 bg-[#0A1020]/50 p-6 flex items-center justify-center overflow-hidden",
+                        mounted && isTablet
+                          ? "h-auto aspect-[8/3]"
+                          : "min-h-[220px] h-[220px] md:h-[320px]"
+                      )}>
+                        <div 
+                          className="w-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-auto"
+                          style={{ maxWidth: `${viewBoxWidth * 1.25}px` }}
+                          dangerouslySetInnerHTML={{ __html: svgHtml }} 
+                        />
+                      </div>
+                      
+                      {/* Legend & Stats Footer for Desktop */}
+                      <div 
+                        className="flex items-center justify-between text-xs text-slate-500 font-mono pt-2 px-1 select-none w-full mx-auto border-t border-slate-900/60"
+                        style={{ maxWidth: `${viewBoxWidth * 1.25}px` }}
+                      >
+                        <div>
+                          <span>{settings.totalContributions || '0'} contributions in the last year</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span>Less</span>
+                          <span className="w-2.5 h-2.5 rounded-[3px] bg-[#20243c]" />
+                          <span className="w-2.5 h-2.5 rounded-[3px] bg-[#5568fe]/30" />
+                          <span className="w-2.5 h-2.5 rounded-[3px] bg-[#5568fe]/55" />
+                          <span className="w-2.5 h-2.5 rounded-[3px] bg-[#5568fe]/80" />
+                          <span className="w-2.5 h-2.5 rounded-[3px] bg-[#5568fe]" />
+                          <span>More</span>
+                        </div>
+                      </div>
                     </div>
                   ) : (
-                    <div className={cn(
-                      "relative w-full rounded-2xl border border-cyan-500/10 bg-[#0A1020]/50 p-4 flex flex-col items-center justify-center gap-2 text-slate-500 select-none overflow-hidden",
-                      mounted && isTablet
-                        ? "h-auto aspect-[8/3]"
-                        : "min-h-[320px] h-[320px] md:h-[400px]"
-                    )}>
-                      <LucideIcons.BarChart3 className="w-8 h-8 text-slate-600 animate-pulse" />
-                      <span className="text-xs font-mono uppercase tracking-widest">No Graph Image Uploaded</span>
-                    </div>
+                    renderGraphPlaceholder(
+                      !settings.profileUsername || settings.profileUsername === 'username'
+                        ? 'GitHub username not configured'
+                        : 'Failed to load GitHub Graph'
+                    )
                   )}
                 </motion.div>
               )}

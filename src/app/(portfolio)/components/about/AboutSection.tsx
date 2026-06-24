@@ -22,7 +22,7 @@ interface Props {
 
 export default function AboutSection({ profile, education = [] }: Props) {
   const [showResume, setShowResume] = useState(false)
-  const { isMobile, isTablet, mounted } = useResponsive()
+  const { isMobile, isTablet, isDesktop, mounted } = useResponsive()
 
   const valueCards = [
     {
@@ -96,26 +96,28 @@ export default function AboutSection({ profile, education = [] }: Props) {
               "flex-wrap gap-4 items-center",
               mounted ? (isMobile ? "hidden" : "flex") : "hidden md:flex"
             )}>
-              {/* View/Hide Resume Action */}
-              <button
-                id="about-view-resume-btn"
-                onClick={() => setShowResume(!showResume)}
-                className="relative p-[1.5px] rounded-xl overflow-hidden group transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500" />
-                <span className={`relative flex items-center gap-2 px-5 py-2.5 rounded-[10px] font-mono text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
-                  showResume
-                    ? 'bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500 text-slate-950 shadow-[0_0_20px_rgba(6,182,212,0.4)]'
-                    : 'bg-slate-950 text-blue-400 group-hover:text-cyan-300'
-                }`}>
-                  {showResume ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
-                  <span>{showResume ? 'Hide Resume' : 'View Resume'}</span>
-                </span>
-              </button>
+              {/* View/Hide Resume Action (Only for Tablet Portrait / when not desktop) */}
+              {(!mounted || isTablet) && (
+                <button
+                  id="about-view-resume-btn"
+                  onClick={() => setShowResume(!showResume)}
+                  className="relative p-[1.5px] rounded-xl overflow-hidden group transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <span className="absolute inset-0 bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500" />
+                  <span className={`relative flex items-center gap-2 px-5 py-2.5 rounded-[10px] font-mono text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+                    showResume
+                      ? 'bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500 text-slate-950 shadow-[0_0_20px_rgba(6,182,212,0.4)]'
+                      : 'bg-slate-950 text-blue-400 group-hover:text-cyan-300'
+                  }`}>
+                    {showResume ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
+                    <span>{showResume ? 'Hide Resume' : 'View Resume'}</span>
+                  </span>
+                </button>
+              )}
 
               {/* View in Full Tab Link */}
               <a
-                href="/resume.html"
+                href="/resume"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="relative p-[1.5px] rounded-xl overflow-hidden group transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
@@ -123,7 +125,7 @@ export default function AboutSection({ profile, education = [] }: Props) {
                 <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-400 to-purple-500" />
                 <span className="relative flex items-center gap-2 px-5 py-2.5 rounded-[10px] bg-slate-950 text-purple-400 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-300 group-hover:text-pink-300">
                   <ExternalLink className="w-4.5 h-4.5" />
-                  <span>View in Full Tab</span>
+                  <span>{mounted && isDesktop ? 'View Resume' : 'View in Full Tab'}</span>
                 </span>
               </a>
             </div>
