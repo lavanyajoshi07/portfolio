@@ -10,8 +10,8 @@ export async function GET() {
     if (!settings) {
       // Create defaults
       settings = await SeoSettings.create({
-        metaTitle: 'AI Engineer Portfolio',
-        metaDescription: 'Futuristic AI portfolio with a premium cyberpunk aesthetic.',
+        metaTitle: 'Lavanya Joshi | Full Stack Developer',
+        metaDescription: 'Futuristic portfolio of Lavanya Joshi, Full Stack Developer.',
         keywords: ['AI', 'Generative AI', 'Deep Learning'],
         ogImage: '',
         twitterImage: '',

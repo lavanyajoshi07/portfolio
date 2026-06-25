@@ -16,6 +16,9 @@ interface ContactMessage {
   read: boolean
   source: 'contact_form' | 'chat'
   createdAt: string
+  replied?: boolean
+  replyText?: string
+  repliedAt?: string
 }
 
 export default function MessagesPage() {
@@ -118,6 +121,17 @@ export default function MessagesPage() {
       if (result.success) {
         toast({ title: 'Success', description: 'Reply sent successfully.' })
         setReplyText('')
+        
+        // Update local states immediately
+        const updatedMsg: ContactMessage = {
+          ...viewMessage,
+          read: true,
+          replied: true,
+          replyText: replyText,
+          repliedAt: new Date().toISOString()
+        }
+        setViewMessage(updatedMsg)
+        setMessages(prev => prev.map(m => m._id === viewMessage._id ? updatedMsg : m))
       } else {
         toast({ title: 'Error', description: result.error || 'Failed to send reply.', variant: 'destructive' })
       }
@@ -161,6 +175,18 @@ export default function MessagesPage() {
             : 'bg-[#7C3AED]/10 text-[#7C3AED] border-[#7C3AED]/25'
         }`}>
           {item.source}
+        </span>
+      ),
+    },
+    {
+      header: 'Reply Status',
+      accessor: (item: ContactMessage) => (
+        <span className={`font-mono text-[9px] uppercase px-2 py-0.5 rounded border ${
+          item.replied
+            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25'
+            : 'bg-amber-500/10 text-amber-400 border-amber-500/25'
+        }`}>
+          {item.replied ? 'Replied' : 'Pending'}
         </span>
       ),
     },
@@ -277,12 +303,26 @@ export default function MessagesPage() {
               {/* Reply section */}
               <div className="pt-2">
                 <span className="text-[10px] text-slate-500 block mb-2">Reply Message</span>
+                {viewMessage.replied && (
+                  <div className="mb-3 bg-[#101827]/60 border border-emerald-500/20 rounded-lg p-3 font-sans text-xs text-slate-350 normal-case leading-relaxed">
+                    <div className="flex justify-between items-center mb-1.5 pb-1 border-b border-slate-900 text-[9px] text-slate-550 uppercase font-mono">
+                      <span className="text-emerald-400 font-semibold">✓ Reply Sent</span>
+                      <span className="text-slate-500">{viewMessage.repliedAt ? new Date(viewMessage.repliedAt).toLocaleString() : ''}</span>
+                    </div>
+                    <div className="whitespace-pre-wrap text-slate-300">{viewMessage.replyText}</div>
+                  </div>
+                )}
+                {viewMessage.replied && (
+                  <span className="text-[9px] text-slate-500 block mb-2 uppercase font-mono">
+                    Send another reply:
+                  </span>
+                )}
                 <textarea
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value)}
-                  placeholder="Type your reply here..."
-                  rows={4}
-                  className="w-full rounded-lg border border-slate-800 bg-[#050816] p-4 text-sm text-slate-200 normal-case placeholder:text-slate-600 focus:outline-none focus:border-[#00E5FF]/50 resize-none font-sans"
+                  placeholder={viewMessage.replied ? "Type another reply here..." : "Type your reply here..."}
+                  rows={3}
+                  className="w-full rounded-lg border border-slate-800 bg-[#050816] p-3 text-sm text-slate-200 normal-case placeholder:text-slate-600 focus:outline-none focus:border-[#00E5FF]/50 resize-none font-sans"
                 />
               </div>
             </div>

@@ -226,6 +226,9 @@ const ContactMessageSchema = new Schema({
   email: { type: String, required: true },
   message: { type: String, required: true },
   read: { type: Boolean, default: false },
+  replied: { type: Boolean, default: false },
+  replyText: { type: String },
+  repliedAt: { type: Date },
   source: {
     type: String,
     enum: ['contact_form', 'chat'],

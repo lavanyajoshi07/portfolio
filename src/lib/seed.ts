@@ -62,7 +62,7 @@ async function seed() {
 
     // 2. Seed SEO Settings
     await SeoSettings.create({
-      metaTitle: 'Lavanya Joshi | Entry-Level AI & Cloud Engineer',
+      metaTitle: 'Lavanya Joshi | Full Stack Developer',
       metaDescription: 'AI Engineer portfolio displaying machine learning projects, AWS certifications, hackathons, and technical skills.',
       keywords: ['AI Engineer', 'LangChain', 'AWS Certified', 'Machine Learning', 'Next.js', 'Generative AI'],
       ogImage: '/placeholders/placeholder-project.png',

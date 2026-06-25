@@ -85,8 +85,13 @@ export async function POST(
       return errorResponse('Failed to send reply email via Brevo', 500)
     }
 
-    // Mark as read
-    await ContactMessage.findByIdAndUpdate(id, { read: true })
+    // Mark as read and replied
+    await ContactMessage.findByIdAndUpdate(id, {
+      read: true,
+      replied: true,
+      replyText: replyText,
+      repliedAt: new Date(),
+    })
 
     return successResponse({ id }, 'Reply sent successfully')
   } catch (error) {

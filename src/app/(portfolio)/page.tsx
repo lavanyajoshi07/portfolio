@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import { Metadata } from 'next'
 import HeroSection from './components/hero/HeroSection'
 import AboutSection from './components/about/AboutSection'
 import SkillsSection from './components/skills/SkillsSection'
@@ -26,11 +27,41 @@ import {
   AchievementSettings,
   SiteSettings,
   CodingActivitySettings,
-  Resume
+  Resume,
+  SeoSettings
 } from '@/models'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    await connectDB()
+    const seo = await SeoSettings.findOne().lean() as any
+    if (seo) {
+      return {
+        title: seo.metaTitle || 'Lavanya Joshi | Full Stack Developer',
+        description: seo.metaDescription || 'Futuristic portfolio of Lavanya Joshi, Full Stack Developer.',
+        keywords: seo.keywords || [],
+        openGraph: {
+          title: seo.metaTitle || 'Lavanya Joshi | Full Stack Developer',
+          description: seo.metaDescription || 'Futuristic portfolio of Lavanya Joshi, Full Stack Developer.',
+          images: seo.ogImage ? [{ url: seo.ogImage }] : [],
+        },
+        alternates: {
+          canonical: seo.canonicalUrl || '',
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error generating metadata:', error)
+  }
+
+  return {
+    title: 'Lavanya Joshi | Full Stack Developer',
+    description: 'Futuristic portfolio of Lavanya Joshi, Full Stack Developer.',
+  }
+}
 
 export async function getData() {
   try {
