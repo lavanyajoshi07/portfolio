@@ -82,6 +82,12 @@ export async function POST(
     if (!response.ok) {
       const errorText = await response.text()
       console.error(`Brevo reply email sending failed: ${response.status} - ${errorText}`)
+      try {
+        const errorJson = JSON.parse(errorText)
+        if (errorJson.message) {
+          return errorResponse(`Brevo SMTP: ${errorJson.message}`, 400)
+        }
+      } catch (e) {}
       return errorResponse('Failed to send reply email via Brevo', 500)
     }
 
