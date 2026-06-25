@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono, Orbitron } from 'next/font/google'
 import '@/styles/global.css'
+import { Toaster } from '@/components/ui/toaster'
 
 // 1. Fonts ko top-level par define karo (Scope Fix)
 const inter = Inter({
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       {/* 3. Variables ab yahan safely accessible hain */}
       <body className={`${inter.variable} ${jetbrains.variable} ${orbitron.variable} font-sans antialiased bg-[#050816] text-slate-200 overflow-x-hidden`}>
         {children}
+        <Toaster />
       </body>
     </html>
   )
