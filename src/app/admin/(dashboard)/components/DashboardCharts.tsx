@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import {
   AreaChart,
   Area,
@@ -32,6 +33,12 @@ interface DashboardChartsProps {
 }
 
 export default function DashboardCharts({ chartData, ctaData }: DashboardChartsProps) {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Visitor Trend Area Chart */}
@@ -52,8 +59,9 @@ export default function DashboardCharts({ chartData, ctaData }: DashboardChartsP
         </div>
 
         <div className="h-[280px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+          {mounted ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#00E5FF" stopOpacity={0.2}/>
@@ -109,6 +117,9 @@ export default function DashboardCharts({ chartData, ctaData }: DashboardChartsP
               />
             </AreaChart>
           </ResponsiveContainer>
+          ) : (
+            <div className="w-full h-full bg-[#101827]/40 animate-pulse rounded-lg border border-slate-900/50" />
+          )}
         </div>
       </div>
 
@@ -124,9 +135,10 @@ export default function DashboardCharts({ chartData, ctaData }: DashboardChartsP
         </div>
 
         <div className="h-[280px] w-full mt-6">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={ctaData} layout="vertical" margin={{ top: 0, right: 10, left: -10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#101827" horizontal={false} />
+          {mounted ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={ctaData} layout="vertical" margin={{ top: 0, right: 10, left: -10, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#101827" horizontal={false} />
               <XAxis 
                 type="number" 
                 stroke="#475569" 
@@ -161,6 +173,9 @@ export default function DashboardCharts({ chartData, ctaData }: DashboardChartsP
               </Bar>
             </BarChart>
           </ResponsiveContainer>
+          ) : (
+            <div className="w-full h-full bg-[#101827]/40 animate-pulse rounded-lg border border-slate-900/50" />
+          )}
         </div>
       </div>
     </div>
