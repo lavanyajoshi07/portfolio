@@ -12,7 +12,6 @@ import {
   RefreshCw, 
   ArrowUp, 
   ArrowDown, 
-  Upload, 
   Image as ImageIcon,
   Tag, 
   Search, 
@@ -56,7 +55,7 @@ export default function ProjectsPage() {
   const [keywordsString, setKeywordsString] = useState('')
   const [seoKeywordsString, setSeoKeywordsString] = useState('')
 
-  const [uploadingImage, setUploadingImage] = useState<string | null>(null) // tracker for current field uploading
+  const [newGalleryUrl, setNewGalleryUrl] = useState('')
 
   const {
     register,
@@ -118,36 +117,10 @@ export default function ProjectsPage() {
   const architectureDiagramValue = watch('architectureDiagram')
   const fullDescValue = watch('fullDescription')
 
-  const handleUploadImage = async (e: React.ChangeEvent<HTMLInputElement>, target: 'thumbnail' | 'diagram' | 'gallery') => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setUploadingImage(target)
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
-      const res = await fetch('/api/media', {
-        method: 'POST',
-        body: formData,
-      })
-      const result = await res.json()
-      if (result.success && result.data?.url) {
-        if (target === 'thumbnail') {
-          setValue('thumbnail', { image: result.data.url, alt: thumbnailValue?.alt || '' }, { shouldDirty: true })
-        } else if (target === 'diagram') {
-          setValue('architectureDiagram', result.data.url, { shouldDirty: true })
-        } else if (target === 'gallery') {
-          setGallery((prev) => [...prev, { image: result.data.url, alt: '' }])
-        }
-        toast({ title: 'Success', description: 'Image uploaded successfully.' })
-      } else {
-        toast({ title: 'Upload Failed', description: result.error || 'Failed to upload.', variant: 'destructive' })
-      }
-    } catch (err) {
-      console.error(err)
-      toast({ title: 'Upload Error', description: 'An error occurred during upload.', variant: 'destructive' })
-    } finally {
-      setUploadingImage(null)
-    }
+  const handleAddGalleryImage = () => {
+    if (!newGalleryUrl.trim()) return
+    setGallery((prev) => [...prev, { image: newGalleryUrl.trim(), alt: '' }])
+    setNewGalleryUrl('')
   }
 
   const fetchProjects = async () => {
@@ -177,6 +150,7 @@ export default function ProjectsPage() {
     setHighlights([])
     setTechStack([])
     setGallery([])
+    setNewGalleryUrl('')
     setTagsString('')
     setKeywordsString('')
     setSeoKeywordsString('')
@@ -229,6 +203,7 @@ export default function ProjectsPage() {
     setHighlights(project.highlights || [])
     setTechStack(project.techStack || [])
     setGallery(project.gallery || [])
+    setNewGalleryUrl('')
     setTagsString((project.tags || []).join(', '))
     setKeywordsString((project.searchKeywords || []).join(', '))
     setSeoKeywordsString((project.seoKeywords || []).join(', '))
@@ -734,26 +709,15 @@ export default function ProjectsPage() {
                 <div className="grid grid-cols-2 gap-4 border border-slate-900 p-3 rounded-lg bg-[#0F172A]/50">
                   <div className="space-y-1.5 justify-center">
                     <Label className="font-mono text-[10px] text-slate-400 uppercase">Thumbnail Screenshot</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        value={thumbnailValue?.image || ''}
-                        onChange={(e) => setValue('thumbnail', { image: e.target.value, alt: thumbnailValue?.alt || '' })}
-                        placeholder="Image URL"
-                        className="bg-[#101827]/70 border-slate-800 text-white text-xs"
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="relative overflow-hidden border-slate-800 bg-[#101827]/70 font-mono text-[10px] cursor-pointer"
-                        disabled={uploadingImage !== null}
-                      >
-                        {uploadingImage === 'thumbnail' ? '...' : <Upload className="w-3.5 h-3.5" />}
-                        <input type="file" accept="image/*" onChange={(e) => handleUploadImage(e, 'thumbnail')} className="absolute inset-0 opacity-0 cursor-pointer" />
-                      </Button>
-                    </div>
+                    <Input
+                      value={thumbnailValue?.image || ''}
+                      onChange={(e) => setValue('thumbnail', { image: e.target.value, alt: thumbnailValue?.alt || '' }, { shouldDirty: true })}
+                      placeholder="Cloudinary Image URL"
+                      className="bg-[#101827]/70 border-slate-800 text-white text-xs"
+                    />
                     <Input
                       value={thumbnailValue?.alt || ''}
-                      onChange={(e) => setValue('thumbnail', { image: thumbnailValue?.image || '', alt: e.target.value })}
+                      onChange={(e) => setValue('thumbnail', { image: thumbnailValue?.image || '', alt: e.target.value }, { shouldDirty: true })}
                       placeholder="Alt Text (SEO/Accessibility)"
                       className="bg-[#101827]/70 border-slate-800 text-white text-xs mt-2"
                     />
@@ -771,23 +735,12 @@ export default function ProjectsPage() {
                 <div className="grid grid-cols-2 gap-4 border border-slate-900 p-3 rounded-lg bg-[#0F172A]/50">
                   <div className="space-y-1.5 justify-center">
                     <Label className="font-mono text-[10px] text-slate-400 uppercase">Architecture Diagram Diagram</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        value={architectureDiagramValue || ''}
-                        onChange={(e) => setValue('architectureDiagram', e.target.value)}
-                        placeholder="Image URL"
-                        className="bg-[#101827]/70 border-slate-800 text-white text-xs"
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="relative overflow-hidden border-slate-800 bg-[#101827]/70 font-mono text-[10px] cursor-pointer"
-                        disabled={uploadingImage !== null}
-                      >
-                        {uploadingImage === 'diagram' ? '...' : <Upload className="w-3.5 h-3.5" />}
-                        <input type="file" accept="image/*" onChange={(e) => handleUploadImage(e, 'diagram')} className="absolute inset-0 opacity-0 cursor-pointer" />
-                      </Button>
-                    </div>
+                    <Input
+                      value={architectureDiagramValue || ''}
+                      onChange={(e) => setValue('architectureDiagram', e.target.value, { shouldDirty: true })}
+                      placeholder="Cloudinary Image URL"
+                      className="bg-[#101827]/70 border-slate-800 text-white text-xs"
+                    />
                   </div>
                   <div className="flex items-center justify-center bg-slate-950 rounded border border-slate-900 h-24 overflow-hidden">
                     {architectureDiagramValue ? (
@@ -800,17 +753,24 @@ export default function ProjectsPage() {
 
                 {/* Gallery Repeaters */}
                 <div className="border border-slate-900 p-4 rounded-lg bg-[#0F172A]/50 space-y-4">
-                  <div className="flex items-center justify-between border-b border-slate-850 pb-2">
+                  <div className="flex items-center justify-between border-b border-slate-850 pb-2 gap-4">
                     <Label className="font-mono text-[10px] text-slate-400 uppercase">Screenshot Gallery</Label>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="relative overflow-hidden text-[9px] font-mono h-7"
-                      disabled={uploadingImage !== null}
-                    >
-                      {uploadingImage === 'gallery' ? 'Uploading...' : 'Add Screenshot'}
-                      <input type="file" accept="image/*" onChange={(e) => handleUploadImage(e, 'gallery')} className="absolute inset-0 opacity-0 cursor-pointer" />
-                    </Button>
+                    <div className="flex gap-2 items-center flex-1 max-w-md justify-end">
+                      <Input
+                        value={newGalleryUrl}
+                        onChange={(e) => setNewGalleryUrl(e.target.value)}
+                        placeholder="Cloudinary URL"
+                        className="bg-[#101827]/70 border-slate-800 text-white text-xs h-7 max-w-[240px]"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleAddGalleryImage}
+                        className="text-[9px] font-mono h-7"
+                      >
+                        Add Screenshot
+                      </Button>
+                    </div>
                   </div>
                   
                   {gallery.length === 0 && (
