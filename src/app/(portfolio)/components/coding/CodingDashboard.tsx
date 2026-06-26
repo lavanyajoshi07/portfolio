@@ -63,9 +63,37 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
   const [svgLoading, setSvgLoading] = useState<boolean>(true)
   const [viewBoxWidth, setViewBoxWidth] = useState<number>(663)
 
+  const [liveStats, setLiveStats] = useState<{
+    followers: number
+    following: number
+    public_repos: number
+    totalContributions: number
+    currentStreak: number
+    longestStreak: number
+    activeDays: number
+  } | null>(null)
+
+  useEffect(() => {
+    let isCancelled = false
+    fetch('/api/github')
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch dynamic github stats')
+        return res.json()
+      })
+      .then((data) => {
+        if (isCancelled) return
+        setLiveStats(data)
+      })
+      .catch((err) => {
+        console.error('Error fetching live GitHub stats:', err)
+      })
+    return () => {
+      isCancelled = true
+    }
+  }, [])
+
   const settings = useMemo(() => {
-    if (dashboardSettings) return dashboardSettings
-    return {
+    const base = dashboardSettings ? { ...dashboardSettings } : {
       title: 'Coding Activity',
       subtitle: 'Real-time stats from GitHub, LeetCode, and other platforms',
       problemsSolved: '312',
@@ -101,7 +129,24 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
       showGithubProfile: true,
       showMotivationalBanner: true,
     } as CodingActivitySettings
-  }, [dashboardSettings])
+
+    if (liveStats) {
+      base.followers = String(liveStats.followers)
+      base.githubFollowers = String(liveStats.followers)
+      base.githubFollowing = String(liveStats.following)
+      base.publicRepos = String(liveStats.public_repos)
+      base.githubRepos = String(liveStats.public_repos)
+      base.contributions = String(liveStats.totalContributions)
+      base.githubContributions = String(liveStats.totalContributions)
+      base.totalContributions = String(liveStats.totalContributions)
+      base.currentStreak = `${liveStats.currentStreak} days`
+      base.githubCurrentStreak = `${liveStats.currentStreak} days`
+      base.longestStreak = `${liveStats.longestStreak} days`
+      base.activeDays = `${liveStats.activeDays} days`
+    }
+
+    return base
+  }, [dashboardSettings, liveStats])
 
   useEffect(() => {
     setIsMounted(true)

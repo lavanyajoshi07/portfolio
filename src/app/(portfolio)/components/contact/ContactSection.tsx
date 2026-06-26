@@ -85,15 +85,15 @@ export default function ContactSection({ profile }: Props) {
               <ContactMethod
                 icon="✉️"
                 label="Email"
-                value={profile.email}
-                href={`mailto:${profile.email}`}
+                value={profile.email.trim()}
+                href={`mailto:${profile.email.trim()}`}
               />
             )}
             {profile?.location && (
               <ContactMethod
                 icon="📍"
                 label="Location"
-                value={profile.location}
+                value={profile.location.trim()}
                 href="#"
               />
             )}
@@ -101,40 +101,40 @@ export default function ContactSection({ profile }: Props) {
               <ContactMethod
                 icon="💼"
                 label="LinkedIn"
-                value={profile.socialLinks.linkedin.replace(/^https?:\/\/(www\.)?/, '')}
-                href={profile.socialLinks.linkedin}
+                value={profile.socialLinks.linkedin.trim().replace(/^https?:\/\/(www\.)?/, '')}
+                href={profile.socialLinks.linkedin.trim()}
               />
             )}
             {profile?.socialLinks?.github && (
               <ContactMethod
                 icon="🐙"
                 label="GitHub"
-                value={profile.socialLinks.github.replace(/^https?:\/\/(www\.)?/, '')}
-                href={profile.socialLinks.github}
+                value={profile.socialLinks.github.trim().replace(/^https?:\/\/(www\.)?/, '')}
+                href={profile.socialLinks.github.trim()}
               />
             )}
             {profile?.socialLinks?.twitter && (
               <ContactMethod
                 icon="🐦"
                 label="Twitter"
-                value={profile.socialLinks.twitter.replace(/^https?:\/\/(www\.)?/, '')}
-                href={profile.socialLinks.twitter}
+                value={profile.socialLinks.twitter.trim().replace(/^https?:\/\/(www\.)?/, '')}
+                href={profile.socialLinks.twitter.trim()}
               />
             )}
             {profile?.socialLinks?.website && (
               <ContactMethod
                 icon="🌐"
                 label="Website"
-                value={profile.socialLinks.website.replace(/^https?:\/\/(www\.)?/, '')}
-                href={profile.socialLinks.website}
+                value={profile.socialLinks.website.trim().replace(/^https?:\/\/(www\.)?/, '')}
+                href={profile.socialLinks.website.trim()}
               />
             )}
             {profile?.socialLinks?.phone && (
               <ContactMethod
                 icon="📞"
                 label="Phone"
-                value={profile.socialLinks.phone}
-                href={`tel:${profile.socialLinks.phone}`}
+                value={profile.socialLinks.phone.trim()}
+                href={`tel:${profile.socialLinks.phone.trim()}`}
               />
             )}
           </div>
@@ -257,9 +257,10 @@ function ContactMethod({
   value: string
   href: string
 }) {
-  const isExternal = href.startsWith('http')
+  const trimmedHref = href.trim()
+  const isExternal = trimmedHref.startsWith('http') || trimmedHref.startsWith('mailto:')
   return (
-    <a href={href}
+    <a href={trimmedHref}
        target={isExternal ? "_blank" : undefined}
        rel={isExternal ? "noopener noreferrer" : undefined}
        className="flex items-start gap-4 p-4 rounded-3xl glass-card hover:border-pink-DEFAULT/30 transition-all duration-300 group">
@@ -268,7 +269,7 @@ function ContactMethod({
       <div className="flex-1">
         <p className="text-sm text-slate-500 font-mono uppercase">{label}</p>
         <p className="text-slate-200 group-hover:text-pink-DEFAULT transition-colors break-all">
-          {value}
+          {value.trim()}
         </p>
       </div>
       <span className="text-slate-500 group-hover:text-pink-DEFAULT transition-colors">→</span>
