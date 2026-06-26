@@ -20,9 +20,45 @@ interface Props {
   }[]
 }
 
+function parseMarkdownInline(text: string): string {
+  // Escape HTML characters
+  let html = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+  
+  // Bold **text**
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+  
+  // Italic *text*
+  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>')
+  
+  // Code `text`
+  html = html.replace(/`(.*?)`/g, '<code class="bg-slate-950 border border-slate-800 px-1 py-0.5 rounded font-mono text-xs text-[#00E5FF]">$1</code>')
+  
+  // Links [text](url)
+  html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#00E5FF] hover:underline">$1</a>')
+  
+  // Single newlines within a paragraph
+  html = html.replace(/\n/g, '<br />')
+  
+  return html
+}
+
 export default function AboutSection({ profile, education = [] }: Props) {
   const [showResume, setShowResume] = useState(false)
   const { isMobile, isTablet, isDesktop, mounted } = useResponsive()
+
+  const defaultParagraphs = [
+    "While AI can automate tasks and generate insights, meaningful products still require human creativity, critical thinking, and empathy.",
+    "My passion lies in bridging that gap—building intelligent systems that empower people rather than replace them.",
+    "I enjoy exploring how autonomous agents, modern software architecture, and human-centered design can work together to create impactful solutions.",
+    "I approach every project with curiosity, experimentation, and a desire to create technology that solves real problems."
+  ]
+
+  const bioParagraphs = profile?.bio
+    ? profile.bio.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean)
+    : defaultParagraphs
 
   const valueCards = [
     {
@@ -77,18 +113,15 @@ export default function AboutSection({ profile, education = [] }: Props) {
             
             {/* Body Text */}
             <div className="space-y-6 text-slate-300 text-sm md:text-base leading-relaxed font-sans max-w-2xl">
-              <p className="text-slate-200 text-lg font-medium leading-relaxed">
-                While AI can automate tasks and generate insights, meaningful products still require human creativity, critical thinking, and empathy.
-              </p>
-              <p>
-                My passion lies in bridging that gap—building intelligent systems that empower people rather than replace them.
-              </p>
-              <p>
-                I enjoy exploring how autonomous agents, modern software architecture, and human-centered design can work together to create impactful solutions.
-              </p>
-              <p>
-                I approach every project with curiosity, experimentation, and a desire to create technology that solves real problems.
-              </p>
+              {bioParagraphs.map((paragraph, idx) => (
+                <p
+                  key={idx}
+                  className={cn(
+                    idx === 0 ? "text-slate-200 text-lg font-medium leading-relaxed" : ""
+                  )}
+                  dangerouslySetInnerHTML={{ __html: parseMarkdownInline(paragraph) }}
+                />
+              ))}
             </div>
 
             {/* Integrated Card Action Buttons */}

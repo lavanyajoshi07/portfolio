@@ -7,6 +7,7 @@ export interface Profile {
   name: string
   title: string
   tagline: string
+  bio?: string
   email: string
   location: string
   profileImage?: string

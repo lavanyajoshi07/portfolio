@@ -42,6 +42,7 @@ export const profileSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   title: z.string().min(5, 'Title must be at least 5 characters'),
   tagline: z.string().min(10, 'Tagline must be at least 10 characters'),
+  bio: optionalString,
   email: z.string().email('Invalid email address'),
   location: optionalString,
   profileImage: optionalUrl,

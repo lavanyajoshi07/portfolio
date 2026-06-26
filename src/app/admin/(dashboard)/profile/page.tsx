@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { profileSchema } from '@/lib/validation'
 import { Save, Plus, Trash2, GraduationCap, Link2, Briefcase, User } from 'lucide-react'
@@ -23,6 +23,7 @@ export default function ProfilePage() {
     reset,
     setValue,
     watch,
+    control,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(profileSchema),
@@ -30,6 +31,7 @@ export default function ProfilePage() {
       name: '',
       title: '',
       tagline: '',
+      bio: '',
       email: '',
       location: '',
       profileImage: '',
@@ -209,6 +211,30 @@ export default function ProfilePage() {
                   className="bg-[#101827]/70 border-slate-800 focus:border-[#00E5FF]/40 text-white"
                 />
               </div>
+            </div>
+          </div>
+
+          {/* About Me Narrative panel */}
+          <div className="glass-card bg-[#0A1020]/60 border border-[#00E5FF]/10 rounded-xl p-6 space-y-4">
+            <div className="flex items-center gap-2 border-b border-slate-900 pb-3 mb-2">
+              <User className="w-4 h-4 text-[#00E5FF]" />
+              <h3 className="font-mono text-xs font-semibold text-white uppercase tracking-wider">About Me Narrative</h3>
+            </div>
+            <div className="space-y-2">
+              <Label className="font-mono text-xs text-slate-400 uppercase">Biography (Rich Text / Markdown)</Label>
+              <Controller
+                name="bio"
+                control={control}
+                render={({ field }) => (
+                  <RichTextEditor
+                    value={field.value || ''}
+                    onChange={field.onChange}
+                    placeholder="Describe your developer persona, passion, and philosophy..."
+                    rows={12}
+                  />
+                )}
+              />
+              {errors.bio && <p className="text-xs text-red-500 font-mono">{errors.bio.message as string}</p>}
             </div>
           </div>
 

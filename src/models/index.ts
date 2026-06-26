@@ -14,6 +14,7 @@ const ProfileSchema = new Schema({
   name: { type: String, required: true, default: 'Your Name' },
   title: { type: String, default: 'Software Engineer & AI Enthusiast' },
   tagline: { type: String, default: 'Building the future, one line of code at a time.' },
+  bio: { type: String, default: '' },
   email: { type: String, default: '' },
   location: { type: String, default: '' },
   profileImage: String,
