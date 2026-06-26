@@ -46,9 +46,12 @@ export default function HeroSection({ profile }: Props) {
     setIsPlaying(false)
   }
 
-  const name = profile?.name || 'Jane Doe'
-  const title = profile?.title || 'AI & FULL-STACK RESEARCH ENGINEER'
-  const tagline = profile?.tagline || 'Architecting intelligent workflows, one model and application at a time.'
+  const name = profile?.name || 'Lavanya Joshi'
+  const title = profile?.title || 'AI Engineer'
+  const tagline = profile?.tagline || 'Building autonomous AI agents, scalable backend systems, and production-ready intelligent workflows.'
+  const nameParts = name.trim().split(' ')
+  const firstName = nameParts[0] || 'Lavanya'
+  const lastName = nameParts.slice(1).join(' ')
   const hasAudio = !!profile?.introAudio
   const videoUrls = getOptimizedVideoUrls(profile?.heroVideo)
 
@@ -143,21 +146,26 @@ export default function HeroSection({ profile }: Props) {
             )}
 
             <h1 className="font-display text-center lg:text-left text-3xl sm:text-4xl lg:text-5xl xl:text-5xl font-bold leading-none text-white tracking-tight">
-              Lavanya{' '}
-              <span className="gradient-text-cyan drop-shadow-[0_2px_10px_rgba(6,182,212,0.15)]">
-                Joshi
-              </span>
+              {firstName}
+              {lastName && (
+                <>
+                  {' '}
+                  <span className="gradient-text-cyan drop-shadow-[0_2px_10px_rgba(6,182,212,0.15)]">
+                    {lastName}
+                  </span>
+                </>
+              )}
             </h1>
 
             <div className="flex items-center justify-center lg:justify-start gap-2 lg:gap-3 mt-2 lg:mt-4 mb-3 lg:mb-5">
               <span className="hidden lg:block w-6 h-px bg-cyan-500/50" />
               <span className="font-mono text-cyan-400 text-xs tracking-widest uppercase font-semibold">
-                AI Engineer
+                {title}
               </span>
             </div>
 
             <p className="text-slate-300 text-base md:text-lg leading-relaxed max-w-[85%] lg:max-w-[650px] mx-auto lg:mx-0 text-center lg:text-left mb-4 lg:mb-6">
-              Building autonomous AI agents, scalable backend systems, and production-ready intelligent workflows.
+              {tagline}
             </p>
 
             <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 lg:gap-4 w-full lg:w-auto">

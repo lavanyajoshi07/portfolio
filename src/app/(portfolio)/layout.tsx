@@ -4,6 +4,9 @@ import SplashScreen from './components/shared/SplashScreen'
 import AudioPlayer from './components/shared/AudioPlayer'
 import { getSiteSettings, getProfile } from '@/lib/site-settings' // adjust import if needed
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function PortfolioLayout({ children }: { children: React.ReactNode }) {
   // Load settings and profile from DB
   const [siteSettings, rawProfile] = await Promise.all([

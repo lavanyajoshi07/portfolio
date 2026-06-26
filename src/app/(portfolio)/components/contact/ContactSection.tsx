@@ -138,13 +138,6 @@ export default function ContactSection({ profile }: Props) {
               />
             )}
           </div>
-
-          {/* Response time */}
-          <div className="glass-card rounded-3xl p-4 border-emerald-500/20 bg-emerald-950/20 mt-6">
-            <p className="text-sm text-slate-350">
-              <span className="text-emerald-400 font-semibold">⚡ Response time:</span> Usually within 24 hours
-            </p>
-          </div>
         </motion.div>
 
         {/* Right: Form */}
