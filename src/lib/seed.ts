@@ -297,7 +297,9 @@ async function seed() {
         logoMode: 'auto',
         tags: ['Cloud Computing', 'IAM Security', 'AWS Infrastructure', 'S3/EC2/Lambda'],
         credentialUrl: 'https://aws.amazon.com',
+        credentialLink: 'https://aws.amazon.com',
         certificateUrl: 'https://aws.amazon.com',
+        showCredential: true,
         featured: true,
         sortOrder: 1,
         isPublished: true
@@ -308,7 +310,9 @@ async function seed() {
         logoMode: 'auto',
         tags: ['Neural Networks', 'Computer Vision', 'NLP', 'Transformers'],
         credentialUrl: 'https://coursera.org',
+        credentialLink: 'https://coursera.org',
         certificateUrl: 'https://coursera.org',
+        showCredential: true,
         featured: true,
         sortOrder: 2,
         isPublished: true

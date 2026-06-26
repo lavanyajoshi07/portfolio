@@ -71,7 +71,9 @@ function CertCard({
   cert: Certification
   index: number
 }) {
-  const hasCTAs = !!(cert.certificateUrl || cert.credentialUrl)
+  const credentialLinkToUse = cert.credentialLink || cert.credentialUrl
+  const showCredentialButton = !!(cert.showCredential && credentialLinkToUse)
+  const hasCTAs = !!(cert.certificateUrl || showCredentialButton)
 
   return (
     <motion.div
@@ -138,9 +140,9 @@ function CertCard({
               <span>View Certificate</span>
             </a>
           )}
-          {cert.credentialUrl && (
+          {showCredentialButton && (
             <a
-              href={cert.credentialUrl}
+              href={credentialLinkToUse}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 h-10 flex items-center justify-center gap-1.5 px-3 rounded-lg text-xs font-mono font-bold uppercase tracking-wider bg-violet-500/10 text-violet-400 border border-violet-500/20 hover:bg-violet-500/20 transition-all duration-300 text-center"

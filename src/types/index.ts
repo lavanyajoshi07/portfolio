@@ -162,6 +162,8 @@ export interface Certification {
   tags?: string[]
   certificateUrl?: string
   credentialUrl?: string
+  credentialLink?: string
+  showCredential: boolean
   featured: boolean
   sortOrder: number
   isPublished: boolean

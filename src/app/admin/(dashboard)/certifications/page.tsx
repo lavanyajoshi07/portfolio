@@ -26,6 +26,8 @@ interface Certification {
   tags?: string[]
   certificateUrl?: string
   credentialUrl?: string
+  credentialLink?: string
+  showCredential: boolean
   featured: boolean
   sortOrder: number
   isPublished: boolean
@@ -61,6 +63,8 @@ export default function CertificationsPage() {
       tags: [] as string[],
       certificateUrl: '',
       credentialUrl: '',
+      credentialLink: '',
+      showCredential: false,
       featured: false,
       sortOrder: 0,
       isPublished: true,
@@ -69,6 +73,7 @@ export default function CertificationsPage() {
 
   const featuredValue = watch('featured')
   const isPublishedValue = watch('isPublished')
+  const showCredentialValue = watch('showCredential')
   const logoModeValue = watch('logoMode')
   const logoValue = watch('logo')
   const issuerValue = watch('issuer')
@@ -147,6 +152,8 @@ export default function CertificationsPage() {
       tags: [],
       certificateUrl: '',
       credentialUrl: '',
+      credentialLink: '',
+      showCredential: false,
       featured: false,
       sortOrder: 0,
       isPublished: true,
@@ -167,6 +174,8 @@ export default function CertificationsPage() {
       tags: cert.tags || [],
       certificateUrl: cert.certificateUrl || '',
       credentialUrl: cert.credentialUrl || '',
+      credentialLink: cert.credentialLink || cert.credentialUrl || '',
+      showCredential: cert.showCredential ?? false,
       featured: cert.featured,
       sortOrder: cert.sortOrder || 0,
       isPublished: cert.isPublished ?? true,
@@ -180,6 +189,9 @@ export default function CertificationsPage() {
     // Filter empty tags
     const filteredTags = tags.map(t => t.trim()).filter(t => t.length > 0)
     data.tags = filteredTags
+
+    // Sync credentialUrl with credentialLink for safety/backward compatibility
+    data.credentialUrl = data.credentialLink
 
     const url = editingCert ? `/api/certifications/${editingCert._id}` : '/api/certifications'
     const method = editingCert ? 'PUT' : 'POST'
@@ -518,14 +530,26 @@ export default function CertificationsPage() {
                 {errors.certificateUrl && <p className="text-xs text-red-500 font-mono">{errors.certificateUrl.message as string}</p>}
               </div>
 
-              <div className="space-y-1.5">
-                <Label className="font-mono text-[9px] text-slate-500 uppercase">Credential URL</Label>
-                <Input
-                  {...register('credentialUrl')}
-                  placeholder="URL to Verifiable Badge/Link"
-                  className="bg-[#101827]/70 border-slate-800 text-white text-xs"
+              <div className="flex items-center gap-3 py-1.5 border-t border-b border-slate-900/60 my-2">
+                <Switch
+                  checked={showCredentialValue}
+                  onCheckedChange={(checked) => setValue('showCredential', checked)}
                 />
-                {errors.credentialUrl && <p className="text-xs text-red-500 font-mono">{errors.credentialUrl.message as string}</p>}
+                <div>
+                  <Label className="font-mono text-[10px] text-slate-350 uppercase">Enable View Credential</Label>
+                  <p className="text-[9px] font-mono text-slate-500 uppercase">Show credential link in public view</p>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="font-mono text-[9px] text-slate-500 uppercase">Credential Link</Label>
+                <Input
+                  {...register('credentialLink')}
+                  placeholder="URL to Verifiable Badge/Link"
+                  className="bg-[#101827]/70 border-slate-800 text-white text-xs disabled:opacity-50"
+                  disabled={!showCredentialValue}
+                />
+                {errors.credentialLink && <p className="text-xs text-red-500 font-mono">{errors.credentialLink.message as string}</p>}
               </div>
             </div>
 

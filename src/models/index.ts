@@ -167,6 +167,8 @@ const CertificationSchema = new Schema({
   tags: [String],
   certificateUrl: String,
   credentialUrl: String,
+  credentialLink: String,
+  showCredential: { type: Boolean, default: false },
   featured: { type: Boolean, default: false },
   sortOrder: { type: Number, default: 0 },
   isPublished: { type: Boolean, default: true }

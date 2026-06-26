@@ -192,6 +192,8 @@ export const certificationSchema = z.object({
   tags: z.array(z.string()).default([]),
   certificateUrl: optionalUrl,
   credentialUrl: optionalUrl,
+  credentialLink: optionalUrl,
+  showCredential: z.boolean().default(false),
   featured: z.boolean().default(false),
   sortOrder: z.number().default(0).optional(),
   isPublished: z.boolean().default(true).optional(),

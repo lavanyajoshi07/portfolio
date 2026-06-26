@@ -163,17 +163,11 @@ function ProjectCard({
 
         {/* Dynamic Badges */}
         <div className="absolute top-4 left-4 flex gap-2">
-          <span className={`font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border ${
-            project.status === 'completed' 
-              ? 'bg-emerald-950/30 text-emerald-400 border-emerald-500/20' 
-              : project.status === 'in_progress'
-              ? 'bg-yellow-950/30 text-yellow-500 border-yellow-500/20'
-              : 'bg-slate-900 text-slate-500 border-slate-800'
-          }`}>
+          <span className={`font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border bg-slate-950/60 text-slate-400 border-slate-800/60 backdrop-blur-xs`}>
             {project.status.replace('_', ' ')}
           </span>
           {project.featured && (
-            <span className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded bg-[#FF4FD8]/15 text-[#FF4FD8] border border-[#FF4FD8]/30">
+            <span className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded bg-slate-950/60 text-slate-400 border border-slate-800/60 backdrop-blur-xs">
               Featured
             </span>
           )}
@@ -328,11 +322,11 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
 
           {/* Badges */}
           <div className="absolute top-4 left-4 flex gap-2">
-            <span className="bg-emerald-950/45 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider">
-              {project.status}
+            <span className="bg-slate-950/60 text-slate-400 border border-slate-800/60 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider backdrop-blur-xs">
+              {project.status.replace('_', ' ')}
             </span>
             {project.featured && (
-              <span className="bg-[#FF4FD8]/25 text-[#FF4FD8] border border-[#FF4FD8]/30 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider">
+              <span className="bg-slate-950/60 text-slate-400 border border-slate-800/60 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider backdrop-blur-xs">
                 Featured
               </span>
             )}
