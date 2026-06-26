@@ -295,6 +295,7 @@ export default function SkillsSection({ settings, categories, technologies, stat
 
         {/* Technology Cards Grid */}
         <motion.div 
+          key={activeSlug}
           variants={gridContainerVariants}
           initial="hidden"
           whileInView="show"
