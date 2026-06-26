@@ -40,7 +40,9 @@ export async function generateMetadata(): Promise<Metadata> {
     const seo = await SeoSettings.findOne().lean() as any
     if (seo) {
       return {
-        title: seo.metaTitle || 'Lavanya Joshi | Full Stack Developer',
+        title: {
+          absolute: seo.metaTitle || 'Lavanya Joshi | Full Stack Developer',
+        },
         description: seo.metaDescription || 'Futuristic portfolio of Lavanya Joshi, Full Stack Developer.',
         keywords: seo.keywords || [],
         openGraph: {
@@ -58,7 +60,9 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   return {
-    title: 'Lavanya Joshi | Full Stack Developer',
+    title: {
+      absolute: 'Lavanya Joshi | Full Stack Developer',
+    },
     description: 'Futuristic portfolio of Lavanya Joshi, Full Stack Developer.',
   }
 }
