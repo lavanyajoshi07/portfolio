@@ -39,7 +39,9 @@ export async function generateMetadata(): Promise<Metadata> {
     await connectDB()
     const seo = await SeoSettings.findOne().lean() as any
     if (seo) {
+      const siteUrl = seo.canonicalUrl || 'https://www.lavanyajoshi.in'
       return {
+        metadataBase: new URL(siteUrl),
         title: {
           absolute: seo.metaTitle || 'Lavanya Joshi | Full Stack Developer',
         },
@@ -60,6 +62,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   return {
+    metadataBase: new URL('https://www.lavanyajoshi.in'),
     title: {
       absolute: 'Lavanya Joshi | Full Stack Developer',
     },

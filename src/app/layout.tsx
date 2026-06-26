@@ -23,6 +23,11 @@ const orbitron = Orbitron({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NODE_ENV === 'production'
+      ? 'https://www.lavanyajoshi.in'
+      : 'http://localhost:3000'
+  ),
   title: {
     default: 'Lavanya Joshi | Full Stack Developer',
     template: '%s | Lavanya Joshi',

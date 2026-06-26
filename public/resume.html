@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="/favicon.ico" />
-  <title>Lavanya Joshi - Resume</title>
-  <!-- Import Inter Font for a modern, premium look -->
+  <meta name="description" content="Lavanya Joshi - Full Stack Developer Intern Resume">
+  <meta name="keywords" content="Full Stack Developer, Next.js, TypeScript, Node.js, MongoDB, PostgreSQL, React">
+  <title>Lavanya Joshi - Full Stack Developer Resume</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -16,95 +16,132 @@
       margin: 0;
       padding: 0;
     }
+    
     body {
       font-family: 'Inter', Arial, Helvetica, sans-serif;
-      color: #1e293b; /* Slate-800 for high-end neutral text */
+      color: #1e293b;
       background-color: #ffffff;
-      line-height: 1.4;
-      font-size: 10pt;
-      padding: 0.5in 0.6in;
+      line-height: 1.2;
+      font-size: 9.5pt;
+      padding: 0.3in 0.35in;
       width: 8.5in;
-      min-height: 11in;
       margin: 0 auto;
     }
     
     /* Document header styling */
     header {
       text-align: center;
-      margin-bottom: 12pt;
+      margin-bottom: 5pt;
     }
+    
     h1 {
       font-size: 20pt;
       font-weight: 700;
-      color: #0f172a; /* Slate-900 */
+      color: #0f172a;
       text-transform: uppercase;
-      margin-bottom: 3pt;
-      letter-spacing: 0.5pt;
+      margin-bottom: 2pt;
+      letter-spacing: 0.8pt;
     }
+    
     .contact-info {
-      font-size: 9pt;
-      color: #64748b; /* Slate-500 */
-      margin-bottom: 4pt;
+      font-size: 8.5pt;
+      color: #475569;
+      margin-bottom: 1pt;
       font-weight: 400;
+      line-height: 1.2;
     }
+    
     .contact-info a {
-      color: #0284c7; /* Sky-700 accent for links */
+      color: #0284c7;
       text-decoration: none;
       font-weight: 500;
     }
+    
     .contact-info a:hover {
       text-decoration: underline;
     }
     
+    .address {
+      font-size: 8.5pt;
+      color: #475569;
+      font-weight: 500;
+    }
+    
     /* Section structures */
     section {
-      margin-bottom: 12pt;
+      margin-bottom: 4pt;
     }
+    
     h2 {
-      font-size: 11pt;
-      font-weight: 600;
+      font-size: 10.5pt;
+      font-weight: 700;
       color: #0f172a;
       text-transform: uppercase;
-      border-bottom: 2px solid #e2e8f0; /* Soft slate border */
+      border-bottom: 2px solid #cbd5e1;
       padding-bottom: 2pt;
-      margin-bottom: 6pt;
-      letter-spacing: 0.5pt;
+      margin-bottom: 3pt;
+      letter-spacing: 0.3pt;
     }
     
     p {
-      margin-bottom: 4pt;
-      text-align: justify;
-      color: #334155; /* Slate-700 */
+      margin-bottom: 1pt;
+      color: #334155;
+      font-size: 9.5pt;
+      line-height: 1.2;
     }
     
-    /* Project styling */
-    .project-item {
-      margin-bottom: 8pt;
+    /* Project and experience items */
+    .project-item,
+    .experience-item {
+      margin-bottom: 3pt;
     }
-    .project-header {
+    
+    .project-header,
+    .experience-header {
       display: flex;
       justify-content: space-between;
       font-weight: 600;
       color: #0f172a;
-      margin-bottom: 2pt;
+      margin-bottom: 3pt;
+      flex-wrap: wrap;
     }
+    
+    .project-header span:first-child,
+    .experience-header span:first-child {
+      font-weight: 700;
+      flex: 1;
+      margin-right: 8pt;
+    }
+    
     .project-tech {
       font-style: italic;
       font-weight: 400;
       font-size: 9pt;
       color: #64748b;
+      margin-top: 1pt;
+      display: block;
+    }
+    
+    .experience-date {
+      font-size: 9.5pt;
+      color: #64748b;
+      font-weight: 500;
+      white-space: nowrap;
     }
     
     /* Bullet lists */
     ul {
-      margin-left: 12pt;
-      margin-bottom: 4pt;
+      margin-left: 8pt;
+      margin-bottom: 1pt;
       list-style-type: square;
     }
+    
     li {
-      margin-bottom: 2pt;
+      margin-bottom: 0.5pt;
       padding-left: 2pt;
       color: #334155;
+      font-size: 9.5pt;
+      line-height: 1.2;
     }
     
     /* Education & Certs details */
@@ -112,41 +149,55 @@
       display: flex;
       justify-content: space-between;
       margin-bottom: 2pt;
+      flex-wrap: wrap;
     }
+    
     .institution {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 10.5pt;
+    }
+    
+    .degree {
       font-weight: 600;
       color: #0f172a;
+      font-size: 10pt;
     }
-    .grad-date {
-      font-weight: 600;
-      color: #0f172a;
-    }
+    
     .coursework {
-      margin-top: 2pt;
-      font-size: 9pt;
-      color: #64748b;
+      margin-top: 3pt;
+      font-size: 9.5pt;
+      color: #475569;
+      line-height: 1.4;
     }
-
-    /* Skills details */
+    
+    /* Skills grid */
     .skills-grid {
       display: table;
       width: 100%;
-      margin-top: 2pt;
+      margin-top: 4pt;
     }
+    
     .skills-row {
       display: table-row;
     }
+    
     .skills-label {
       display: table-cell;
-      font-weight: 600;
-      width: 1.8in;
+      font-weight: 700;
+      width: 2in;
       padding-bottom: 4pt;
+      padding-right: 8pt;
       color: #0f172a;
+      font-size: 10pt;
     }
+    
     .skills-value {
       display: table-cell;
       padding-bottom: 4pt;
       color: #334155;
+      font-size: 10pt;
+      line-height: 1.35;
     }
     
     /* Print optimizations */
@@ -157,23 +208,36 @@
         padding: 0.4in 0.5in;
         font-size: 10pt;
         color: #000000 !important;
+        background-color: #ffffff;
       }
+      
       a {
         color: #000000 !important;
+        text-decoration: none;
       }
+      
       h2 {
         border-bottom-color: #000000 !important;
         page-break-after: avoid;
       }
-      .project-item, .skills-row, .education-item {
+      
+      .project-item,
+      .experience-item,
+      .skills-row,
+      .education-item {
         page-break-inside: avoid;
       }
+      
+      section {
+        page-break-inside: avoid;
+      }
+      
       .download-btn-container {
         display: none !important;
       }
     }
-
-    /* Floating Action Panel for download & print */
+    
+    /* Floating Action Panel */
     .download-btn-container {
       position: fixed;
       bottom: 24px;
@@ -182,139 +246,101 @@
       display: flex;
       gap: 8px;
       align-items: center;
-      background-color: rgba(15, 23, 42, 0.9); /* Glassmorphism Slate-900 */
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      padding: 6px;
-      border-radius: 9999px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      background-color: transparent;
+      padding: 0;
+      border-radius: 50px;
+      border: none;
+      box-shadow: none;
     }
+    
     .download-btn {
       display: flex;
       align-items: center;
-      gap: 8px;
-      background-color: #0284c7; /* Sky-600 */
+      gap: 6px;
+      background-color: #0284c7;
       color: #ffffff;
       border: none;
-      padding: 8px 16px;
-      border-radius: 9999px;
+      padding: 10px 16px;
+      border-radius: 50px;
       font-family: 'Inter', sans-serif;
       font-size: 9.5pt;
       font-weight: 600;
       cursor: pointer;
       text-decoration: none;
       transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
     }
+    
     .download-btn:hover {
-      background-color: #0369a1; /* Sky-700 */
-      transform: translateY(-1px);
+      background-color: #0369a1;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
     }
+    
     .download-btn svg {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
+      stroke: #ffffff;
+      stroke-width: 2;
       fill: none;
-      stroke: currentColor;
-      stroke-width: 2.5;
-    }
-    .print-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: transparent;
-      color: #94a3b8; /* Slate-400 */
-      border: none;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .print-btn:hover {
-      color: #ffffff;
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-    .print-btn svg {
-      width: 16px;
-      height: 16px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2.2;
     }
   </style>
 </head>
 <body>
 
-  <header>
+<header>
   <h1>Lavanya Joshi</h1>
-  <div style="font-size:11pt;font-weight:600;color:#0f172a;">
-  Full Stack Developer Intern
-</div>
   <div class="contact-info">
     Email: <a href="mailto:lavanyajoshi889@gmail.com">lavanyajoshi889@gmail.com</a> | 
-    Phone: +91-8279806809 | 
-    GitHub: <a href="https://github.com/lavanyajoshi07" target="_blank">github.com/lavanyajoshi07</a> | 
+    Phone: <a href="tel:+918279806809">+91-8279806809</a> |
+    GitHub: <a href="https://github.com/lavanyajoshi07" target="_blank">github.com/lavanyajoshi07</a> |
     LinkedIn: <a href="https://linkedin.com/in/lavanyajoshi889" target="_blank">linkedin.com/in/lavanyajoshi889</a> |
     Portfolio: <a href="https://lavanyajoshi.in" target="_blank">lavanyajoshi.in</a>
   </div>
   <div class="address">Dehradun, Uttarakhand, India</div>
 </header>
 
-  <section id="summary">
-    <h2>Professional Summary</h2>
-    <p>
-Aspiring Full Stack Developer Intern and Computer Science Engineering (AI Full Stack) student with hands-on experience building scalable web applications using Next.js, TypeScript, Node.js, MongoDB, and PostgreSQL. Skilled in software engineering, REST API development, debugging, authentication, access control, database design, and cloud deployment. Experienced in software development, web application development, and AI-powered solutions using Machine Learning, NLP, and Generative AI technologies., NLP, and Generative AI technologies. Proven ability to deliver production-ready projects, collaborate in team environments, and solve complex technical challenges through modern development practices.
+<section id="summary">
+  <h2>Professional Summary</h2>
+  <p>
+    Full Stack Developer Intern with hands-on experience building scalable web applications using Next.js, TypeScript, Node.js, MongoDB, and PostgreSQL. Skilled in software engineering, REST API development, debugging, authentication, access control, and database design. Experienced in AI-powered solutions using Machine Learning, Natural Language Processing, and Generative AI technologies. Proven ability to deliver production-ready projects, collaborate in team environments, and solve complex technical challenges through modern development practices.
+  </p>
+</section>
 
-</p>
+<section id="skills">
+  <h2>Technical Skills</h2>
+  <div class="skills-grid">
+    <div class="skills-row">
+      <span class="skills-label">Languages:</span>
+      <span class="skills-value">JavaScript, TypeScript, Python, Java, C, C++</span>
+    </div>
+    <div class="skills-row">
+      <span class="skills-label">Frontend:</span>
+      <span class="skills-value">React.js, Next.js, HTML5, CSS3, Tailwind CSS</span>
+    </div>
+    <div class="skills-row">
+      <span class="skills-label">Backend & Databases:</span>
+      <span class="skills-value">Node.js, Express.js, Next.js API Routes, MongoDB, PostgreSQL, MySQL</span>
+    </div>
+    <div class="skills-row">
+      <span class="skills-label">Tools & Platforms:</span>
+      <span class="skills-value">Git, GitHub, VS Code, AWS, Vercel, Render</span>
+    </div>
+    <div class="skills-row">
+      <span class="skills-label">Core Concepts:</span>
+      <span class="skills-value">Software Development, Software Engineering, SDLC, DSA, OOP, DBMS, REST APIs, Authentication & Authorization, RBAC, Debugging, Machine Learning, NLP</span>
+    </div>
+  </div>
+</section>
 
-  </section>
-
-  <section id="skills">
-    <h2>Technical Skills</h2>
-    <div class="skills-grid">
-      <div class="skills-row">
-        <span class="skills-label">Languages:</span>
-        <span class="skills-value">JavaScript, TypeScript, Python, Java, C, C++</span>
-      </div>
-      <div class="skills-row">
-        <span class="skills-label">Frontend:</span>
-        <span class="skills-value">React.js, Next.js, HTML5, CSS3, Tailwind CSS</span>
-      </div>
-      <div class="skills-row">
-        <span class="skills-label">Backend & Databases:</span>
-        <span class="skills-value">Node.js, Express.js, Next.js API Routes, MongoDB, PostgreSQL, MySQL</span>
-      </div>
-      <div class="skills-row">
-        <span class="skills-label">Tools & Platforms:</span>
-        <span class="skills-value">Git, GitHub, VS Code, AWS , Vercel, Render</span>
-      </div>
-      <div class="skills-row">
-        <span class="skills-label">Core Concepts:</span>
-<span class="skills-value">
-Software Development,
-Software Engineering,
-Software Development Life Cycle (SDLC),
-Data Structures & Algorithms (DSA),
-Object-Oriented Programming (OOP),
-Database Management Systems (DBMS),
-REST APIs,
-Authentication & Authorization,
-Role-Based Access Control (RBAC),
-Access Control,
-Debugging,
-Machine Learning,
-Natural Language Processing (NLP)
-</span>
-  </section>
-
-  <section id="projects">
+<section id="projects">
   <h2>Academic & Personal Projects</h2>
 
   <div class="project-item">
     <div class="project-header">
-      <span>PeriodTracker – Cycle Tracking & Health Analytics</span>
-      <span class="project-tech">Next.js, TypeScript, Tailwind CSS, MongoDB, Recharts, NextAuth, Capacitor</span>
+      <span><strong>PeriodTracker – Cycle Tracking & Health Analytics</strong></span>
     </div>
+    <div class="project-tech">Next.js, TypeScript, Tailwind CSS, MongoDB, Recharts, NextAuth, Capacitor</div>
     <ul>
       <li><strong>Health Analytics:</strong> Built a privacy-focused cycle tracking platform supporting secure storage and visualization of 500+ health log entries through interactive analytics dashboards.</li>
       <li><strong>Secure Authentication:</strong> Implemented NextAuth for session persistence and protected user metrics with encrypted storage.</li>
@@ -325,9 +351,9 @@ Natural Language Processing (NLP)
 
   <div class="project-item">
     <div class="project-header">
-      <span>Multithreaded Chat Application</span>
-      <span class="project-tech">Java, JavaFX, PostgreSQL, Socket Programming</span>
+      <span><strong>Multithreaded Chat Application</strong></span>
     </div>
+    <div class="project-tech">Java, JavaFX, PostgreSQL, Socket Programming</div>
     <ul>
       <li><strong>Concurrent Communication:</strong> Developed a multithreaded client-server chat system supporting 50+ concurrent connections with encrypted messaging and persistent storage.</li>
       <li><strong>Data Security:</strong> Implemented PBKDF2 password hashing and AES-GCM-256 encryption for secure authentication and messaging.</li>
@@ -338,91 +364,85 @@ Natural Language Processing (NLP)
 
   <div class="project-item">
     <div class="project-header">
-      <span>ReviewLens AI – Customer Review Analysis Platform</span>
-      <span class="project-tech">Next.js, TypeScript, Tailwind CSS, MongoDB Atlas, Mongoose, Next.js API Routes, Google Gemini API, Recharts, Vercel</span>
+      <span><strong>ReviewLens AI – Customer Review Analysis Platform</strong></span>
     </div>
+    <div class="project-tech">Next.js, TypeScript, Tailwind CSS, MongoDB Atlas, Mongoose, Google Gemini API, Recharts, Vercel</div>
     <ul>
       <li><strong>Sentiment Analysis:</strong> Implemented NLP-based classification of customer reviews into Positive, Neutral, and Negative categories.</li>
       <li><strong>Category Detection:</strong> Automated feedback tagging for Food, Cleanliness, Location, Host, Value, and Experience.</li>
       <li><strong>AI Integration:</strong> Leveraged Google Gemini API to generate professional response suggestions for owners.</li>
       <li><strong>Dashboard Analytics:</strong> Designed summary cards and Recharts visualizations for review trends and statistics.</li>
-      <li><strong>Scalable Deployment:</strong> Deployed the platform on Vercel with optimized API routes and MongoDB Atlas storage.</li>
+      <li><strong>Scalable Deployment:</strong> Deployed on Vercel with optimized API routes and MongoDB Atlas storage.</li>
     </ul>
   </div>
 </section>
 
-<!---work experience--->
 <section id="experience">
   <h2>Work Experience</h2>
 
   <div class="experience-item">
     <div class="experience-header">
-      <span>Team Lead – Multithreaded Chat Application (PBL Project)</span>
-      <span class="experience-date">Jan 2026 – Apr 2026 | Graphic Era Hill University</span>
+      <span><strong>Team Lead – Multithreaded Chat Application (PBL Project)</strong></span>
+      <span class="experience-date">Jan 2026 – Apr 2026</span>
     </div>
+    <p style="margin-bottom: 3pt; color: #64748b; font-size: 9.5pt;">Graphic Era Hill University</p>
     <ul>
       <li>Led a 4-member team to design and deploy a secure multithreaded chat system using Java, JavaFX, and PostgreSQL.</li>
-      <li>Applied <strong>Agile</strong> and <strong>SDLC</strong> principles to manage sprints, code reviews, and version control via Git.</li>
-      <li>Implemented <strong>database schemas</strong> and <strong>data privacy</strong> protocols ensuring encrypted communication.</li>
-      <li>Delivered a production-ready system with measurable results — reduced message latency by <strong>40%</strong> and improved user concurrency handling.</li>
+      <li>Applied Agile and SDLC principles to manage sprints, code reviews, and version control via Git.</li>
+      <li>Implemented database schemas and data privacy protocols ensuring encrypted communication.</li>
+      <li>Delivered production-ready system with measurable results — reduced message latency by 40% and improved user concurrency handling.</li>
     </ul>
   </div>
 
   <div class="experience-item">
     <div class="experience-header">
-      <span>Independent Full‑Stack Developer – Personal Projects</span>
-      <span class="experience-date">Jan 2025 – Present | Dehradun, Uttarakhand</span>
+      <span><strong>Independent Full-Stack Developer – Personal Projects</strong></span>
+      <span class="experience-date">Jan 2025 – Present</span>
     </div>
+    <p style="margin-bottom: 3pt; color: #64748b; font-size: 9.5pt;">Dehradun, Uttarakhand</p>
     <ul>
-      <li>Developed and deployed <strong>Period Tracker</strong> and <strong>ReviewLens AI</strong> using Next.js, TypeScript, MongoDB, and RESTful APIs.</li>
-      <li>Integrated <strong>Google Gemini API</strong> and implemented <strong>RBAC Security</strong> for user authentication and data protection.</li>
-      <li>Applied <strong>Agile</strong> workflows and <strong>SDLC</strong> best practices to ensure scalable, maintainable codebases.</li>
-      <li>Achieved measurable outcomes — improved API response time by <strong>30%</strong> and enhanced data visualization accuracy by <strong>25%</strong>.</li>
+      <li>Developed and deployed Period Tracker and ReviewLens AI using Next.js, TypeScript, MongoDB, and RESTful APIs.</li>
+      <li>Integrated Google Gemini API and implemented RBAC Security for user authentication and data protection.</li>
+      <li>Applied Agile workflows and SDLC best practices to ensure scalable, maintainable codebases.</li>
+      <li>Achieved measurable outcomes — improved API response time by 30% and enhanced data visualization accuracy by 25%.</li>
     </ul>
   </div>
 </section>
 
-
-  <section id="education">
+<section id="education">
   <h2>Education</h2>
   <div class="education-item">
-    <span class="degree">Bachelor of Technology (B.Tech), Computer Science Engineering (AI Full Stack)
-Expected Graduation: May 2028 </span>
+    <span class="degree">Bachelor of Technology (B.Tech), Computer Science Engineering (AI Full Stack)</span>
   </div>
-  <div style="font-size: 9pt; margin-top: 2pt; color: #64748b;">
-    Graphic Era Hill University | Dehradun, Uttarakhand<br>
-    <strong>Relevant Coursework:</strong> Data Structures & Algorithms, Object-Oriented Programming (OOP), Database Management Systems (DBMS), Operating Systems, Computer Networks, Software Engineering, Machine Learning, Artificial Intelligence, Web Applications
+  <p style="color: #475569; margin-bottom: 3pt; font-size: 9.5pt;">Expected Graduation: May 2028 | Graphic Era Hill University | Dehradun, Uttarakhand</p>
+  <div class="coursework">
+    <strong>Relevant Coursework:</strong> Data Structures & Algorithms, Object-Oriented Programming, DBMS, Operating Systems, Computer Networks, Software Engineering, Machine Learning, Artificial Intelligence, Web Applications
   </div>
 </section>
 
-
-  <section id="certifications">
-    <h2>Certifications</h2>
-    <p style="font-size: 9pt; text-align: left; line-height: 1.5; color: #334155;">
-      <ul>
-<li>NPTEL – Programming in C++</li>
-<li>AWS Cloud CLI Essentials</li>
-<li>DSA & C++ Bootcamp</li>
-<li>Git & GitHub Bootcamp</li>
-<li>JavaScript Bootcamp</li>
-<li>Google AI for Data Analysis</li>
-<li>Google AI for Research and Insights</li>
-<li>Machine Learning Workshop</li>
-</ul>
-  </section>
-
-  <section id="achievements">
-  <h2>Key Achievements</h2>
+<section id="certifications">
+  <h2>Certifications & Training</h2>
   <ul>
-    <li>Contributed to IEEE technical initiatives and collaborative design projects supporting university-level events.</li>
-
-<li>Built and deployed multiple production-ready applications integrating AI, analytics, and secure authentication systems.</li>
-
-<li>Solved 200+ DSA problems on LeetCode with a focus on algorithms, problem-solving, and interview preparation.</li>
+    <li>NPTEL – Programming in C++</li>
+    <li>AWS Cloud CLI Essentials</li>
+    <li>DSA & C++ Bootcamp</li>
+    <li>Git & GitHub Bootcamp</li>
+    <li>JavaScript Bootcamp</li>
+    <li>Google AI for Data Analysis</li>
+    <li>Google AI for Research and Insights</li>
+    <li>Machine Learning Workshop</li>
   </ul>
 </section>
 
-<!-- Soft Skills Section -->
+<section id="achievements">
+  <h2>Key Achievements</h2>
+  <ul>
+    <li>Contributed to IEEE technical initiatives and collaborative design projects supporting university-level events.</li>
+    <li>Built and deployed multiple production-ready applications integrating AI, analytics, and secure authentication systems.</li>
+    <li>Solved 200+ Data Structures & Algorithms problems on LeetCode with focus on interview preparation.</li>
+  </ul>
+</section>
+
 <section id="soft-skills">
   <h2>Soft Skills</h2>
   <ul>
@@ -430,15 +450,13 @@ Expected Graduation: May 2028 </span>
     <li><strong>Communication:</strong> Presented technical solutions clearly to peers and faculty, bridging design and development teams.</li>
     <li><strong>Problem-Solving:</strong> Tackled complex coding challenges and optimized system workflows under tight deadlines.</li>
     <li><strong>Collaboration:</strong> Worked effectively in team-based projects, applying Agile practices for smooth coordination.</li>
-    <li><strong>Adaptability:</strong> Quickly learned new frameworks and tools (Next.js, Capacitor, Gemini API) to deliver production-ready solutions.</li>
+    <li><strong>Adaptability:</strong> Quickly learned new frameworks and tools to deliver production-ready solutions.</li>
   </ul>
 </section>
 
-
-  <!-- Floating Action Bar for download & print (hidden during print) -->
-  <div class="download-btn-container">
-
-  <button onclick="downloadPDF()" class="download-btn" title="Download PDF">
+<!-- Floating Action Bar -->
+<div class="download-btn-container">
+  <button onclick="downloadPDF()" class="download-btn" title="Download as PDF">
     <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
       <polyline points="7 10 12 15 17 10"></polyline>
@@ -446,20 +464,11 @@ Expected Graduation: May 2028 </span>
     </svg>
     Download PDF
   </button>
-
-  <button onclick="window.print()" class="print-btn" title="Print Resume">
-    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="6 9 6 2 18 2 18 9"></polyline>
-      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-      <rect x="6" y="14" width="12" height="8"></rect>
-    </svg>
-  </button>
-
 </div>
 
 <script>
 function downloadPDF() {
-    window.print();
+  window.print();
 }
 </script>
 
