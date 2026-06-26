@@ -61,6 +61,9 @@ export async function GET() {
   const username = 'lavanyajoshi07'
   const token = process.env.GITHUB_TOKEN
 
+  console.log(`GitHub API: Starting stats request for username: '${username}'`)
+  console.log('GitHub API: GITHUB_TOKEN environment variable is', token ? 'PRESENT' : 'MISSING')
+
   const headers: Record<string, string> = {
     'Accept': 'application/vnd.github.v3+json',
     'User-Agent': 'lavanyajoshi07-portfolio',
@@ -77,9 +80,11 @@ export async function GET() {
     })
     
     if (!profileRes.ok) {
+      console.error(`GitHub API Error: Profile fetch failed with status ${profileRes.status} (${profileRes.statusText})`)
       throw new Error(`GitHub REST Profile API error: ${profileRes.statusText}`)
     }
     const profileData = await profileRes.json()
+    console.log('GitHub API: Profile details fetched successfully.')
 
     // 2. Fetch REST API Repos
     const reposRes = await fetch(`https://api.github.com/users/${username}/repos?per_page=100`, {
@@ -87,7 +92,9 @@ export async function GET() {
       next: { revalidate: 60 }
     })
     if (!reposRes.ok) {
-      console.warn(`GitHub REST Repos API warning: ${reposRes.statusText}`)
+      console.warn(`GitHub API Warning: Repos fetch returned status ${reposRes.status} (${reposRes.statusText})`)
+    } else {
+      console.log('GitHub API: Repos list fetched successfully.')
     }
     const reposData = await reposRes.json()
 
@@ -100,6 +107,7 @@ export async function GET() {
     // 3. Fetch GraphQL API for contributions calendar
     if (token) {
       try {
+        console.log('GitHub API: Querying GraphQL contributions calendar...')
         const graphqlQuery = {
           query: `
             query($username: String!) {
@@ -134,6 +142,9 @@ export async function GET() {
 
         if (graphqlRes.ok) {
           const graphqlData = await graphqlRes.json()
+          if (graphqlData?.errors) {
+            console.error('GitHub API Error: GraphQL query returned errors:', JSON.stringify(graphqlData.errors))
+          }
           const calendar = graphqlData?.data?.user?.contributionsCollection?.contributionCalendar
           if (calendar) {
             totalContributions = calendar.totalContributions || 0
@@ -141,15 +152,21 @@ export async function GET() {
             currentStreak = streaks.currentStreak
             longestStreak = streaks.longestStreak
             activeDays = streaks.activeDays
+            console.log(`GitHub API: GraphQL stats retrieved successfully. Total Contributions: ${totalContributions}, Streak: ${currentStreak}`)
+          } else {
+            console.warn('GitHub API Warning: GraphQL calendar data not found in response.')
           }
         } else {
-          console.error('GraphQL API response error:', graphqlRes.statusText)
+          console.error('GitHub API Error: GraphQL request failed with status', graphqlRes.status, graphqlRes.statusText)
         }
       } catch (gqlErr) {
-        console.error('Failed to fetch/calculate GraphQL stats:', gqlErr)
+        console.error('GitHub API Error: Failed to fetch/calculate GraphQL stats:', gqlErr)
       }
+    } else {
+      console.warn('GitHub API Warning: Skipping GraphQL calendar query because GITHUB_TOKEN is not set.')
     }
 
+    console.log('GitHub API: Completed successfully, returning collected statistics.')
     return NextResponse.json({
       followers: profileData.followers || 0,
       following: profileData.following || 0,
@@ -160,7 +177,7 @@ export async function GET() {
       activeDays
     })
   } catch (error: any) {
-    console.error('Error fetching GitHub data:', error)
+    console.error('GitHub API Error: Unhandled error fetching GitHub data:', error)
     return NextResponse.json(
       { error: error?.message || 'Failed to fetch GitHub data' },
       { status: 500 }
