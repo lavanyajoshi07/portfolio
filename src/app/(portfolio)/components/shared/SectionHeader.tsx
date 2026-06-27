@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { motion } from 'framer-motion'
 
 interface SectionHeaderProps {
@@ -9,7 +10,7 @@ interface SectionHeaderProps {
   accentColor?: 'cyan' | 'pink' | 'violet'
 }
 
-export default function SectionHeader({
+function SectionHeader({
   id,
   title,
   subtitle,
@@ -51,3 +52,5 @@ export default function SectionHeader({
     </motion.div>
   )
 }
+
+export default memo(SectionHeader)

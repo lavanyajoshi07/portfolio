@@ -63,6 +63,7 @@ const TechnologyCategorySchema = new Schema({
   active: { type: Boolean, default: true },
   deletedAt: { type: Date, default: null },
 }, { timestamps: true })
+TechnologyCategorySchema.index({ deletedAt: 1, order: 1 })
 
 // ============================================================
 // TECHNOLOGY
@@ -81,6 +82,7 @@ const TechnologySchema = new Schema({
   featured: { type: Boolean, default: false },
   deletedAt: { type: Date, default: null },
 }, { timestamps: true })
+TechnologySchema.index({ deletedAt: 1, displayOrder: 1 })
 
 // ============================================================
 // TECH STATS
@@ -94,6 +96,7 @@ const TechStatsSchema = new Schema({
   active: { type: Boolean, default: true },
   deletedAt: { type: Date, default: null },
 }, { timestamps: true })
+TechStatsSchema.index({ deletedAt: 1, order: 1 })
 
 // ============================================================
 // PROJECT
@@ -152,6 +155,7 @@ const ProjectSchema = new Schema({
   seoKeywords: [String],
   viewCount: { type: Number, default: 0 },
 }, { timestamps: true })
+ProjectSchema.index({ publishStatus: 1, featured: -1, sortOrder: 1 })
 
 const CertificationSchema = new Schema({
   title: { type: String, required: true },
@@ -173,6 +177,7 @@ const CertificationSchema = new Schema({
   sortOrder: { type: Number, default: 0 },
   isPublished: { type: Boolean, default: true }
 }, { timestamps: true })
+CertificationSchema.index({ isPublished: 1, sortOrder: 1 })
 
 // ============================================================
 // ACHIEVEMENT CATEGORY
@@ -188,6 +193,7 @@ const AchievementCategorySchema = new Schema({
   active: { type: Boolean, default: true },
   deletedAt: { type: Date, default: null },
 }, { timestamps: true })
+AchievementCategorySchema.index({ deletedAt: 1, displayOrder: 1 })
 
 // ============================================================
 // ACHIEVEMENT SETTINGS
@@ -221,6 +227,7 @@ const AchievementSchema = new Schema({
   metricLabel: String,
   deletedAt: { type: Date, default: null },
 }, { timestamps: true })
+AchievementSchema.index({ deletedAt: 1, featured: -1, displayOrder: 1, date: -1 })
 
 // ============================================================
 // CONTACT MESSAGE

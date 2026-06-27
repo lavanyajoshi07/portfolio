@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  compress: true,
   allowedDevOrigins: ['10.28.202.109', 'localhost'],
   images: {
     remotePatterns: [
@@ -9,7 +10,7 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
-    optimizePackageImports: ['lucide-react', 'recharts'],
+    optimizePackageImports: ['lucide-react', 'recharts', 'framer-motion', 'date-fns'],
     serverActions: {
       bodySizeLimit: '10mb',
       allowedOrigins: [
@@ -39,6 +40,15 @@ const nextConfig: NextConfig = {
               "media-src 'self' blob: https://res.cloudinary.com; " +
               "connect-src 'self' https://api.anthropic.com https://api.github.com; " +
               "frame-src 'self'",
+          },
+        ],
+      },
+      {
+        source: '/(favicon.png|favicon.ico|images/.*|videos/.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
           },
         ],
       },

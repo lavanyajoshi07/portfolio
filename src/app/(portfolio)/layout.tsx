@@ -1,11 +1,9 @@
 import ParticleCanvas from './components/shared/ParticleCanvas'
 import Navbar from './components/shared/Navbar'
 import SplashScreen from './components/shared/SplashScreen'
-import AudioPlayer from './components/shared/AudioPlayer'
 import { getSiteSettings, getProfile } from '@/lib/site-settings' // adjust import if needed
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export const revalidate = 60
 
 export default async function PortfolioLayout({ children }: { children: React.ReactNode }) {
   // Load settings and profile from DB
@@ -30,13 +28,8 @@ export default async function PortfolioLayout({ children }: { children: React.Re
       <div className="relative z-10">
         <Navbar profile={profile} />
 
-
         <main>{children}</main>
-
-        {/* Audio player only if enabled */}
-        {siteSettings?.audioPlayerEnabled && <AudioPlayer />}
       </div>
-
     </>
   )
 }

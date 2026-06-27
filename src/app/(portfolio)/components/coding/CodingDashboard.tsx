@@ -2,7 +2,25 @@
 
 import { useMemo, useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import * as LucideIcons from 'lucide-react'
+import { 
+  BarChart3, 
+  GitCommit, 
+  Flame, 
+  Trophy, 
+  Calendar, 
+  Github, 
+  Activity, 
+  Quote, 
+  Zap, 
+  Award, 
+  Terminal, 
+  Code, 
+  Cpu, 
+  Sparkles, 
+  Star, 
+  Target, 
+  Compass 
+} from 'lucide-react'
 import SectionWrapper from '../shared/SectionWrapper'
 import StatsCard from './StatsCard'
 import { useResponsive } from '@/hooks/useResponsive'
@@ -252,7 +270,7 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
       "relative w-full rounded-2xl border border-cyan-500/10 bg-[#0A1020]/50 p-4 flex flex-col items-center justify-center gap-2 text-slate-500 select-none overflow-hidden",
       mounted && isTablet ? "h-auto aspect-[8/3]" : "min-h-[220px] h-[220px] md:h-[320px]"
     )}>
-      <LucideIcons.BarChart3 className={cn("w-8 h-8 text-slate-600", showPulse && "animate-pulse")} />
+      <BarChart3 className={cn("w-8 h-8 text-slate-600", showPulse && "animate-pulse")} />
       <span className="text-xs font-mono uppercase tracking-widest">{message}</span>
     </div>
   )
@@ -268,9 +286,11 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
   }, [settings])
 
   const QuoteIcon = useMemo(() => {
+    const iconMap: Record<string, any> = {
+      Activity, Quote, Zap, Flame, Award, Terminal, Code, Cpu, Sparkles, Star, Trophy, Target, Compass
+    }
     const iconName = settings.motivationalIcon || 'Activity'
-    const LucideIcon = (LucideIcons as any)[iconName]
-    return LucideIcon ? LucideIcon : LucideIcons.Activity
+    return iconMap[iconName] || Activity
   }, [settings.motivationalIcon])
 
   if (!isMounted) return null
@@ -320,7 +340,7 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="glass-card rounded-2xl p-4 bg-[#0A1020]/50 border border-cyan-500/10 hover:border-cyan-400/30 transition-all duration-300 flex flex-col justify-between h-[90px]">
                       <div className="flex items-center gap-1.5 text-cyan-400">
-                        <LucideIcons.GitCommit className="w-3.5 h-3.5" />
+                        <GitCommit className="w-3.5 h-3.5" />
                         <span className="font-mono text-[9px] uppercase tracking-wider text-slate-450">Contributions</span>
                       </div>
                       <div className="text-xl font-bold font-display text-white mt-1">
@@ -330,7 +350,7 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
 
                     <div className="glass-card rounded-2xl p-4 bg-[#0A1020]/50 border border-cyan-500/10 hover:border-cyan-400/30 transition-all duration-300 flex flex-col justify-between h-[90px]">
                       <div className="flex items-center gap-1.5 text-[#FF4FD8]">
-                        <LucideIcons.Flame className="w-3.5 h-3.5" />
+                        <Flame className="w-3.5 h-3.5" />
                         <span className="font-mono text-[9px] uppercase tracking-wider text-slate-455">Current Streak</span>
                       </div>
                       <div className="text-xl font-bold font-display text-[#FF4FD8] mt-1">
@@ -340,7 +360,7 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
 
                     <div className="glass-card rounded-2xl p-4 bg-[#0A1020]/50 border border-cyan-500/10 hover:border-cyan-400/30 transition-all duration-300 flex flex-col justify-between h-[90px]">
                       <div className="flex items-center gap-1.5 text-violet-400">
-                        <LucideIcons.Trophy className="w-3.5 h-3.5" />
+                        <Trophy className="w-3.5 h-3.5" />
                         <span className="font-mono text-[9px] uppercase tracking-wider text-slate-460">Longest Streak</span>
                       </div>
                       <div className="text-xl font-bold font-display text-white mt-1">
@@ -350,7 +370,7 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
 
                     <div className="glass-card rounded-2xl p-4 bg-[#0A1020]/50 border border-cyan-500/10 hover:border-cyan-400/30 transition-all duration-300 flex flex-col justify-between h-[90px]">
                       <div className="flex items-center gap-1.5 text-emerald-400">
-                        <LucideIcons.Calendar className="w-3.5 h-3.5" />
+                        <Calendar className="w-3.5 h-3.5" />
                         <span className="font-mono text-[9px] uppercase tracking-wider text-slate-465">Active Days</span>
                       </div>
                       <div className="text-xl font-bold font-display text-white mt-1">
@@ -392,7 +412,7 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
                       >
                         {svgLoading ? (
                           <div className="w-full h-[120px] flex flex-col items-center justify-center gap-2 text-slate-500 select-none">
-                            <LucideIcons.BarChart3 className="w-8 h-8 text-slate-600 animate-pulse" />
+                            <BarChart3 className="w-8 h-8 text-slate-600 animate-pulse" />
                             <span className="text-xs font-mono uppercase tracking-widest">Syncing Live GitHub Graph...</span>
                           </div>
                         ) : svgHtml ? (
@@ -402,7 +422,7 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
                           />
                         ) : (
                           <div className="w-full h-[120px] flex flex-col items-center justify-center gap-2 text-slate-500 select-none">
-                            <LucideIcons.BarChart3 className="w-8 h-8 text-slate-600" />
+                            <BarChart3 className="w-8 h-8 text-slate-600" />
                             <span className="text-xs font-mono uppercase tracking-widest">
                               {!settings.profileUsername || settings.profileUsername === 'username'
                                 ? 'GitHub username not configured'
@@ -497,7 +517,7 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
                           <span className="text-[9px] text-slate-500 uppercase block tracking-wider">Current Streak</span>
                           <span className="text-sm font-bold text-[#FF4FD8] mt-0.5 block">{settings.githubCurrentStreak}</span>
                         </div>
-                        <LucideIcons.Flame className="w-4 h-4 text-[#FF4FD8]" />
+                        <Flame className="w-4 h-4 text-[#FF4FD8]" />
                       </div>
                     </div>
 
@@ -509,7 +529,7 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
                         rel="noopener noreferrer"
                         className="w-full h-10 mt-4 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/25 flex items-center justify-center gap-2 font-mono text-xs font-bold uppercase tracking-wider hover:bg-cyan-500/20 hover:shadow-[0_0_15px_rgba(0,229,255,0.15)] transition-all duration-300 select-none shrink-0"
                       >
-                        <LucideIcons.Github className="w-4 h-4" />
+                        <Github className="w-4 h-4" />
                         <span>View GitHub Profile</span>
                       </a>
                     )}
@@ -556,7 +576,7 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 my-4">
                     <div className="glass-card rounded-2xl p-4 bg-[#0A1020]/50 border border-cyan-500/10 hover:border-cyan-400/30 transition-all duration-300 flex flex-col justify-between h-[90px]">
                       <div className="flex items-center gap-1.5 text-cyan-400">
-                        <LucideIcons.GitCommit className="w-3.5 h-3.5" />
+                        <GitCommit className="w-3.5 h-3.5" />
                         <span className="font-mono text-[9px] uppercase tracking-wider text-slate-450">Contributions</span>
                       </div>
                       <div className="text-xl font-bold font-display text-white mt-1">
@@ -566,7 +586,7 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
 
                     <div className="glass-card rounded-2xl p-4 bg-[#0A1020]/50 border border-cyan-500/10 hover:border-cyan-400/30 transition-all duration-300 flex flex-col justify-between h-[90px]">
                       <div className="flex items-center gap-1.5 text-[#FF4FD8]">
-                        <LucideIcons.Flame className="w-3.5 h-3.5" />
+                        <Flame className="w-3.5 h-3.5" />
                         <span className="font-mono text-[9px] uppercase tracking-wider text-slate-455">Current Streak</span>
                       </div>
                       <div className="text-xl font-bold font-display text-[#FF4FD8] mt-1">
@@ -576,7 +596,7 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
 
                     <div className="glass-card rounded-2xl p-4 bg-[#0A1020]/50 border border-cyan-500/10 hover:border-cyan-400/30 transition-all duration-300 flex flex-col justify-between h-[90px]">
                       <div className="flex items-center gap-1.5 text-violet-400">
-                        <LucideIcons.Trophy className="w-3.5 h-3.5" />
+                        <Trophy className="w-3.5 h-3.5" />
                         <span className="font-mono text-[9px] uppercase tracking-wider text-slate-460">Longest Streak</span>
                       </div>
                       <div className="text-xl font-bold font-display text-white mt-1">
@@ -586,7 +606,7 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
 
                     <div className="glass-card rounded-2xl p-4 bg-[#0A1020]/50 border border-cyan-500/10 hover:border-cyan-400/30 transition-all duration-300 flex flex-col justify-between h-[90px]">
                       <div className="flex items-center gap-1.5 text-emerald-400">
-                        <LucideIcons.Calendar className="w-3.5 h-3.5" />
+                        <Calendar className="w-3.5 h-3.5" />
                         <span className="font-mono text-[9px] uppercase tracking-wider text-slate-465">Active Days</span>
                       </div>
                       <div className="text-xl font-bold font-display text-white mt-1">
@@ -712,7 +732,7 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
                           <span className="text-[9px] text-slate-500 uppercase block tracking-wider">Current Streak</span>
                           <span className="text-sm font-bold text-[#FF4FD8] mt-0.5 block">{settings.githubCurrentStreak}</span>
                         </div>
-                        <LucideIcons.Flame className="w-4 h-4 text-[#FF4FD8]" />
+                        <Flame className="w-4 h-4 text-[#FF4FD8]" />
                       </div>
                     </div>
 
@@ -724,7 +744,7 @@ export default function CodingDashboard({ dashboardSettings }: Props) {
                         rel="noopener noreferrer"
                         className="w-full h-10 mt-4 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/25 flex items-center justify-center gap-2 font-mono text-xs font-bold uppercase tracking-wider hover:bg-cyan-500/20 hover:shadow-[0_0_15px_rgba(0,229,255,0.15)] transition-all duration-300 select-none shrink-0"
                       >
-                        <LucideIcons.Github className="w-4 h-4" />
+                        <Github className="w-4 h-4" />
                         <span>View GitHub Profile</span>
                       </a>
                     )}

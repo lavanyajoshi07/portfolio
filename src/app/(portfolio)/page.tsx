@@ -1,18 +1,26 @@
 import { Suspense } from 'react'
 import { Metadata } from 'next'
+import dynamicImport from 'next/dynamic'
 import HeroSection from './components/hero/HeroSection'
 import AboutSection from './components/about/AboutSection'
 import SkillsSection from './components/skills/SkillsSection'
 import ProjectsSection from './components/projects/ProjectsSection'
-import CodingDashboard from './components/coding/CodingDashboard'
-import CertificationsSection from './components/certifications/CertificationSection'
-import AchievementsSection from './components/achievements/AchievementsSection'
-import ContactSection from './components/contact/ContactSection'
-
-// Import newly integrated custom CMS sections
 import Footer from './components/shared/Footer'
-
 import SectionLoader from './components/shared/SectionLoader'
+
+const CodingDashboard = dynamicImport(() => import('./components/coding/CodingDashboard'), {
+  loading: () => <SectionLoader />
+})
+const CertificationsSection = dynamicImport(() => import('./components/certifications/CertificationSection'), {
+  loading: () => <SectionLoader />
+})
+const AchievementsSection = dynamicImport(() => import('./components/achievements/AchievementsSection'), {
+  loading: () => <SectionLoader />
+})
+const ContactSection = dynamicImport(() => import('./components/contact/ContactSection'), {
+  loading: () => <SectionLoader />
+})
+
 import connectDB from '@/lib/db'
 import { 
   Profile, 
@@ -31,8 +39,7 @@ import {
   SeoSettings
 } from '@/models'
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   try {

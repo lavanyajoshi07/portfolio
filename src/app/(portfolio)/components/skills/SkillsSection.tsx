@@ -3,12 +3,22 @@
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import * as Lucide from 'lucide-react'
+import { 
+  Cpu, Code, Database, Server, Globe, Terminal, Layers, Sparkles, Folder, Layout, Box, 
+  Shield, Cloud, Wrench, Zap, GitBranch, Activity, Award, BookOpen, Briefcase, CheckCircle, 
+  Code2, Command, Compass, HardDrive, Laptop, Monitor, Package, Settings, Smartphone, Star, Workflow
+} from 'lucide-react'
 import { TechStackSettings, TechnologyCategory, Technology, TechStats } from '@/types'
+
+const iconMap: Record<string, any> = {
+  Cpu, Code, Database, Server, Globe, Terminal, Layers, Sparkles, Folder, Layout, Box, 
+  Shield, Cloud, Wrench, Zap, GitBranch, Activity, Award, BookOpen, Briefcase, CheckCircle, 
+  Code2, Command, Compass, HardDrive, Laptop, Monitor, Package, Settings, Smartphone, Star, Workflow
+}
 
 // Dynamic Lucide resolver for generic library icons
 function DynamicIcon({ name, className }: { name: string; className?: string }) {
-  if (!name) return <Lucide.Cpu className={className} />
+  if (!name) return <Cpu className={className} />
   
   // Format string name (e.g., 'bookOpen' or 'book-open' -> 'BookOpen')
   const pascalName = name
@@ -16,7 +26,7 @@ function DynamicIcon({ name, className }: { name: string; className?: string }) 
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join('')
   
-  const IconComponent = (Lucide as any)[pascalName] || (Lucide as any)[name] || Lucide.Cpu
+  const IconComponent = iconMap[pascalName] || iconMap[name] || Cpu
   return <IconComponent className={className} />
 }
 
@@ -86,7 +96,7 @@ function TechLogo({ name, className }: { name: string; className?: string }) {
   }
 
   // Fallback to a smart default icon if it's not custom SVG
-  return <Lucide.Cpu className={className} />
+  return <Cpu className={className} />
 }
 
 // In-view count up resolver for premium numeric animations

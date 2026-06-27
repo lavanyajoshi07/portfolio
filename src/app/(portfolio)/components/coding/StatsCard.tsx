@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, memo } from 'react'
 import { motion, useInView } from 'framer-motion'
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
   platformSource?: string
 }
 
-export default function StatsCard({ label, value, platformSource }: Props) {
+function StatsCard({ label, value, platformSource }: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true })
 
@@ -40,3 +40,5 @@ export default function StatsCard({ label, value, platformSource }: Props) {
     </motion.div>
   )
 }
+
+export default memo(StatsCard)
