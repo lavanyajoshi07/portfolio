@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ['10.28.202.109', 'localhost'],
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },
@@ -12,6 +13,7 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: '10mb',
       allowedOrigins: [
+        '10.28.202.109',
         '10.217.110.109', // your first IP
         '10.79.165.109',  // the one you’re currently using
         'localhost',      // always include localhost

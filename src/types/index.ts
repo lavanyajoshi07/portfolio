@@ -202,6 +202,7 @@ export interface Achievement {
   displayOrder: number
   achievementImage?: string
   achievementUrl?: string
+  showAchievementUrl?: boolean
   tags?: string[]
   metricValue?: string
   metricLabel?: string

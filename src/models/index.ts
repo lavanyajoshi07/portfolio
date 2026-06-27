@@ -215,6 +215,7 @@ const AchievementSchema = new Schema({
   displayOrder: { type: Number, default: 0 },
   achievementImage: String,
   achievementUrl: String,
+  showAchievementUrl: { type: Boolean, default: true },
   tags: [String],
   metricValue: String,
   metricLabel: String,

@@ -10,17 +10,16 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error('Email and password are required')
+        if (!credentials?.password) {
+          throw new Error('Password is required')
         }
 
         await connectDB();
 
-        const user = await AdminUser.findOne({ email: credentials.email.toLowerCase().trim() });
+        const user = await AdminUser.findOne();
 
         if (!user) return null;
 

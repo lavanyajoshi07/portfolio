@@ -166,8 +166,12 @@ export default function AchievementsSection({ achievements, categories, settings
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {cat.achievements.map((item) => (
                               <div key={item._id} className="glass-card rounded-2xl bg-slate-950/40 border border-slate-900 p-4 space-y-3 flex gap-3 items-start">
-                                <div className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-sm shrink-0">
-                                  {item.icon || '🏆'}
+                                <div className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center overflow-hidden text-sm shrink-0">
+                                  {item.achievementImage ? (
+                                    <img src={item.achievementImage} alt={item.title} className="w-full h-full object-cover" />
+                                  ) : (
+                                    <span>{item.icon || '🏆'}</span>
+                                  )}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
@@ -201,10 +205,23 @@ export default function AchievementsSection({ achievements, categories, settings
                                     </div>
                                   )}
 
-                                  {item.achievementUrl && (
+                                  {item.achievementImage && (
+                                    <div className="mt-3 rounded-xl overflow-hidden border border-slate-900 bg-slate-950/40 w-full flex items-center justify-center max-h-48">
+                                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                                      <img src={item.achievementImage} alt={item.title} className="w-full h-auto max-h-48 object-contain opacity-90 hover:opacity-100 transition-opacity duration-300" />
+                                    </div>
+                                  )}
+
+                                  {item.achievementUrl && (item.showAchievementUrl ?? true) && (
                                     <div className="pt-2">
                                       <a 
-                                        href={item.achievementUrl} 
+                                        href={
+                                          item.achievementUrl.startsWith('/') ||
+                                          item.achievementUrl.startsWith('http://') ||
+                                          item.achievementUrl.startsWith('https://')
+                                            ? item.achievementUrl
+                                            : `https://${item.achievementUrl}`
+                                        } 
                                         target="_blank" 
                                         rel="noopener noreferrer" 
                                         className="inline-flex items-center gap-1 text-[9px] font-mono text-cyan-400 hover:text-cyan-300 transition-colors uppercase"

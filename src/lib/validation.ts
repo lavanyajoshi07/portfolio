@@ -233,6 +233,7 @@ export const achievementSchema = z.object({
   displayOrder: z.number().default(0).optional(),
   achievementImage: z.string().optional().default(''),
   achievementUrl: optionalUrl,
+  showAchievementUrl: z.boolean().default(true),
   tags: z.array(z.string()).default([]),
   metricValue: z.string().optional().default(''),
   metricLabel: z.string().optional().default(''),

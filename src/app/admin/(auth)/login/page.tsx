@@ -4,14 +4,13 @@ import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Lock, Mail, Terminal, AlertTriangle, Cpu } from 'lucide-react'
+import { Lock, Terminal, AlertTriangle, Cpu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 export default function LoginPage() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -23,7 +22,6 @@ export default function LoginPage() {
 
     try {
       const result = await signIn('credentials', {
-        email,
         password,
         redirect: false,
       })
@@ -78,26 +76,6 @@ export default function LoginPage() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="email" className="font-mono text-xs text-slate-400 uppercase tracking-wider">
-            Identifier (Email)
-          </Label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Mail className="h-4 w-4 text-slate-500" />
-            </div>
-            <Input
-              id="email"
-              type="email"
-              placeholder="operator@workspace.ai"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="pl-10 bg-[#101827]/70 border-slate-800 text-white placeholder-slate-600 focus:border-[#00E5FF]/50 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 transition-all duration-300"
-            />
-          </div>
-        </div>
-
         <div className="space-y-2">
           <Label htmlFor="password" className="font-mono text-xs text-slate-400 uppercase tracking-wider">
             Access Key (Password)

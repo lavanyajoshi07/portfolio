@@ -77,6 +77,7 @@ export default function AchievementsAdminPage() {
       icon: '',
       badgeColor: '',
       showInCategory: true,
+      showAchievementUrl: true,
       displayOrder: 0,
       achievementImage: '',
       achievementUrl: '',
@@ -249,6 +250,7 @@ export default function AchievementsAdminPage() {
       icon: '🏆',
       badgeColor: '#00E5FF',
       showInCategory: true,
+      showAchievementUrl: true,
       displayOrder: achievements.length,
       achievementImage: '',
       achievementUrl: '',
@@ -272,6 +274,7 @@ export default function AchievementsAdminPage() {
       icon: item.icon || '🏆',
       badgeColor: item.badgeColor || '#00E5FF',
       showInCategory: item.showInCategory ?? true,
+      showAchievementUrl: item.showAchievementUrl ?? true,
       displayOrder: item.displayOrder || 0,
       achievementImage: item.achievementImage || '',
       achievementUrl: item.achievementUrl || '',
@@ -295,6 +298,7 @@ export default function AchievementsAdminPage() {
       icon: item.icon || '🏆',
       badgeColor: item.badgeColor || '#00E5FF',
       showInCategory: item.showInCategory ?? true,
+      showAchievementUrl: item.showAchievementUrl ?? true,
       displayOrder: achievements.length,
       achievementImage: item.achievementImage || '',
       achievementUrl: item.achievementUrl || '',
@@ -744,6 +748,11 @@ export default function AchievementsAdminPage() {
                         {item.showInCategory && (
                           <span className="font-mono text-[8px] uppercase px-2 py-0.5 rounded bg-violet-500/10 text-violet-400 border border-violet-500/35">
                             Category Grid
+                          </span>
+                        )}
+                        {item.showAchievementUrl && (
+                          <span className="font-mono text-[8px] uppercase px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/35">
+                            Show "View Info"
                           </span>
                         )}
                       </div>
@@ -1300,7 +1309,7 @@ export default function AchievementsAdminPage() {
             </div>
 
             {/* Visibility switches */}
-            <div className="border-t border-slate-900 pt-3">
+            <div className="border-t border-slate-900 pt-3 space-y-4">
               <div className="flex items-center gap-3">
                 <Switch
                   checked={achForm.watch('showInCategory')}
@@ -1309,6 +1318,17 @@ export default function AchievementsAdminPage() {
                 <div>
                   <Label className="font-mono text-[10px] text-slate-350 uppercase">Show In Category Grid</Label>
                   <p className="text-[8px] font-mono text-slate-500 uppercase">Render in Achievements Category list</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Switch
+                  checked={achForm.watch('showAchievementUrl')}
+                  onCheckedChange={(checked) => achForm.setValue('showAchievementUrl', checked)}
+                />
+                <div>
+                  <Label className="font-mono text-[10px] text-slate-350 uppercase">Show "View Info"</Label>
+                  <p className="text-[8px] font-mono text-slate-500 uppercase">Display the external link button in public view</p>
                 </div>
               </div>
             </div>
